@@ -19,7 +19,7 @@ export default class App extends Component {
       <Layout>
         <Route exact path='/' component={Home} />
         <Route path='/counter' component={Counter} />
-        <Route path='/fetch-city' component={City} />
+        <AuthorizeRoute path='/City' component={City} /> {/*City just url text..must also match  to="/City" in NavMenu..*/}
         <AuthorizeRoute path='/fetch-data' component={FetchData} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       </Layout>

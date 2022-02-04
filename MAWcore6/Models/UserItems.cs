@@ -3,14 +3,14 @@
     public class UserItems
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public string NickName { get; set; }
-        public int Cents { get; set; }
-        public int FiveMinuteSpeedups { get; set; }
-        public int FifteenMinuteSpeedup { get; set; }
-        public int OneHourSpeedup { get; set; }
-        public int RedGems { get; set; }
-        public int BlueGems { get; set; }
-        public int FarmBonuses { get; set; }
+        public string UserId { get; set; }
+        public string? NickName { get; set; }
+        public int Cents { get; set; } = 0;
+        public int FiveMinuteSpeedups { get; set; } = 0;
+        public int FifteenMinuteSpeedups { get; set; } = 0;
+        public int OneHourSpeedups { get; set; } = 0;
+        public int RedGems { get; set; } = 0;
+        public int BlueGems { get; set; } = 0;
+        public int FarmBonuses { get; set; } = 0;
     }
 }

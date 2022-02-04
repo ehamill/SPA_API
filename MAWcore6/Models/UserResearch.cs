@@ -4,7 +4,8 @@
     {
         public int UserResearchId { get; set; }
         public string UserId { get; set; }
-        public int Agg { get; set; } = 0;
+        public int Aggriculture { get; set; } = 0;
+        public int Building { get; set; } = 0;
         public int Lumbering { get; set; } = 0;
         public int Mining { get; set; } = 0;
         public int Masonry { get; set; } = 0;

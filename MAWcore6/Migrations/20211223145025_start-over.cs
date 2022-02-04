@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MAWcore6.Data.Migrations
+#nullable disable
+
+namespace MAWcore6.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class startover : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,6 +49,27 @@ namespace MAWcore6.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cities",
+                columns: table => new
+                {
+                    CityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ServerId = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Food = table.Column<int>(type: "int", nullable: false),
+                    Stone = table.Column<int>(type: "int", nullable: false),
+                    Wood = table.Column<int>(type: "int", nullable: false),
+                    Iron = table.Column<int>(type: "int", nullable: false),
+                    Gold = table.Column<int>(type: "int", nullable: false),
+                    ResourcesLastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.CityId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeviceCodes",
                 columns: table => new
                 {
@@ -58,7 +81,7 @@ namespace MAWcore6.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50190, nullable: false)
+                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,11 +95,11 @@ namespace MAWcore6.Data.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Version = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Use = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    Use = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Algorithm = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsX509Certificate = table.Column<bool>(type: "bit", nullable: false),
                     DataProtected = table.Column<bool>(type: "bit", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50190, nullable: false)
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,11 +119,57 @@ namespace MAWcore6.Data.Migrations
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Expiration = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ConsumedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50190, nullable: false)
+                    Data = table.Column<string>(type: "nvarchar(max)", maxLength: 50000, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Cents = table.Column<int>(type: "int", nullable: false),
+                    FiveMinuteSpeedups = table.Column<int>(type: "int", nullable: false),
+                    FifteenMinuteSpeedups = table.Column<int>(type: "int", nullable: false),
+                    OneHourSpeedups = table.Column<int>(type: "int", nullable: false),
+                    RedGems = table.Column<int>(type: "int", nullable: false),
+                    BlueGems = table.Column<int>(type: "int", nullable: false),
+                    FarmBonuses = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserItems", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserResearch",
+                columns: table => new
+                {
+                    UserResearchId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Aggriculture = table.Column<int>(type: "int", nullable: false),
+                    Building = table.Column<int>(type: "int", nullable: false),
+                    Lumbering = table.Column<int>(type: "int", nullable: false),
+                    Mining = table.Column<int>(type: "int", nullable: false),
+                    Masonry = table.Column<int>(type: "int", nullable: false),
+                    MetalCasting = table.Column<int>(type: "int", nullable: false),
+                    IronWorking = table.Column<int>(type: "int", nullable: false),
+                    TroopSpeed = table.Column<int>(type: "int", nullable: false),
+                    Archery = table.Column<int>(type: "int", nullable: false),
+                    Attack = table.Column<int>(type: "int", nullable: false),
+                    HorsebackRiding = table.Column<int>(type: "int", nullable: false),
+                    Defense = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserResearch", x => x.UserResearchId);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +278,29 @@ namespace MAWcore6.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Buildings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    Location = table.Column<int>(type: "int", nullable: false),
+                    BuildingType = table.Column<int>(type: "int", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Buildings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Buildings_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -247,6 +339,11 @@ namespace MAWcore6.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Buildings_CityId",
+                table: "Buildings",
+                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
@@ -303,6 +400,9 @@ namespace MAWcore6.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Buildings");
+
+            migrationBuilder.DropTable(
                 name: "DeviceCodes");
 
             migrationBuilder.DropTable(
@@ -312,10 +412,19 @@ namespace MAWcore6.Data.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
+                name: "UserItems");
+
+            migrationBuilder.DropTable(
+                name: "UserResearch");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
         }
     }
 }

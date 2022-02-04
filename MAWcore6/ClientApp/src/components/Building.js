@@ -22,13 +22,12 @@ export class Building extends Component {
 
 
         return (
-
             <Button color="success">
-                <div>
-                    Loc: {this.props.b.location}
+                <div onClick={this.props.onClick}>
+                    Type: {this.props.b.type}
+                    Level: {this.props.b.level}
                 </div>
             </Button>
-
         );
     }
     

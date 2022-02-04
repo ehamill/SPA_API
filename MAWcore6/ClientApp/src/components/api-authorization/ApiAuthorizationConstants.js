@@ -22,10 +22,10 @@ export const LoginActions = {
 const prefix = '/authentication';
 
 export const ApplicationPaths = {
-  DefaultLoginRedirectPath: '/',
+    DefaultLoginRedirectPath: '/',
   ApiAuthorizationClientConfigurationUrl: `_configuration/${ApplicationName}`,
   ApiAuthorizationPrefix: prefix,
-  Login: `${prefix}/${LoginActions.Login}`,
+    Login: `${prefix}/${LoginActions.Login}`,
   LoginFailed: `${prefix}/${LoginActions.LoginFailed}`,
   LoginCallback: `${prefix}/${LoginActions.LoginCallback}`,
   Register: `${prefix}/${LoginActions.Register}`,
