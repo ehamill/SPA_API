@@ -26,7 +26,7 @@ namespace MAWcore6.Controllers
             db = _db;
             _userManager = userManager;
         }
-
+        //localhost:33999/City
         [HttpGet]
         public async Task<JsonResult> Get()
         { 
@@ -42,6 +42,100 @@ namespace MAWcore6.Controllers
             return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
         }
 
+
+        //works with fetch "city/Fucker" ... city has to be lower case..hmm
+        //[HttpGet("Fucker")]
+        //public async Task<JsonResult> Fucker()
+        //{
+        //    string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var u = await _userManager.FindByIdAsync(UserId);
+
+        //    City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+        //    UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+        //    UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+        //    List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+        //    //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+        //}
+
+        //Method POST ... city/Fucker
+        //[HttpPost("Fucker")]
+        //public async Task<JsonResult> Fucker()
+        //{
+        //    string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var u = await _userManager.FindByIdAsync(UserId);
+
+        //    City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+        //    UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+        //    UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+        //    List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+        //    //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+        //}
+
+
+        public class test
+        {
+            public int id2 { get; set; }
+            public string fuck { get; set; }
+        }
+
+        [HttpPost("Fucker")]
+        //[Route("Fucker")]
+        public async Task<JsonResult> Fucker55([FromBody] test tt)
+        {
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var u = await _userManager.FindByIdAsync(UserId);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == tt.id2).FirstOrDefaultAsync();
+            //City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+        }
+
+        public class UpdateCityModel
+        {
+            public int cityId { get; set; }
+            public int buildingId { get; set; }
+            public int buildingType { get; set; }
+            public int level { get; set; }
+        }
+
+        [HttpPost("UpdateCity")]
+        public async Task<JsonResult> UpdateCity(UpdateCityModel model)
+        {
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var u = await _userManager.FindByIdAsync(UserId);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+        }
+
+        [HttpPost("UpdateCity")]
+        public async Task<JsonResult> PostUpdateCity()
+        {
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var u = await _userManager.FindByIdAsync(UserId);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+        }
         public async Task<City> CreateCity(string UserID) {
 
             City NewCity = new City()

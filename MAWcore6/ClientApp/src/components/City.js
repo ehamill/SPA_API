@@ -18,7 +18,8 @@ export class City extends Component {
             newBuildingsCost: {},
             loading: true,
             showModal: false,
-            activeSlot: 0,
+            activeSlot: -1,
+            activeBuildingId : -1,
             buildWhat: "",
             showBuilding1Timer: false,
             build1Time: 0,
@@ -47,7 +48,7 @@ export class City extends Component {
         let b = this.state.city.buildings.find((x) => x.location === slot);
         ///console.log('clicked on b level...: ' + b.level);
         if (b.level === 0) {
-            this.setState({ showModal: !this.state.showModal, activeSlot: slot });
+            this.setState({ showModal: !this.state.showModal, activeSlot: slot, activeBuildingId: b.buildingId });
         } else {
             this.setState({ showUpgradeModal: !this.state.showUpgradeModal, activeSlot: slot });
         }
@@ -60,15 +61,30 @@ export class City extends Component {
         this.setState({ showUpgradeModal: false });
     }
     handleClickBuildWhat(e) {
-        let type = e.target.dataset.building;
+        let type = e.target.dataset.building_type;
+        let foodCost = e.target.dataset.food_cost;
         let time = e.target.dataset.time;
+        let level = e.target.dataset.level;
+        let buildingId = e.target.dataset.building_id;
+        let slot = e.target.dataset.active_slot;
+        //console.log('handleClickBuildWhat  ... foodCost: ' + foodCost + ' buildingId: ' + buildingId + '  buildingtype: '+ type);
+        //let b = this.state.buildings.find((x) => x.location === this.state.activeSlot);
+        var buildings = [...this.state.city.buildings];
+        var b = buildings.find((x) => x.buildingId == buildingId);
+        //console.log('handleClickBuildWhat b: ' + JSON.stringify(b))
+        b.buildingType = type;
+        b.level = level;
+        //this.state.city.buildings.find((x) => x.id === buildingId).type = type;
+        //this.state.city.buildings.find((x) => x.id === buildingId).level = level;
         this.setState({
             buildWhat: type,
             showModal: false,
             showBuilding1Timer: true,
-            build1Time: time
+            build1Time: time,
+            buildings: buildings,
         });
-    //console.log("building.." + this.state.buildWhat);
+        //this.updateCityData();
+     console.log("building.." + JSON.stringify(this.state.city.buildings.find((x) => x.id === buildingId)));
     }
 
   renderCity() {
@@ -80,7 +96,14 @@ export class City extends Component {
           <Container>
               <AddBuildingModal
                   newBuildings={this.state.newBuildingsCost}
-                  handleClickBuildWhat={this.handleClickBuildWhat} showModal={this.state.showModal} closeModal={this.closeModal} />
+                  activeSlot={this.state.activeSlot}
+                  activeBuildingId={this.state.activeBuildingId}
+                  handleClickBuildWhat={this.handleClickBuildWhat}
+                  food={this.state.food}
+                  wood={this.state.wood}
+                  stone={this.state.stone}
+                  iron={this.state.iron}
+                  showModal={this.state.showModal} closeModal={this.closeModal} />
               <UpgradeModal
                   handleClickUpgradeBuilding={this.handleClickBuildWhat}
                   showModal={this.state.showUpgradeModal}
@@ -88,7 +111,7 @@ export class City extends Component {
                   stone={this.state.stone} iron={this.state.iron}
                   activeTroop="Warr"
               />
-              {this.state.showBuilding1Timer ? <BuildingTimer time={this.state.build1Time} /> : ''}
+              {this.state.showBuilding1Timer ? <BuildingTimer time={this.state.build1Time} isHidden={this.state.showBuilding1Timer } /> : ''}
               
               <div style={{ marginTop: "20px" }} onClick={this.testClick}>
                   Build Where: {this.state.activeSlot}
@@ -117,6 +140,14 @@ export class City extends Component {
                           </tr>
                       </tbody>
                   </Table>
+
+                  <div>
+                      food:{this.state.food}
+                      wood:{this.state.wood}
+                      stone:{this.state.stone}
+                      iron:{this.state.iron}
+                  </div>
+                  
               </div>
               {/*<BottomNav />*/}
           </Container>
@@ -135,7 +166,20 @@ export class City extends Component {
         );
     }
 
+    async updateCityData() {
 
+       // console.log('at update city data..');
+        var test = { id2: 55, fuck: 'fuck yoo' }; 
+        const token = await authService.getAccessToken();
+        const response = await fetch('city/Fucker', {
+            method: 'POST',
+            headers: !token ? { 'Content-Type': 'application/json' } : { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(test), 
+        });
+        const data = await response.json();
+        //console.log('at updateCityData..'+ JSON.stringify(data.newBuildingsCost));
+        this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
+    }
 
     async getCityData() {
         const token = await authService.getAccessToken();
@@ -143,7 +187,7 @@ export class City extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
-        console.log('testing..'+ JSON.stringify(data.newBuildingsCost));
+        console.log('at getCityData..'+ JSON.stringify(data.newBuildingsCost));
         this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
 

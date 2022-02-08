@@ -10,7 +10,8 @@ export class BuildingTimer extends Component {
             timeLeft: this.props.time,
             time: {},
             seconds: this.props.time,
-            visible: " hidden ",
+            //visible: " hidden ",
+            isHidden: this.props.isHidden,
             width: "100%"
         };
         this.timer = 0;
@@ -39,7 +40,7 @@ export class BuildingTimer extends Component {
     componentDidMount() {
         //console.log('seconds: ' + this.state.seconds);
         let timeLeftVar = this.secondsToTime(this.state.seconds);
-        this.setState({ time: timeLeftVar, visible: "" });
+        this.setState({ time: timeLeftVar, isHidden: false });
         this.startTimer();
     }
     startTimer() {
@@ -59,7 +60,7 @@ export class BuildingTimer extends Component {
         // Check if we're at zero.
         if (seconds <= 0) {
             clearInterval(this.timer);
-            this.setState({ visible: " hidden " });
+            this.setState({ isHidden: true });
             //this.props.hideTimer();
         }
     }
@@ -70,7 +71,7 @@ export class BuildingTimer extends Component {
         if (secs <= 0) {
             this.setState({
                 seconds: 0,
-                visible: " hidden "
+                isHidden: true
             });
         } else {
             this.setState({
@@ -83,7 +84,7 @@ export class BuildingTimer extends Component {
 
     render() {
         return (
-            <div id="buildingTime" className={this.state.visible + " just-testing "}>
+            <div id="buildingTime" hidden={this.state.isHidden }  className={" just-testing "}>
                 <div id="buildingProgress">
                     <span id="buildingWhat" className="buildingWhat">
                         {this.props.buildWhat} <ShowTime time={this.state.time} />{" "}

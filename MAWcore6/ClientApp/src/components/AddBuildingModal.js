@@ -7,7 +7,9 @@ export class AddBuildingModal extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            //activeSlot : this.props.activeSlot,
+        };
         this.showTime = this.showTime.bind(this);
     }
 
@@ -48,14 +50,25 @@ export class AddBuildingModal extends Component {
             <CardTitle tag="h5">{b.type}</CardTitle>
             <CardSubtitle tag="h6" className="mb-2 text-muted">
               <div className="danger">Requires {b.reqMet ? "" : b.preReq }</div>
-              Food: {b.food} Stone: {b.stone} Wood: {b.wood} Iron: {b.iron}
+                        Food: {b.food} Stone: {b.stone} Wood: {b.wood} Iron: {b.iron}
+                        <div>slot: {this.props.activeSlot} id: buildingID: {this.props.activeBuildingId}</div>
+                        
             </CardSubtitle>
             <CardText> b.description 
             <div>
                 Build Time {this.showTime(b.time)}
               </div>
             </CardText>
-            <Button color="primary" data-time={b.time} data-building={b.type} onClick={this.props.handleClickBuildWhat}>Build</Button>
+                    <Button color="primary"
+                        data-building_type={ b.type}
+                        data-time={b.time}
+                        data-food_cost={b.food}
+                        data-stoneCost={b.stone}
+                        data-woodCost={b.wood}
+                        data-active_slot={this.props.activeSlot}
+                        data-level="1"
+                        data-building_id={this.props.activeBuildingId}
+                        onClick={this.props.handleClickBuildWhat}>Build</Button>
           </CardBody>
         </Card>
         )}
