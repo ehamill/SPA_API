@@ -103,38 +103,128 @@ namespace MAWcore6.Controllers
         {
             public int cityId { get; set; }
             public int buildingId { get; set; }
-            public int buildingType { get; set; }
+            public string buildingType { get; set; }
             public int level { get; set; }
         }
 
-        [HttpPost("UpdateCity")]
-        public async Task<JsonResult> UpdateCity(UpdateCityModel model)
+
+        private BuildingCost GetCostOfBuilding(UpdateCityModel model, UserResearch userResearch)
         {
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var u = await _userManager.FindByIdAsync(UserId);
 
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
-            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
-            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+            BuildingCost bc = new BuildingCost();
+            switch (model.buildingType)
+            {
+                case "Cottage":
+                    bc.type = "Cottage";
+                    bc.food = CottFoodReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.stone = CottStoneReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.wood = CottWoodReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.iron = CottIronReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.time = CottTimeReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    break;
+                case "Inn":
+                    bc.type = "Inn";
+                    bc.food = InnFoodReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.stone = InnStoneReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.wood = InnWoodReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.iron = InnIronReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    bc.time = InnTimeReq * Convert.ToInt32(Math.Pow(2, model.level - 1));
+                    break;
 
-            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+                case "Acedemy":
+                    //Console.WriteLine("Failed measurement.");
+                    break;
+
+                case "Barrack":
+                    //Console.WriteLine("Failed measurement.");
+                    break;
+            }
+            return bc;
+
+        }
+
+        //public class Result { 
+        //    public bool passed { get; set; }
+        //    public string message { get; set; }
+        
+        //}
+        private string CheckIfPreReqMet(City city, UpdateCityModel update) {
+            string res =  "ok";
+            var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
+            
+            //No building can be more than one level greater than th.
+            var th = city.Buildings.Where(c => c.BuildingType == CityBuildingType.Town_Hall).FirstOrDefault();
+            if (update.level - 1 > th.Level)
+            {
+                res = "Need to upgrade the Town Hall.";
+            }
+            if (update.buildingType == "Inn") { 
+                var cottageLvl2 = city.Buildings.Where(c => c.BuildingType == CityBuildingType.Cottage && c.Level >=2 ).FirstOrDefault();
+                if (cottageLvl2 == null) {
+                    res = "Must build a Cottage to level 2.";
+                }
+            }
+            if (update.buildingType == "Barrack")
+            {
+                var RallySpot = city.Buildings.Where(c => c.BuildingType == CityBuildingType.Rally_Spot).FirstOrDefault();
+                if (RallySpot == null)
+                {
+                    res = "Must build a RallySpot.";
+                }
+            }
+            return res;
         }
 
         [HttpPost("UpdateCity")]
-        public async Task<JsonResult> PostUpdateCity()
+        public async Task<JsonResult> UpdateCity([FromBody] UpdateCityModel update)
         {
+
+            var message = "ok";
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var u = await _userManager.FindByIdAsync(UserId);
 
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
-            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync();
+            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+
+            //Check if builders busy ..
+            string TestingResult = CheckIfPreReqMet(UserCity, update);
+            if (TestingResult != "ok")
+            {
+                message = TestingResult;
+                return new JsonResult(new { data = message });
+            }
+
+            BuildingCost BuildingCost= GetCostOfBuilding(update, UserResearch);
+            
+            //Check if user has enough resources ..
+            await RemoveResourcesAndUpdateConstructionFromCity(UserCity, update, BuildingCost);
+            
+            
+            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(UserResearch);
             //GetUpgradeBuildings..only need one for each, can calculate costs off of it
 
-            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+            return new JsonResult(new { message = message, city = UserCity, });
+        }
+
+        private async Task RemoveResourcesAndUpdateConstructionFromCity(City UserCity, UpdateCityModel update, BuildingCost BuildingCost) {
+            //bool ret = true;
+
+            UserCity.Food = UserCity.Food - BuildingCost.food;
+            UserCity.Stone = UserCity.Stone - BuildingCost.stone;
+            UserCity.Wood = UserCity.Wood - BuildingCost.wood;
+            UserCity.Iron = UserCity.Iron - BuildingCost.iron;
+
+            UserCity.Construction1Started = DateTime.UtcNow;
+            UserCity.Construction1Ends = DateTime.UtcNow.AddSeconds(BuildingCost.time);
+            UserCity.Construction1BuildingId = update.buildingId;
+
+            UserCity.Builder1Busy = true;
+            UserCity.Builder1Time = BuildingCost.time;
+
+
+            await db.SaveChangesAsync();
+            
+            //return ret;
         }
         public async Task<City> CreateCity(string UserID) {
 
@@ -176,7 +266,10 @@ namespace MAWcore6.Controllers
                 };
                 NewCity.Buildings.Add(NewBuilding);
             }
-
+            var th = NewCity.Buildings.Where(c => c.Location == 2).FirstOrDefault();
+            th.BuildingType = CityBuildingType.Town_Hall;
+            th.Level = 1;
+            th.Image = "TownHall.jpg";
             await db.SaveChangesAsync();
 
             return NewCity;
@@ -223,7 +316,6 @@ namespace MAWcore6.Controllers
 
         }
         
-
         public async Task<City> UpdateResources(City City)
         {
             DateTime Now = DateTime.UtcNow;
@@ -243,9 +335,10 @@ namespace MAWcore6.Controllers
         }
 
         #region Constants
+//int BaseResRate = 100;
 
-
-
+        #region Farms
+        
         string FarmPrereq = " ";
         int FarmFoodReq = 50;// FoodReq = FarmFoodReq * 2^(nextLevel -1) 
         int FarmStoneReq = 200;
@@ -288,9 +381,10 @@ namespace MAWcore6.Controllers
         int IronMineRate = 100;
         int IronMineCap = 10000;
         //Quest: Level 1	Beginner Guidelines (1)	500	800	750	500
+        #endregion
 
-
-        //int BaseResRate = 100;
+        
+        #region Troops
 
         string WorkerBuildReq = "Barracks Level 1";
         int WorkerFoodCost = 50;
@@ -485,7 +579,15 @@ int PikeFoodCost = 150;
         int CataSpeed= 80;
         int CataRange= 1500;
         //int CataQuest = { qtyCatas:10, award:{ food:500, lumber:1500, iron:100 } };
+        #endregion
 
+        #region City
+        string ThPrereq = "Walls Level Th-2";
+        int ThFoodReq = 400;
+        int ThStoneReq = 5000;
+        int ThWoodReq = 6000;
+        int ThIronReq = 200;
+        int ThTimeReq = 30 * 60;
 
         string AcademyPrereq = "Town Hall Level 2";
         int AcademyFoodReq= 120; //reward prim
@@ -633,10 +735,13 @@ int PikeFoodCost = 150;
         //lvl1-2 = 2x speed, lvl3 =3x, 5-7 4x, 8-9 = 5x, 10=6x
         //quest lvl1 f2000,s5000, w5000, i 1000
 
+
+        #endregion
+
         //walls...
 
 
-        //Research
+        #region Research
         string AggPrereq = "Academy lvl1, farm Level = level";//lvl3 needs a farm lvl3
         int AggWoodReq= 500; //lvl3 500*2*2
         int AggGoldReq = 1000;
@@ -671,15 +776,14 @@ int PikeFoodCost = 150;
         int MetalCastingTimeReq = 15 * 60;
         //each lvl = 10% inc in production of Mechs (balls, rams, etc)
 
-        string ThPrereq = "Walls Level Th-2";
-        int ThFoodReq = 400;
-        int ThStoneReq = 5000;
-        int ThWoodReq = 6000;
-        int ThIronReq= 200;
-        int ThTimeReq = 30 * 60;
+        #endregion
+
+        
 
 
         #endregion
 
     }
+
+    
 }

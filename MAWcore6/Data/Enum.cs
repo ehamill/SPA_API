@@ -37,7 +37,7 @@
         Rally_Spot = 10,
         Relief_Station = 11,
         Stable = 12,
-        Towh_Hall = 13,
+        Town_Hall = 13,
         Warehouse=14,
         Workshop = 15,
         Farm = 16,

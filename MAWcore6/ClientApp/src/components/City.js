@@ -67,7 +67,7 @@ export class City extends Component {
         let level = e.target.dataset.level;
         let buildingId = e.target.dataset.building_id;
         let slot = e.target.dataset.active_slot;
-        //console.log('handleClickBuildWhat  ... foodCost: ' + foodCost + ' buildingId: ' + buildingId + '  buildingtype: '+ type);
+        console.log('handleClickBuildWhat  ... buildingid:  ' + buildingId + '  buildingtype: '+ type);
         //let b = this.state.buildings.find((x) => x.location === this.state.activeSlot);
         var buildings = [...this.state.city.buildings];
         var b = buildings.find((x) => x.buildingId == buildingId);
@@ -79,12 +79,12 @@ export class City extends Component {
         this.setState({
             buildWhat: type,
             showModal: false,
-            showBuilding1Timer: true,
-            build1Time: time,
+            //showBuilding1Timer: true,
+            //build1Time: time,
             buildings: buildings,
         });
-        //this.updateCityData();
-     console.log("building.." + JSON.stringify(this.state.city.buildings.find((x) => x.id === buildingId)));
+        this.updateCityData(buildingId, type, level);
+        //console.log("building.." + JSON.stringify(this.state.city.buildings.find((x) => x.id === buildingId)));
     }
 
   renderCity() {
@@ -111,7 +111,8 @@ export class City extends Component {
                   stone={this.state.stone} iron={this.state.iron}
                   activeTroop="Warr"
               />
-              {this.state.showBuilding1Timer ? <BuildingTimer time={this.state.build1Time} isHidden={this.state.showBuilding1Timer } /> : ''}
+              {/*{this.state.showBuilding1Timer ? <BuildingTimer time={this.state.build1Time} isHidden={this.state.showBuilding1Timer} /> : ''}*/}
+              {this.state.city.builder1Busy ? <BuildingTimer time={this.state.city.build1Time} isHidden={this.state.city.builder1Busy} /> : ''}
               
               <div style={{ marginTop: "20px" }} onClick={this.testClick}>
                   Build Where: {this.state.activeSlot}
@@ -142,10 +143,10 @@ export class City extends Component {
                   </Table>
 
                   <div>
-                      food:{this.state.food}
-                      wood:{this.state.wood}
-                      stone:{this.state.stone}
-                      iron:{this.state.iron}
+                      food:{this.state.city.food}
+                      wood:{this.state.city.wood}
+                      stone:{this.state.city.stone}
+                      iron:{this.state.city.iron}
                   </div>
                   
               </div>
@@ -166,19 +167,31 @@ export class City extends Component {
         );
     }
 
-    async updateCityData() {
+    async updateCityData(buildingId, buildingType, level) {
 
        // console.log('at update city data..');
-        var test = { id2: 55, fuck: 'fuck yoo' }; 
+        var updateModel = { cityId: this.state.city.cityId, buildingId: parseInt(buildingId), buildingType, level: parseInt(level) };
+        //console.log('updateModel: ' + JSON.stringify(updateModel));
         const token = await authService.getAccessToken();
-        const response = await fetch('city/Fucker', {
+        const response = await fetch('city/UpdateCity', {
             method: 'POST',
             headers: !token ? { 'Content-Type': 'application/json' } : { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(test), 
+            body: JSON.stringify(updateModel),
         });
         const data = await response.json();
-        //console.log('at updateCityData..'+ JSON.stringify(data.newBuildingsCost));
-        this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
+        console.log('at updateCityData..returned: ' + JSON.stringify(data));
+        if (data.message !== 'ok') {
+            alert('oops ..' + data.message)
+        }
+        this.setState({ city: data.city, });
+        //if (data.city.builder1Busy === true) {
+        //    this.setState({
+        //        showBuilding1Timer: true,
+        //        build1Time: data.city.build1Time,
+        //    });
+        //}
+
+        //this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
 
     async getCityData() {
@@ -187,7 +200,7 @@ export class City extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
-        console.log('at getCityData..'+ JSON.stringify(data.newBuildingsCost));
+        //console.log('at getCityData..'+ JSON.stringify(data.city));
         this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
 

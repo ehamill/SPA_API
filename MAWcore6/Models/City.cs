@@ -14,6 +14,11 @@
         public DateTime ResourcesLastUpdated { get; set; }
         public List<Building> Buildings { get; set; }
         //public UserResearch UserResearch { get; set; }
+        public DateTime? Construction1Started { get; set; }
+        public DateTime? Construction1Ends { get; set; }
+        public int Construction1BuildingId { get; set; } = 0;
+        public bool Builder1Busy { get; set; } = false;
+        public int Builder1Time { get; set; } = 0;
 
 
     }
