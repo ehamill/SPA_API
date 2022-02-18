@@ -23,9 +23,10 @@ export class Building extends Component {
 
         return (
             <Button color="success">
-                <div onClick={this.props.onClick}>
+                <div onClick={this.props.onBuildingClick}>
                     Type: {this.props.b.type}
-                    Level: {this.props.b.level}
+                    Level: {this.props.b.level}<br/>
+                    Img: {this.props.b.image}
                 </div>
             </Button>
         );

@@ -26,7 +26,7 @@ namespace MAWcore6.Controllers
             db = _db;
             _userManager = userManager;
         }
-        //localhost:33999/City
+
         [HttpGet]
         public async Task<JsonResult> Get()
         { 
@@ -37,67 +37,42 @@ namespace MAWcore6.Controllers
             UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
             UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
             List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+
+            //await CheckBuilder1(UserCity);
+            if (UserCity.Builder1Busy) {
+                await CheckBuilder1(UserCity);
+            }
             //GetUpgradeBuildings..only need one for each, can calculate costs off of it
 
             return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
         }
 
+        public async Task CheckBuilder1(City userCity) {
+            DateTime TimeNow = DateTime.UtcNow;
+            DateTime ConstructionEnds = userCity.Construction1Ends;
+            //now > ends gives positive
+            //var diff = Convert.ToInt32(Math.Floor((now - ends).TotalSeconds));
 
-        //works with fetch "city/Fucker" ... city has to be lower case..hmm
-        //[HttpGet("Fucker")]
-        //public async Task<JsonResult> Fucker()
-        //{
-        //    string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var u = await _userManager.FindByIdAsync(UserId);
+            ////ends > now = negative number
+            //ends = DateTime.UtcNow.AddMinutes(5);
+            //var diff2 = Convert.ToInt32(Math.Floor((now - ends).TotalSeconds));
 
-        //    City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
-        //    UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-        //    UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-        //    List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
-        //    //GetUpgradeBuildings..only need one for each, can calculate costs off of it
-
-        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
-        //}
-
-        //Method POST ... city/Fucker
-        //[HttpPost("Fucker")]
-        //public async Task<JsonResult> Fucker()
-        //{
-        //    string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var u = await _userManager.FindByIdAsync(UserId);
-
-        //    City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
-        //    UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-        //    UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-        //    List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
-        //    //GetUpgradeBuildings..only need one for each, can calculate costs off of it
-
-        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
-        //}
-
-
-        public class test
-        {
-            public int id2 { get; set; }
-            public string fuck { get; set; }
+            if (TimeNow >= ConstructionEnds)
+            {
+                userCity.Builder1Busy = false;
+                var b = userCity.Buildings.Where(c => c.BuildingId == userCity.Construction1BuildingId).FirstOrDefault();
+                b.Level = userCity.Construction1BuildingLevel;
+                b.Image = b.BuildingType.ToString() + "lvl" + b.Level +".jpg";
+                //b.BuildingType = userCity.
+            }
+            else {
+                userCity.Builder1Busy = true;
+                userCity.Builder1Time = Convert.ToInt32(Math.Floor((ConstructionEnds - TimeNow).TotalSeconds));
+            }
+            await db.SaveChangesAsync();
         }
 
-        [HttpPost("Fucker")]
-        //[Route("Fucker")]
-        public async Task<JsonResult> Fucker55([FromBody] test tt)
-        {
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var u = await _userManager.FindByIdAsync(UserId);
-
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == tt.id2).FirstOrDefaultAsync();
-            //City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
-            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
-            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
-
-            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
-        }
+        
 
         public class UpdateCityModel
         {
@@ -178,20 +153,21 @@ namespace MAWcore6.Controllers
         [HttpPost("UpdateCity")]
         public async Task<JsonResult> UpdateCity([FromBody] UpdateCityModel update)
         {
-
             var message = "ok";
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var u = await _userManager.FindByIdAsync(UserId);
 
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync();
-            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
+            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
 
             //Check if builders busy ..
+            await CheckBuilder1(UserCity);
+
             string TestingResult = CheckIfPreReqMet(UserCity, update);
             if (TestingResult != "ok")
             {
                 message = TestingResult;
-                return new JsonResult(new { data = message });
+                return new JsonResult(new { message = message });
             }
 
             BuildingCost BuildingCost= GetCostOfBuilding(update, UserResearch);
@@ -199,15 +175,92 @@ namespace MAWcore6.Controllers
             //Check if user has enough resources ..
             await RemoveResourcesAndUpdateConstructionFromCity(UserCity, update, BuildingCost);
             
-            
             List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(UserResearch);
             //GetUpgradeBuildings..only need one for each, can calculate costs off of it
 
             return new JsonResult(new { message = message, city = UserCity, });
         }
 
+
+        //var speedUpModel = { speedUp5min: 1,  : "builder1" };
+
+        public class SpeedUpModel
+        {
+            public int cityId { get; set; }
+            public bool speedUp5min { get; set; }
+            public string usedOn { get; set; }
+        }
+
+        [HttpPost("SpeedUpUsed")]
+        public async Task<JsonResult> SpeedUpUsed([FromBody] SpeedUpModel model)
+        {
+            var message = "ok";
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var u = await _userManager.FindByIdAsync(UserId);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == model.cityId).FirstOrDefaultAsync() ?? new City();
+            //UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
+            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserItems();
+
+            if (model.usedOn == "builder1") {
+                if (model.speedUp5min) {
+                    UserCity.Construction1Ends.AddMinutes(-5);
+                    UserItems.FiveMinuteSpeedups--;
+                }
+                
+            }
+            await db.SaveChangesAsync();
+
+            //Check if builders busy ..
+            await CheckBuilder1(UserCity);
+            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+            return new JsonResult(new { message = message, city = UserCity, });
+        }
+
+        public BuildingType GetBuildingType(string name) {
+            BuildingType result = new BuildingType();
+            if (name.ToLower().Contains("academy"))
+            {
+                return BuildingType.Academy;
+            }
+            else if (name.ToLower().Contains("beacon"))
+            {
+                return BuildingType.Beacon_Tower;
+            }
+            else if (name.ToLower().Contains("barrack"))
+            {
+                return BuildingType.Barrack;
+            }
+            else if (name.ToLower().Contains("cottage")) {
+                return BuildingType.Cottage;
+            }
+            else if (name.ToLower().Contains("empty"))
+            {
+                return BuildingType.Empty;
+            }
+            else if (name.ToLower().Contains("inn"))
+            {
+                return BuildingType.Inn;
+            }
+            else if (name.ToLower().Contains("rally"))
+            {
+                return BuildingType.Rally_Spot;
+            }
+            else if (name.ToLower().Contains("town"))
+            {
+                return BuildingType.Towh_Hall;
+            }
+
+
+
+            return result;
+        }
+
         private async Task RemoveResourcesAndUpdateConstructionFromCity(City UserCity, UpdateCityModel update, BuildingCost BuildingCost) {
             //bool ret = true;
+
+            BuildingType buildingType = GetBuildingType(update.buildingType);
 
             UserCity.Food = UserCity.Food - BuildingCost.food;
             UserCity.Stone = UserCity.Stone - BuildingCost.stone;
@@ -217,10 +270,11 @@ namespace MAWcore6.Controllers
             UserCity.Construction1Started = DateTime.UtcNow;
             UserCity.Construction1Ends = DateTime.UtcNow.AddSeconds(BuildingCost.time);
             UserCity.Construction1BuildingId = update.buildingId;
+            UserCity.Construction1BuildingLevel = update.level;
 
             UserCity.Builder1Busy = true;
             UserCity.Builder1Time = BuildingCost.time;
-
+            UserCity.BuildingWhat = buildingType.ToString();
 
             await db.SaveChangesAsync();
             
@@ -334,11 +388,36 @@ namespace MAWcore6.Controllers
             return City;
         }
 
+        //public class test
+        //{
+        //    public int id2 { get; set; }
+        //    public string fuck { get; set; }
+        //}
+
+        //[HttpPost("Fucker")]
+        ////[Route("Fucker")]
+        //public async Task<JsonResult> Fucker55([FromBody] test tt)
+        //{
+        //    string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var u = await _userManager.FindByIdAsync(UserId);
+
+        //    City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == tt.id2).FirstOrDefaultAsync();
+        //    //City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+        //    UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+        //    UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+        //    List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+        //    //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+        //}
+
+
+
         #region Constants
-//int BaseResRate = 100;
+        //int BaseResRate = 100;
 
         #region Farms
-        
+
         string FarmPrereq = " ";
         int FarmFoodReq = 50;// FoodReq = FarmFoodReq * 2^(nextLevel -1) 
         int FarmStoneReq = 200;

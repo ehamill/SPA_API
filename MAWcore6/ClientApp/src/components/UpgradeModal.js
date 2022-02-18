@@ -6,7 +6,10 @@ export class UpgradeModal extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            activeBuildingId : this.props.activeBuildingId,
+            //city: this.props.city,
+        };
 
         this.getMaximumTroops = this.getMaximumTroops.bind(this);
         this.handleTroopQtyChange = this.handleTroopQtyChange.bind(this);
@@ -73,33 +76,50 @@ export class UpgradeModal extends Component {
             return (m + "m " + s + "s");
         }
     }
-    componentDidMount() { }
+    componentDidMount() {
+        //if (this.props.activeBuildingId == -1) {
+        //    console.log('is equal to -1')
+        //    this.setState({
+        //        //city.buildings: buildings,
+        //        activeBuildingId : this.props.city.buildings[0].buildingId,
+        //    });
+        //}
+        //this.setState({
+        //    activeBuildingId: 55,
+        //});
+        //console.log('upgrade modal compdidmount,  activeBuildingId:' + this.state.activeBuildingId);
+    }
 
     componentWillUnmount() { }
 
     render() {
-        //const showModal = {this.props.modal};
-        const className = "jlsaldfjl";
-        const toggle = "";
-        //const [modal, setModal] = useState(false);
-        //const toggle = () => setModal(!modal);
+        //const showModal = this.props.modal;
+        //const className = "jlsaldfjl";
+        //const toggle = "";
+        const city = this.props.city;
+        const activeBuilding = city.buildings.find((x) => x.buildingId === this.props.activeBuildingId);
+        //console.log('active: ' + this.props.activeBuildingId+'testing ...' + JSON.stringify(city));
+
         return (
-            <Modal isOpen={this.props.showModal} >
+            <Modal isOpen={this.props.showUpgradeModal} >
                 <ModalHeader >Upgrading</ModalHeader>
                 <ModalBody>
-                    <div className="row">
+                    <div>
+                        Upgrading {activeBuilding.image} at {activeBuilding.location} builidingID {this.props.activeBuildingId }
+                    </div>
+                    <div className="row" hidden>
                         <div className="col-md-6">
                             On left show a list of troops in training. On Right Show all troops..use cards. each one has a recruit button.
                             On click shows archer pic with his stats..range population used
                             speed, defence, etc.
                         </div>
-                        <div className="col-md-6"></div>
+                        <div className="col-md-6" hidden></div>
                         On left show a list of troops in training. On Right Show all troops..use cards. each one has a recruit button.
                         On click shows archer pic with his stats..range population used
                         speed, defence, etc.
                     </div>
 
-                    <div >
+                    <div hidden>
                         On barracks click have a make troops button.
                         Have a modal pop up. On left show a list of troops in training. On Right Show all troops..use cards. each one has a recruit button.
                         On click shows archer pic with his stats..range population used
@@ -108,7 +128,7 @@ export class UpgradeModal extends Component {
                         You own: 22 arch        input number  button Train below this Duration
                         Also limited by Populatioin
                     </div>
-                    <table >
+                    <table hidden>
                         <tr>
                             <th> Required</th>
                             <th> Needed</th>

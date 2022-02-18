@@ -12,7 +12,11 @@ export class BuildingTimer extends Component {
             seconds: this.props.time,
             //visible: " hidden ",
             isHidden: this.props.isHidden,
-            width: "100%"
+            width: "100%",
+            buildType: this.props.buildWhat,
+            location: this.props.location,
+            level: this.props.level,
+            
         };
         this.timer = 0;
         this.startTimer = this.startTimer.bind(this);
@@ -40,7 +44,10 @@ export class BuildingTimer extends Component {
     componentDidMount() {
         //console.log('seconds: ' + this.state.seconds);
         let timeLeftVar = this.secondsToTime(this.state.seconds);
-        this.setState({ time: timeLeftVar, isHidden: false });
+        this.setState({
+            time: timeLeftVar,
+            isHidden: false,
+        });
         this.startTimer();
     }
     startTimer() {
@@ -60,19 +67,23 @@ export class BuildingTimer extends Component {
         // Check if we're at zero.
         if (seconds <= 0) {
             clearInterval(this.timer);
-            this.setState({ isHidden: true });
-            //this.props.hideTimer();
+            this.setState({
+                isHidden: true,
+            });
+            this.props.buildingDone(this.state.location, this.state.buildType, this.state.level );
         }
     }
 
     speedUp() {
         //console.log('seconds: ' + this.state.seconds);
+        this.props.speedUpClick();
         let secs = this.state.seconds - 30;
         if (secs <= 0) {
             this.setState({
                 seconds: 0,
-                isHidden: true
+                isHidden: true,
             });
+            this.props.buildingDone(this.state.location, this.state.buildType, this.state.level);
         } else {
             this.setState({
                 seconds: secs

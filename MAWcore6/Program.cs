@@ -29,6 +29,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 6;
+
     //options.Password.RequiredUniqueChars = 1;
 
     // Lockout settings.
@@ -40,9 +41,19 @@ builder.Services.Configure<IdentityOptions>(options =>
     //options.User.AllowedUserNameCharacters =
     //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     //options.User.RequireUniqueEmail = false;
+
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(500);
 
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
 
 builder.Services.AddIdentityServer()
     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
