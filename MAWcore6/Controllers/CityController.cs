@@ -56,17 +56,24 @@ namespace MAWcore6.Controllers
             ////ends > now = negative number
             //ends = DateTime.UtcNow.AddMinutes(5);
             //var diff2 = Convert.ToInt32(Math.Floor((now - ends).TotalSeconds));
-
-            if (TimeNow >= ConstructionEnds)
+            if (userCity.Builder1Busy == false) {
+                return;
+            }
+            //Can be busy in number of ways:
+            // 1. Click build a building, and Construction has not ended yet. recalculate time.
+            // 2. Building was done a long time ago. TimeNow > ConstructionEnds
+            if (TimeNow >= ConstructionEnds && userCity.Construction1BuildingId != -1)
             {
                 userCity.Builder1Busy = false;
+                
                 var b = userCity.Buildings.Where(c => c.BuildingId == userCity.Construction1BuildingId).FirstOrDefault();
                 b.Level = userCity.Construction1BuildingLevel;
-                b.Image = b.BuildingType.ToString() + "lvl" + b.Level +".jpg";
-                //b.BuildingType = userCity.
+                BuildingType BuildingType = GetBuildingType(userCity.BuildingWhat);
+                b.Image = BuildingType.ToString() + "lvl" + b.Level +".jpg";
+                userCity.Construction1BuildingId = -1; //Building Complete.
+                userCity.Construction1BuildingLevel = -1;
             }
             else {
-                userCity.Builder1Busy = true;
                 userCity.Builder1Time = Convert.ToInt32(Math.Floor((ConstructionEnds - TimeNow).TotalSeconds));
             }
             await db.SaveChangesAsync();
@@ -215,7 +222,7 @@ namespace MAWcore6.Controllers
             await CheckBuilder1(UserCity);
             //GetUpgradeBuildings..only need one for each, can calculate costs off of it
 
-            return new JsonResult(new { message = message, city = UserCity, });
+            return new JsonResult(new { message = message, city = UserCity });
         }
 
         public BuildingType GetBuildingType(string name) {
@@ -275,6 +282,13 @@ namespace MAWcore6.Controllers
             UserCity.Builder1Busy = true;
             UserCity.Builder1Time = BuildingCost.time;
             UserCity.BuildingWhat = buildingType.ToString();
+
+            var b = UserCity.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
+            string upgrading = "upgrading";
+            if (update.level - b.Level < 0) {
+                upgrading = "downgrading";
+            }
+            b.Image = upgrading + buildingType.ToString() +"lvl"+ update.level;
 
             await db.SaveChangesAsync();
             
@@ -385,6 +399,9 @@ namespace MAWcore6.Controllers
                 //City.Iron += City.IronRate * mins / 60;
                 City.ResourcesLastUpdated = Now;
             }
+
+            await db.SaveChangesAsync();
+
             return City;
         }
 

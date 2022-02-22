@@ -33,18 +33,18 @@ export class AddBuildingModal extends Component {
 
     render() {
         const className = "jlsaldfjl";
-        const toggle = "";
+        //const toggle = "";
         const buildings = this.props.newBuildings;
 
         return (
               <Modal
         isOpen={this.props.showModal}
-        toggle={toggle}
+        //toggle={toggle}
         className={className}
       >
         <ModalBody>
         {buildings.map((b) =>
-          <Card>
+            <Card key={ b.type}>
           <CardImg top width="100%" src="/assets/318x180.svg" alt={b.type} />
           <CardBody>
             <CardTitle tag="h5">{b.type}</CardTitle>

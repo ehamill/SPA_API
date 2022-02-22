@@ -25,7 +25,7 @@
         public int Construction1BuildingLevel { get; set; } = 0;
         public bool Builder1Busy { get; set; } = false;
         public int Builder1Time { get; set; } = 0;
-        public string BuildingWhat { get; set; }
+        public string? BuildingWhat { get; set; }
 
 
     }

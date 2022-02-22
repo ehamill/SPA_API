@@ -78,23 +78,23 @@ export class City extends Component {
         let buildingId = e.target.dataset.building_id;
         //let slot = e.target.dataset.active_slot;
         //console.log('handleClickBuildWhat  ... buildingid:  ' + buildingId + '  buildingtype: '+ type);
-        var newCity = this.state.city;
-        let b = newCity.buildings.find((x) => x.buildingId == buildingId);
+        //var newCity = this.state.city;
+        //let b = newCity.buildings.find((x) => x.buildingId == buildingId);
         //console.log("b: " + JSON.stringify(b));
-        b.image = "Upgrading" + type + ".jpg";
+        //b.image = "Upgrading" + type + ".jpg";
         this.setState({
             buildWhat: type, //gets passed to timer
             buildLevel: level, //gets passed to timer
             showModal: false,
             //showBuilding1Timer: true,
             //build1Time: time,
-            city: newCity,
+            //city: newCity,
         });
         this.updateCityData(buildingId, type, level);
     }
 
     buildingDone(location, type, level) {
-        //console.log("building done at loc: " + location + " type:" + type + " lvL: " + level);
+        console.log("building done at loc: " + location + " type:" + type + " lvL: " + level);
         var newCity = this.state.city;
         var b = newCity.buildings.find((x) => x.location == location);
         b.buildingType = type;
@@ -194,7 +194,7 @@ export class City extends Component {
 
     async speedUpUsed() {
 
-        // console.log('at update city data..');
+        console.log('at speedup used ..cityid: ' + this.state.city.cityId);
         var speedUpModel = { cityId: this.state.city.cityId, speedUp5min: true, usedOn : "builder1" };
         //console.log('updateModel: ' + JSON.stringify(updateModel));
         const token = await authService.getAccessToken();
@@ -249,7 +249,7 @@ export class City extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
-        console.log('at getCityData..loading city: '+ JSON.stringify(data.city));
+        //console.log('at getCityData..loading city: '+ JSON.stringify(data.city));
         this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
 
