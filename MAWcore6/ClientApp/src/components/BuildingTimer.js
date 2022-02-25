@@ -42,7 +42,8 @@ export class BuildingTimer extends Component {
     }
 
     componentDidMount() {
-        //console.log('seconds: ' + this.state.seconds);
+        //console.log('building timer mount => timeSent: ' + this.props.time + ' buildWhat: '
+        //    + this.props.buildWhat + ' location: ' + this.props.location+ ' level: '+this.props.level);
         let timeLeftVar = this.secondsToTime(this.state.seconds);
         this.setState({
             time: timeLeftVar,
@@ -89,8 +90,6 @@ export class BuildingTimer extends Component {
                 seconds: secs
             });
         }
-
-        
     }
 
     render() {

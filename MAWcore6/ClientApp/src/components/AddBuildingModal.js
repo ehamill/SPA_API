@@ -61,11 +61,6 @@ export class AddBuildingModal extends Component {
             </CardText>
                     <Button color="primary"
                         data-building_type={ b.type}
-                        data-time={b.time}
-                        data-food_cost={b.food}
-                        data-stoneCost={b.stone}
-                        data-woodCost={b.wood}
-                        data-active_slot={this.props.activeSlot}
                         data-level="1"
                         data-building_id={this.props.activeBuildingId}
                         onClick={this.props.handleClickBuildWhat}>Build</Button>

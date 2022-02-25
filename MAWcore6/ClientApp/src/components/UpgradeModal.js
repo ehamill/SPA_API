@@ -7,7 +7,7 @@ export class UpgradeModal extends Component {
         super(props);
 
         this.state = {
-            activeBuildingId : this.props.activeBuildingId,
+            //activeBuildingId : this.props.activeBuildingId,
             //city: this.props.city,
         };
 
@@ -19,6 +19,7 @@ export class UpgradeModal extends Component {
         this.WarrIronCost = 50;
         this.WarrTimeCost = 25;
         this.WarrPopCost = 1;
+        //this.upgradeBuildingClick = this.upgradeBuildingClick.bind(this);
     }
 
     handleTroopQtyChange(e) {
@@ -77,35 +78,80 @@ export class UpgradeModal extends Component {
         }
     }
     componentDidMount() {
-        //if (this.props.activeBuildingId == -1) {
-        //    console.log('is equal to -1')
-        //    this.setState({
-        //        //city.buildings: buildings,
-        //        activeBuildingId : this.props.city.buildings[0].buildingId,
-        //    });
-        //}
-        //this.setState({
-        //    activeBuildingId: 55,
-        //});
-        //console.log('upgrade modal compdidmount,  activeBuildingId:' + this.state.activeBuildingId);
+       // console.log('upgrade modal mounted ...');
     }
 
     componentWillUnmount() { }
 
+    GetBuildingType(id) {
+        switch (id) {
+            case 0:
+                return "Empty";
+            case 1:
+                return "Academy";
+            case 2:
+                return "Barrack";
+            case 3:
+                return "Beacon_Tower";
+            case 4:
+                return "Cottage";
+            case 5:
+                return "Embassy";
+            case 6:
+                return "Feasting_Hall";
+            case 7:
+                return "Forge";
+            case 8:
+                return "Inn";
+            case 9:
+                return "Marketplace";
+
+            default:
+                return "Error";
+        }
+        
+            //Rally_Spot = 10,
+            //Relief_Station = 11,
+            //Stable = 12,
+            //Town_Hall = 13,
+            //Warehouse = 14,
+            //Workshop = 15,
+            //Farm = 16,
+            //Iron_Mill = 17,
+            //Sawmill = 18,
+            //Iron_Mine = 19,
+            //Quarry = 20,
+            //Not_Found = 21,
+        
+    }
+    
     render() {
-        //const showModal = this.props.modal;
-        //const className = "jlsaldfjl";
-        //const toggle = "";
         const city = this.props.city;
-        const activeBuilding = city.buildings.find((x) => x.buildingId === this.props.activeBuildingId);
+        const activeBuildingId = this.props.activeBuildingId;
+        const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
+        const buildingLevel = activeBuilding.level;
+        const upgradeLevel = activeBuilding.level + 1;
+        const demoLevel = activeBuilding.level - 1;
+        const buildingType = this.GetBuildingType(activeBuilding.buildingType);
+        const nextBuildingType = (demoLevel == 0) ? "empty" : buildingType;
+        
         //console.log('active: ' + this.props.activeBuildingId+'testing ...' + JSON.stringify(city));
 
         return (
             <Modal isOpen={this.props.showUpgradeModal} >
-                <ModalHeader >Upgrading</ModalHeader>
+                <ModalHeader >{buildingType} Level {buildingLevel }</ModalHeader>
                 <ModalBody>
                     <div>
-                        Upgrading {activeBuilding.image} at {activeBuilding.location} builidingID {this.props.activeBuildingId }
+                        Upgrading {activeBuilding.image} at {activeBuilding.location} builidingID {activeBuildingId}
+                        Building Type: {buildingType}
+                    </div>
+                    <div>
+                        <Button onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, upgradeLevel)} >
+                            Upgrade
+                        </Button>
+                        <Button onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, demoLevel)} >
+                            Demo
+                        </Button>
                     </div>
                     <div className="row" hidden>
                         <div className="col-md-6">
@@ -129,26 +175,28 @@ export class UpgradeModal extends Component {
                         Also limited by Populatioin
                     </div>
                     <table hidden>
-                        <tr>
-                            <th> Required</th>
-                            <th> Needed</th>
-                            <th> You Own </th>
-                        </tr>
-                        <tr>
-                            <th>Food </th>
-                            <th>{this.state.foodNeeded}</th>
-                            <th>{this.props.food} </th>
-                        </tr>
-                        <tr>
-                            <th>Wood </th>
-                            <th>{this.state.woodNeeded}</th>
-                            <th>{this.props.wood} </th>
-                        </tr>
-                        <tr>
-                            <th>Iron </th>
-                            <th>{this.state.ironNeeded}</th>
-                            <th>{this.props.iron} </th>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <th> Required</th>
+                                <th> Needed</th>
+                                <th> You Own </th>
+                            </tr>
+                            <tr>
+                                <th>Food </th>
+                                <th>{this.state.foodNeeded}</th>
+                                <th>{this.props.food} </th>
+                            </tr>
+                            <tr>
+                                <th>Wood </th>
+                                <th>{this.state.woodNeeded}</th>
+                                <th>{this.props.wood} </th>
+                            </tr>
+                            <tr>
+                                <th>Iron </th>
+                                <th>{this.state.ironNeeded}</th>
+                                <th>{this.props.iron} </th>
+                                </tr>
+                        </tbody>
                     </table>
                     <div>
                         You have {this.props.activeTroop}
