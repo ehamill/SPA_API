@@ -86,7 +86,11 @@ export class City extends Component {
             showUpgradeModal: !prevState.showUpgradeModal
         }));
     };
-
+    toggleAddBuildingModal = () => {
+        this.setState(prevState => ({
+            showModal: !prevState.showModal
+        }));
+    };
     closeTownHallModal() {
         this.setState({ showTownHallModal: false });
     }
@@ -218,12 +222,13 @@ export class City extends Component {
                   activeSlot={this.state.activeSlot}
                   activeBuildingId={this.state.activeBuildingId}
                   handleClickBuildWhat={this.handleClickBuildWhat}
-                  food={this.state.food}
-                  wood={this.state.wood}
-                  stone={this.state.stone}
-                  iron={this.state.iron}
-                  showModal={this.state.showModal} closeModal={this.closeModal} />
-
+                  food={this.state.city.food}
+                  wood={this.state.city.wood}
+                  stone={this.state.city.stone}
+                  iron={this.state.city.iron}
+                  showModal={this.state.showModal} closeModal={this.closeModal}
+                  toggleAddBuildingModal={this.toggleAddBuildingModal}
+              />
 
                <UpgradeModal
                   handleClickUpgradeBuilding={this.handleClickBuildWhat}
@@ -388,8 +393,9 @@ export class City extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
+        console.log('at getCityData..loading city: ' + JSON.stringify(data.newBuildingsCost));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
-        console.log('at getCityData..loading city: ' + JSON.stringify(data.city.buildings[0]));
+        //console.log('at getCityData..loading city: ' + JSON.stringify(data.city.buildings[0]));
         this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
     

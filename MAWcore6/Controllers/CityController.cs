@@ -36,7 +36,7 @@ namespace MAWcore6.Controllers
             City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
             UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
             UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
+            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(UserCity, userResearch);
 
             //await CheckBuilder1(UserCity);
             if (UserCity.Builder1Busy) {
@@ -152,9 +152,11 @@ namespace MAWcore6.Controllers
                 level++;
             }
             BuildingCost bc = new BuildingCost();
-            switch (update.buildingType)
+
+            BuildingType BuildingType = GetBuildingType(update.buildingType);
+            switch (BuildingType)
             {
-                case "Acedemy":
+                case BuildingType.Academy:
                     bc.type = BuildingType.Academy.ToString(); ;
                     bc.food = AcademyFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = AcademyStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -163,7 +165,7 @@ namespace MAWcore6.Controllers
                     bc.time = AcademyTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
 
-                case "Barrack":
+                case BuildingType.Barrack:
                     bc.type = BuildingType.Barrack.ToString(); ;
                     bc.food = BarrFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = BarrStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -171,7 +173,7 @@ namespace MAWcore6.Controllers
                     bc.iron = BarrIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.time = BarrTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
-                case "Cottage":
+                case BuildingType.Cottage:
                     bc.type = BuildingType.Cottage.ToString(); 
                     bc.food = CottFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = CottStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -179,15 +181,23 @@ namespace MAWcore6.Controllers
                     bc.iron = CottIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.time = CottTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
-                case "Feasting Hall":
-                    bc.type = BuildingType.Feasting_Hall.ToString(); ;
+                case BuildingType.Feasting_Hall:
+                    bc.type = BuildingType.Feasting_Hall.ToString().Replace("_"," "); 
                     bc.food = FeastFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = FeastStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = FeastWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.iron = FeastIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.time = FeastTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
-                case "Inn":
+                case BuildingType.Forge:
+                    bc.type = BuildingType.Forge.ToString(); ;
+                    bc.food = ForgeFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.stone = ForgeStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.wood = ForgeWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.iron = ForgeIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.time = ForgeTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    break;
+                case BuildingType.Inn:
                     bc.type = BuildingType.Inn.ToString(); ;
                     bc.food = InnFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = InnStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -195,7 +205,7 @@ namespace MAWcore6.Controllers
                     bc.iron = InnIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.time = InnTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
-                case "Town Hall":
+                case BuildingType.Town_Hall:
                     bc.type = BuildingType.Town_Hall.ToString(); ;
                     bc.food = ThFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = ThStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -212,7 +222,7 @@ namespace MAWcore6.Controllers
         
         private string CheckIfPreReqMet(City city, UpdateCityModel update) {
             string res =  "ok";
-            var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
+            //var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
             BuildingType buildingType = GetBuildingType(update.buildingType);
             //No building can be more than one level greater than th.
             var th = city.Buildings.Where(c => c.BuildingType == BuildingType.Town_Hall).FirstOrDefault();
@@ -238,17 +248,27 @@ namespace MAWcore6.Controllers
                 if (cottageLvl2 == null) {
                     res = "Must build a Cottage to level 2.";
                 }
-            }else if (buildingType == BuildingType.Walls)
+            }
+            else if (buildingType == BuildingType.Town_Hall)
+            {
+                //Req quary lvl2 and forge lvl1
+                int wallsLevel = city.Buildings.Where(c => c.BuildingType == BuildingType.Walls).Select(c => c.Level).FirstOrDefault();
+                if (th.Level - wallsLevel >= 2)
+                {
+                    res = "Must upgrade walls first.";
+                }
+            } else if (buildingType == BuildingType.Walls)
             {
                 //Req quary lvl2 and forge lvl1
                 int highestLvlQuarry = city.Buildings.Where(c => c.BuildingType == BuildingType.Quarry).Max(c => c.Level);
                 int forgeCount = city.Buildings.Where(c => c.BuildingType == BuildingType.Forge).Count();
                 if (highestLvlQuarry < 2)
                 {
-                    res = "Requires Quarry level 2.";
-                } else if (forgeCount == 0)
+                    res += "Requires Quarry level 2. ";
+                } 
+                if (forgeCount == 0)
                 {
-                    res = "Requires Forge level 1.";
+                    res += "Requires Forge level 1.";
                 }
             }
             return res;
@@ -294,7 +314,7 @@ namespace MAWcore6.Controllers
             //Check if user has enough resources ..
             await RemoveResourcesAndUpdateConstructionFromCity(UserCity, update, BuildingCost);
             
-            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(UserResearch);
+            List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(UserCity, UserResearch);
             //GetUpgradeBuildings..only need one for each, can calculate costs off of it
 
             return new JsonResult(new { message = message, city = UserCity, });
@@ -466,35 +486,44 @@ namespace MAWcore6.Controllers
             return NewCity;
         }
 
-        public List<BuildingCost> GetBuildingsCost(UserResearch UserResearch)
+        public List<BuildingCost> GetBuildingsCost(City userCity ,UserResearch UserResearch)
         {
             List<BuildingCost> lbc = new List<BuildingCost>();
-            BuildingCost cott = new BuildingCost()
-            {
-                type = BuildingType.Cottage.ToString(),
-                preReq = "",
-               food = CottFoodReq,
-               stone = CottStoneReq,
-               wood = CottWoodReq,
-               iron = CottIronReq,
-               time = CottTimeReq,
+            
+            UpdateCityModel update = new UpdateCityModel() { 
+                buildingType = "Academy"
             };
-            lbc.Add(cott);
-            BuildingCost inn = new BuildingCost()
+            string TestingResult = CheckIfPreReqMet(userCity, update);
+            bool requirementsMet = true;
+            if (TestingResult != "ok") {
+                requirementsMet = false;
+            }
+            BuildingCost Academy = new BuildingCost()
             {
-                type = BuildingType.Inn.ToString(),
-                preReq = InnPrereq,
-                food = InnFoodReq,
-                stone = InnStoneReq,
-                wood = InnWoodReq,
-                iron = InnIronReq,
-                time = InnTimeReq,
+                type = BuildingType.Academy.ToString().Replace("_", " "),
+                preReq = TestingResult,
+                reqMet = requirementsMet,
+                food = AcademyFoodReq,
+                stone = AcademyStoneReq,
+                wood = AcademyWoodReq,
+                iron = AcademyIronReq,
+                time = AcademyTimeReq,
             };
-            lbc.Add(inn);
+            lbc.Add(Academy);
+
+            update.buildingType = "Barrack";
+            TestingResult = CheckIfPreReqMet(userCity, update);
+            requirementsMet = true;
+            if (TestingResult != "ok")
+            {
+                requirementsMet = false;
+            }
+
             BuildingCost barr = new BuildingCost()
             {
                 type = BuildingType.Barrack.ToString(),
-                preReq = BarrPrereq,
+                preReq = TestingResult,
+                reqMet = requirementsMet,
                 food = BarrFoodReq,
                 stone = BarrStoneReq,
                 wood = BarrWoodReq,
@@ -502,6 +531,93 @@ namespace MAWcore6.Controllers
                 time = BarrTimeReq,
             };
             lbc.Add(barr);
+
+            update.buildingType = "Cottage";
+            TestingResult = CheckIfPreReqMet(userCity, update);
+            requirementsMet = true;
+            if (TestingResult != "ok")
+            {
+                requirementsMet = false;
+            }
+
+            BuildingCost cott = new BuildingCost()
+            {
+                type = BuildingType.Cottage.ToString(),
+                preReq = TestingResult,
+                reqMet = requirementsMet,
+                food = CottFoodReq,
+               stone = CottStoneReq,
+               wood = CottWoodReq,
+               iron = CottIronReq,
+               time = CottTimeReq,
+            };
+            lbc.Add(cott);
+
+            update.buildingType = "Feasting";
+            TestingResult = CheckIfPreReqMet(userCity, update);
+            requirementsMet = true;
+            if (TestingResult != "ok")
+            {
+                requirementsMet = false;
+            }
+            BuildingCost Feast = new BuildingCost()
+            {
+                type = BuildingType.Feasting_Hall.ToString().Replace("_"," "),
+                preReq = TestingResult,
+                reqMet = requirementsMet,
+                food = FeastFoodReq,
+                stone = FeastStoneReq,
+                wood = FeastWoodReq,
+                iron = FeastIronReq,
+                time = FeastTimeReq,
+            };
+            lbc.Add(Feast);
+
+            update.buildingType = "Forge";
+            TestingResult = CheckIfPreReqMet(userCity, update);
+            requirementsMet = true;
+            if (TestingResult != "ok")
+            {
+                requirementsMet = false;
+            }
+            BuildingCost Forge = new BuildingCost()
+            {
+                type = BuildingType.Forge.ToString().Replace("_", " "),
+                preReq = TestingResult,
+                reqMet = requirementsMet,
+                food = ForgeFoodReq,
+                stone = ForgeStoneReq,
+                wood = ForgeWoodReq,
+                iron = ForgeIronReq,
+                time = ForgeTimeReq,
+            };
+            lbc.Add(Forge);
+
+            BuildingCost inn = new BuildingCost()
+            {
+                type = BuildingType.Inn.ToString(),
+                preReq = TestingResult,
+                reqMet = requirementsMet,
+                food = InnFoodReq,
+                stone = InnStoneReq,
+                wood = InnWoodReq,
+                iron = InnIronReq,
+                time = InnTimeReq,
+            };
+            lbc.Add(inn);
+            
+            BuildingCost rally = new BuildingCost()
+            {
+                type = BuildingType.Rally_Spot.ToString().Replace("_", " "),
+                preReq = TestingResult,
+                reqMet = requirementsMet,
+                food = RallyFoodReq,
+                stone = RallyStoneReq,
+                wood = RallyWoodReq,
+                iron = RallyIronReq,
+                time = RallyTimeReq,
+            };
+            lbc.Add(rally);
 
             return lbc;
 
@@ -808,6 +924,29 @@ int PikeFoodCost = 150;
         int ThIronReq = 200;
         int ThTimeReq = 30 * 60;
 
+//        Level Prerequisite    Food Lumber  Stone Iron    Costs Time  Valleys
+// allowed Resource
+// Fields
+//2		400	6,000	5,000	200	30m 00s	2	16
+//3	Walls Lv.1	800	12,000	10,000	500	1h 00m 00s	3	19
+//4*	Walls Lv.2	1,600	24,000	20,000	800	2h 00m 00s	4	22
+//city image ..lv1 to 3..no walls shown. lvl4 shows little walls, lvl 7 shows big walls, 10 bigger
+
+
+
+        //th quest rewards..
+//        Domain Expansion:Town Hall Upgrade
+//Level   Item Food    Lumber Stone   Iron
+//2	Primary Guidelines(1)  2,500	6,500	5,500	2,500
+//3		5,000	13,000	11,000	5,000
+//4		10,000	26,000	22,000	10,000
+//5		20,000	50,000	50,000	20,000
+//6		20,000	50,000	50,000	20,000
+//7		20,000	50,000	50,000	20,000
+//8		20,000	50,000	50,000	20,000
+//9		20,000	50,000	50,000	20,000
+//10	MichaelAngelo Script	20,000	50,000	50,000	20,000
+
         string AcademyPrereq = "Town Hall Level 2";
         int AcademyFoodReq= 120; //reward prim
         int AcademyStoneReq= 1500;
@@ -987,6 +1126,8 @@ int PikeFoodCost = 150;
 //Archer's Tower	3 Spaces	200	2,000	1,500	500	3m
 //Rolling log	4 Spaces	300	6,000	0	0	6m
 //Defensive Trebuchet	5 Spaces	600	0	8,000	0	10m
+
+
 
         #endregion
 

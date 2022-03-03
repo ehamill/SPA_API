@@ -46,8 +46,34 @@ export class TownHallModal extends Component {
                     
                 </ModalHeader>
                 <ModalBody>
-                            { }
+                    <div>
+                        Img
+                        <Button>Upgrade</Button> <Button className="float-right">Demo</Button>
+                    </div>
+                    <div>
+                        Loyalty = 100% with 0 tax rate. updates every 6 minutes.
+                    </div>
+                    <div>
+                    Overview - show all buildings and levels. Production rates. how much is made.
+                    </div>
+                    <div>Levy button -
+                        borrow resourses from city..decreases loyalty alot
+                    </div>
+                    <div>
+                        Comforting button - donate resources to increase loyalty.
 
+                    </div>
+                    <div>
+                        Valleys. show valleys occupied
+                    </div>
+                    <div>Adjust tax rate..
+
+                        Tax rate	30%	40%	50%	60%	70%
+                        Loyalty	70%	60%	50%	40%	30%
+                        Population	14,000	12,000	10,000	8,000	6,000
+                        Income	4,200	4,800	5,000	4800	4,200
+
+                    </div>
 
 
                 </ModalBody>

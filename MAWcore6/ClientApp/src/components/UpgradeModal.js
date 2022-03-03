@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+//import logo from './Images/Cottage.jpg' ;
 
 export class UpgradeModal extends Component {
     
@@ -127,7 +128,8 @@ export class UpgradeModal extends Component {
         
     }
     
-
+    
+    
     render() {
         const city = this.props.city;
         const activeBuildingId = this.props.activeBuildingId;
@@ -136,6 +138,8 @@ export class UpgradeModal extends Component {
         const upgradeLevel = activeBuilding.level + 1;
         const demoLevel = activeBuilding.level - 1;
         const buildingType = this.GetBuildingType(activeBuilding.buildingType);
+        const buildingImage = "Images/" + buildingType + ".jpg";
+        
         //const nextBuildingType = (demoLevel == 0) ? "empty" : buildingType;
         
         //console.log('active: ' + this.props.activeBuildingId+'testing ...' + JSON.stringify(city));
@@ -146,17 +150,31 @@ export class UpgradeModal extends Component {
             >
                 <ModalHeader >{buildingType} Level {buildingLevel }</ModalHeader>
                 <ModalBody>
-                    <div>
-                        Upgrading {activeBuilding.image} at {activeBuilding.location} builidingID {activeBuildingId}
-                        Building Type: {buildingType}
+                    
+                    <div className="row">
+                        <div className="col-md-2">
+                            <img src={buildingImage} alt={buildingImage}  width="55px"/>
+                        </div>
+                        <div className="col-md-8">
+                            <div>
+                                Upgrading {activeBuilding.image} at {activeBuilding.location} builidingID {activeBuildingId}
+                                Building Type: {buildingType} || activeBuilding.buildingType: {activeBuilding.buildingType}
+                            </div>
+                            <div>
+                                building.description - This building increases the population.
+                            </div>
+                        </div>
+                        <div className="col-md-2">
+                            <Button className="float-right mr-2 mb-2" onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, upgradeLevel)} >
+                                Upgrade
+                            </Button>
+                            <Button className="float-right mr-2" onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, demoLevel)} >
+                                Demo
+                            </Button>
+                        </div>
                     </div>
                     <div>
-                        <Button onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, upgradeLevel)} >
-                            Upgrade
-                        </Button>
-                        <Button onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, demoLevel)} >
-                            Demo
-                        </Button>
+                        {/*{activeBuilding.buildingType === 4 && <Cottage city={this.props.city} /> }*/}
                     </div>
                     <div className="row" hidden>
                         <div className="col-md-6">
@@ -226,5 +244,6 @@ export class UpgradeModal extends Component {
             </Modal>
         );
     }
-    
+
+
 }
