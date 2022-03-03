@@ -24,7 +24,8 @@
         Sawmill = 18,
         Iron_Mine = 19,
         Quarry = 20,
-        Not_Found = 21,
+        Walls = 21,
+        Not_Found = 50,
     }
 
 

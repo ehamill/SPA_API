@@ -11,7 +11,7 @@ export class BuildingTimer extends Component {
             time: {},
             seconds: this.props.time,
             //visible: " hidden ",
-            isHidden: this.props.isHidden,
+            //isHidden: this.props.isHidden,
             width: "100%",
             buildType: this.props.buildWhat,
             location: this.props.location,
@@ -42,12 +42,18 @@ export class BuildingTimer extends Component {
     }
 
     componentDidMount() {
-        //console.log('building timer mount => timeSent: ' + this.props.time + ' buildWhat: '
-        //    + this.props.buildWhat + ' location: ' + this.props.location+ ' level: '+this.props.level);
+        console.log('building timer mount => timeSent: ' + this.props.time + ' buildWhat: '
+            + this.props.buildWhat + ' location: ' + this.props.location+ ' level: '+this.props.level);
+        //if (this.props.builder1Busy) {
+        //    let timeLeftVar = this.secondsToTime(this.state.seconds);
+        //    this.setState({
+        //        time: timeLeftVar,
+        //    });
+        //    this.startTimer();
+        //}
         let timeLeftVar = this.secondsToTime(this.state.seconds);
         this.setState({
             time: timeLeftVar,
-            isHidden: false,
         });
         this.startTimer();
     }
@@ -69,20 +75,20 @@ export class BuildingTimer extends Component {
         if (seconds <= 0) {
             clearInterval(this.timer);
             this.setState({
-                isHidden: true,
+                //isHidden: true,
             });
-            this.props.buildingDone(this.state.location, this.state.buildType, this.state.level );
+            this.props.buildingDone( this.state.location, this.state.buildType, this.state.level );
         }
     }
 
     speedUp() {
-        //console.log('seconds: ' + this.state.seconds);
+        console.log('at speedUp: ' + this.state.seconds);
         this.props.speedUpClick();
         let secs = this.state.seconds - 30;
         if (secs <= 0) {
             this.setState({
                 seconds: 0,
-                isHidden: true,
+                //isHidden: true,
             });
             this.props.buildingDone(this.state.location, this.state.buildType, this.state.level);
         } else {
@@ -93,8 +99,10 @@ export class BuildingTimer extends Component {
     }
 
     render() {
+        const timerClassName = (this.props.builder1Busy) ? "" : "hidden";
+
         return (
-            <div id="buildingTime" hidden={this.state.isHidden }  className={" just-testing "}>
+            <div id="buildingTime" className={timerClassName}>
                 <div id="buildingProgress">
                     <span id="buildingWhat" className="buildingWhat">
                         {this.props.buildWhat} <ShowTime time={this.state.time} />{" "}
@@ -105,8 +113,9 @@ export class BuildingTimer extends Component {
                     <span id="upgradeTimer" className="upgradeTimer"></span>
                 </div>
                 <Button onClick={this.speedUp} className="speedUpBtn btn-success">
-                    SpeedUp
+                    SpeedUp 
                 </Button>
+                {this.props.builder1Busy.toString()}
             </div>
         );
     }

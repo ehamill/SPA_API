@@ -62,6 +62,10 @@ namespace MAWcore6.Controllers
                 userCity.Builder1Busy = false;
                 
                 var b = userCity.Buildings.Where(c => c.BuildingId == userCity.Construction1BuildingId).FirstOrDefault();
+                if (b.Level - userCity.Construction1BuildingLevel > 0) { 
+                    //downgrading.. add res
+                }
+
                 b.Level = userCity.Construction1BuildingLevel;
                 BuildingType BuildingType = GetBuildingType(userCity.BuildingWhat);
                 if (b.Level == 0) {
@@ -70,6 +74,7 @@ namespace MAWcore6.Controllers
                 b.Image = BuildingType.ToString() + "lvl" + b.Level +".jpg";
                 userCity.Construction1BuildingId = -1; //Building Complete.
                 userCity.Construction1BuildingLevel = -1;
+                userCity.Builder1Time = -1;
             }
             else {
                 userCity.Builder1Time = Convert.ToInt32(Math.Floor((ConstructionEnds - TimeNow).TotalSeconds));
@@ -77,19 +82,36 @@ namespace MAWcore6.Controllers
             await db.SaveChangesAsync();
         }
 
-        
-
         public class UpdateCityModel
         {
             public int cityId { get; set; }
             public int buildingId { get; set; }
             public string buildingType { get; set; }
             public int level { get; set; }
+            public int location { get; set; } = -1;
         }
 
-        private List<BuildingCost> GetCostOfTroops(UserResearch userResearch) { 
+        public class TroopPreReqCheck { 
+            public string buildingType { get; set; }
+            public bool reqMet { get; set; }
+        }
+
+        private List<BuildingCost> GetCostOfTroops(City userCity, UserResearch userResearch) { 
             var cost = new List<BuildingCost>();
 
+            var worker = new BuildingCost()
+            {
+                type = TroopType.Worker.ToString(),
+                preReq = WorkerBuildReq,
+                reqMet = false,
+                food = WorkerFoodCost,
+                stone = 0,
+                wood = WorkerWoodCost,
+                iron = WorkerIronCost,
+                time = WorkerTimeCost,
+            };
+            cost.Add(worker);
+            
             var warr = new BuildingCost()
             {
                 type = TroopType.Warrior.ToString(),
@@ -97,12 +119,25 @@ namespace MAWcore6.Controllers
                 reqMet = false,
                 food = WarrFoodCost,
                 stone = 0,
-                wood = 0,
+                wood = WarrWoodCost,
                 iron = WarrIronCost,
                 time  = WarrTimeCost,
             };
             cost.Add(warr);
-            
+
+            var scout = new BuildingCost()
+            {
+                type = TroopType.Scout.ToString(),
+                preReq = ScoutBuildReq,
+                reqMet = false,
+                food = ScoutFoodCost,
+                stone = 0,
+                wood = ScoutWoodCost,
+                iron = ScoutIronCost,
+                time = ScoutTimeCost,
+            };
+            cost.Add(warr);
+
 
 
             return cost;
@@ -119,62 +154,120 @@ namespace MAWcore6.Controllers
             BuildingCost bc = new BuildingCost();
             switch (update.buildingType)
             {
+                case "Acedemy":
+                    bc.type = BuildingType.Academy.ToString(); ;
+                    bc.food = AcademyFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.stone = AcademyStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.wood = AcademyWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.iron = AcademyIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.time = AcademyTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    break;
+
+                case "Barrack":
+                    bc.type = BuildingType.Barrack.ToString(); ;
+                    bc.food = BarrFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.stone = BarrStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.wood = BarrWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.iron = BarrIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.time = BarrTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    break;
                 case "Cottage":
-                    bc.type = "Cottage";
+                    bc.type = BuildingType.Cottage.ToString(); 
                     bc.food = CottFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = CottStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = CottWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.iron = CottIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.time = CottTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
+                case "Feasting Hall":
+                    bc.type = BuildingType.Feasting_Hall.ToString(); ;
+                    bc.food = FeastFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.stone = FeastStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.wood = FeastWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.iron = FeastIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.time = FeastTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    break;
                 case "Inn":
-                    bc.type = "Inn";
+                    bc.type = BuildingType.Inn.ToString(); ;
                     bc.food = InnFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = InnStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = InnWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.iron = InnIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.time = InnTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
-
-                case "Acedemy":
-                    //Console.WriteLine("Failed measurement.");
+                case "Town Hall":
+                    bc.type = BuildingType.Town_Hall.ToString(); ;
+                    bc.food = ThFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.stone = ThStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.wood = ThWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.iron = ThIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.time = ThTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
 
-                case "Barrack":
-                    //Console.WriteLine("Failed measurement.");
-                    break;
+
             }
             return bc;
 
         }
-
-       
+        
         private string CheckIfPreReqMet(City city, UpdateCityModel update) {
             string res =  "ok";
             var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
-            
+            BuildingType buildingType = GetBuildingType(update.buildingType);
             //No building can be more than one level greater than th.
             var th = city.Buildings.Where(c => c.BuildingType == BuildingType.Town_Hall).FirstOrDefault();
             if (update.level - 1 > th.Level)
             {
                 res = "Need to upgrade the Town Hall.";
             }
-            if (update.buildingType == "Inn") { 
-                var cottageLvl2 = city.Buildings.Where(c => c.BuildingType == BuildingType.Cottage && c.Level >=2 ).FirstOrDefault();
-                if (cottageLvl2 == null) {
-                    res = "Must build a Cottage to level 2.";
+            if (buildingType == BuildingType.Academy)
+            {
+                if (th.Level < 2)
+                {
+                    res = "Requires Town Hall level 2";
                 }
-            }
-            if (update.buildingType == "Barrack")
+            } else if (buildingType == BuildingType.Barrack)
             {
                 var RallySpot = city.Buildings.Where(c => c.BuildingType == BuildingType.Rally_Spot).FirstOrDefault();
                 if (RallySpot == null)
                 {
                     res = "Must build a RallySpot.";
                 }
+            } else if (buildingType == BuildingType.Inn) { 
+                var cottageLvl2 = city.Buildings.Where(c => c.BuildingType == BuildingType.Cottage && c.Level >=2 ).FirstOrDefault();
+                if (cottageLvl2 == null) {
+                    res = "Must build a Cottage to level 2.";
+                }
+            }else if (buildingType == BuildingType.Walls)
+            {
+                //Req quary lvl2 and forge lvl1
+                int highestLvlQuarry = city.Buildings.Where(c => c.BuildingType == BuildingType.Quarry).Max(c => c.Level);
+                int forgeCount = city.Buildings.Where(c => c.BuildingType == BuildingType.Forge).Count();
+                if (highestLvlQuarry < 2)
+                {
+                    res = "Requires Quarry level 2.";
+                } else if (forgeCount == 0)
+                {
+                    res = "Requires Forge level 1.";
+                }
             }
             return res;
         }
+
+        [HttpPost("BuildingDone")]
+        public async Task<JsonResult> BuildingDone([FromBody] UpdateCityModel update)
+        {
+            var message = "ok";
+
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
+            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
+
+            //Check if builders busy ..
+            await CheckBuilder1(UserCity);
+            return new JsonResult(new { message = message, city = UserCity, });
+        }
+
 
         [HttpPost("UpdateCity")]
         public async Task<JsonResult> UpdateCity([FromBody] UpdateCityModel update)
@@ -360,10 +453,14 @@ namespace MAWcore6.Controllers
                 };
                 NewCity.Buildings.Add(NewBuilding);
             }
-            var th = NewCity.Buildings.Where(c => c.Location == 2).FirstOrDefault();
+            var th = NewCity.Buildings.Where(c => c.Location == 3).FirstOrDefault();
             th.BuildingType = BuildingType.Town_Hall;
             th.Level = 1;
-            th.Image = "TownHall.jpg";
+            th.Image = "TownHalllvl0.jpg";
+            th = NewCity.Buildings.Where(c => c.Location == 0).FirstOrDefault();
+            th.BuildingType = BuildingType.Walls;
+            th.Level = 0;
+            th.Image = "Wallslvl0.jpg";
             await db.SaveChangesAsync();
 
             return NewCity;
@@ -481,7 +578,7 @@ namespace MAWcore6.Controllers
         int QuarryPopulationReq = 20; //tri seq
         int QuarryStoneRate = 100; //tri seq
         int QuarryStoneCap = 10000; //tri seq.
-                                    //Quest lvl1 1	Beginner's Guidelines (1)	food 300 lumber 750 stone	300	iron 500
+                                    //Quest lvl1 1	Beginner's Guidelines (1)	food 300 Wood 750 stone	300	iron 500
 
         int SawFoodReq = 100; //2^
         int SawWoodReq = 100;
@@ -491,7 +588,7 @@ namespace MAWcore6.Controllers
         int SawPopReq = 10; //tri seq
         int SawWoodRate = 100; //tri seq
         int SawMaxCap = 10000; //tri seq
-                               //Quest Sawmill Lv.2 Award: Food 1,000 Lumber 1,000 Stone 1,000 Iron 1,000
+                               //Quest Sawmill Lv.2 Award: Food 1,000 Wood 1,000 Stone 1,000 Iron 1,000
 
 
         int IronMineFoodReq = 210;
@@ -510,7 +607,7 @@ namespace MAWcore6.Controllers
 
         string WorkerBuildReq = "Barracks Level 1";
         int WorkerFoodCost = 50;
-        int WorkerLumberCost = 150;
+        int WorkerWoodCost = 150;
         int WorkerIronCost = 10;
         int WorkerTimeCost = 50;//secs
         int WorkerLife= 100;
@@ -521,12 +618,12 @@ namespace MAWcore6.Controllers
         int WorkerFoodCity = 2; //per hour
         int WorkerSpeed= 180;
         int WorkerRange= 10;
-        //int WorkerQuest = { qtyWorkers:10, award:{ food:500, lumber:1500, iron:100 } };
+        //int WorkerQuest = { qtyWorkers:10, award:{ food:500, Wood:1500, iron:100 } };
 
 
         string WarrBuildReq = "Barracks Level 1";
         int WarrFoodCost = 80;
-        int WarrLumberCost = 100;
+        int WarrWoodCost = 100;
         int WarrIronCost = 50;
         int WarrTimeCost = 25;//secs
         int WarrLife= 200;
@@ -537,11 +634,11 @@ namespace MAWcore6.Controllers
         int WarrFoodCity = 3; //per hour
         int WarrSpeed= 200;
         int WarrRange= 20;
-        //int WarrQuest = { qtywarrs:10, award:{ food:800, lumber:1000, iron:500 } };
+        //int WarrQuest = { qtywarrs:10, award:{ food:800, Wood:1000, iron:500 } };
 
         string ScoutBuildReq = "Barracks Level 2";
         int ScoutFoodCost = 120;
-        int ScoutLumberCost = 200;
+        int ScoutWoodCost = 200;
         int ScoutIronCost = 150;
         int ScoutTimeCost = 100;//secs
         int ScoutLife= 100;
@@ -552,12 +649,12 @@ namespace MAWcore6.Controllers
         int ScoutFoodCity = 5; //per hour
         int ScoutSpeed= 3000;
         int ScoutRange= 20;
-        //int ScoutQuest = { qtyScouts:10, award:{ food:1200, lumber:2000, iron:1500 } };
+        //int ScoutQuest = { qtyScouts:10, award:{ food:1200, Wood:2000, iron:1500 } };
 
         string PikeBuildReq = "Barracks Level 2";
         string PikeBuildReq2 = "Military Tradition Level 1";
 int PikeFoodCost = 150;
-        int PikeLumberCost = 500;
+        int PikeWoodCost = 500;
         int PikeIronCost = 100;
         int PikeTimeCost = 2 * 60 + 30;//secs
         int PikeLife= 300;
@@ -568,12 +665,12 @@ int PikeFoodCost = 150;
         int PikeFoodCity = 6; //per hour
         int PikeSpeed= 300;
         int PikeRange= 50;
-        // int PikeQuest = { qtyPikes:10, award:{ food:1500, lumber:5000, iron:1000 } };
+        // int PikeQuest = { qtyPikes:10, award:{ food:1500, Wood:5000, iron:1000 } };
 
         string SwordBuildReq = "Barracks Level 3";
         string SwordBuildReq2 = "Iron Working Level 1";
         int SwordFoodCost = 200;
-        int SwordLumberCost = 150;
+        int SwordWoodCost = 150;
         int SwordIronCost = 400;
         int SwordTimeCost = 3 * 60 + 45;//secs
         int SwordLife= 350;
@@ -584,12 +681,12 @@ int PikeFoodCost = 150;
         int SwordFoodCity = 7; //per hour
         int SwordSpeed= 275;
         int SwordRange= 30;
-        //int SwordQuest = { qtySwords:10, award:{ food:2000, lumber:1500, iron:4000 } };
+        //int SwordQuest = { qtySwords:10, award:{ food:2000, Wood:1500, iron:4000 } };
 
         string ArchBuildReq = "Barracks Level 4";
         string ArchBuildReq2 = "Archery Level 1";
         int ArchFoodCost = 300;
-        int ArchLumberCost = 350;
+        int ArchWoodCost = 350;
         int ArchIronCost = 300;
         int ArchTimeCost = 5 * 60 + 50;//secs
         int ArchLife= 250;
@@ -600,12 +697,12 @@ int PikeFoodCost = 150;
         int ArchFoodCity = 9; //per hour
         int ArchSpeed= 250;
         int ArchRange= 1200;
-        //int ArchQuest = { qtyArchs:10, award:{ food:3000, lumber:3500, iron:3000 } };
+        //int ArchQuest = { qtyArchs:10, award:{ food:3000, Wood:3500, iron:3000 } };
 
         string CavBuildReq = "Barracks Level 5";
         string CavBuildReq2 = "Horseback Riding Level 1";
         int CavFoodCost = 1000;
-        int CavLumberCost = 600;
+        int CavWoodCost = 600;
         int CavIronCost = 500;
         int CavTimeCost = 8 * 60 + 20;//secs
         int CavLife= 500;
@@ -616,13 +713,13 @@ int PikeFoodCost = 150;
         int CavFoodCity = 18; //per hour
         int CavSpeed= 1000;
         int CavRange= 100;
-        //int CavQuest = { qtyCavs:10, award:{ food:10000, lumber:6000, iron:5000 } };
+        //int CavQuest = { qtyCavs:10, award:{ food:10000, Wood:6000, iron:5000 } };
 
         string CatBuildReq = "Barracks Level 7";
         string CatBuildReq2 = "Iron Working Level 5";
         string CatBuildReq3 = "Horseback Riding Level 5";
         int CatFoodCost = 2000;
-        int CatLumberCost = 500;
+        int CatWoodCost = 500;
         int CatIronCost = 2500;
         int CatTimeCost = 25 * 60;//secs
         int CatLife= 1000;
@@ -633,13 +730,13 @@ int PikeFoodCost = 150;
         int CatFoodCity = 35; //per hour
         int CatSpeed= 750;
         int CatRange= 80;
-        //int CatQuest = { qtyCats:10, award:{ food:8000, lumber:10000, iron:8000 } };
+        //int CatQuest = { qtyCats:10, award:{ food:8000, Wood:10000, iron:8000 } };
 
         string TransBuildReq = "Barracks Level 6";
         string TransBuildReq2 = "Logistics Level 1";
         string TransBuildReq3 = "Metal Casting Level 5";
         int TransFoodCost = 600;
-        int TransLumberCost = 1500;
+        int TransWoodCost = 1500;
         int TransIronCost = 350;
         int TransTimeCost = 16 * 60 + 40;//secs
         int TransLife= 700;
@@ -656,7 +753,7 @@ int PikeFoodCost = 150;
         string BallBuildReq2 = "Archery Level 6";
         string BallBuildReq3 = "Metal Casting Level 5";
         int BallFoodCost = 2500;
-        int BallLumberCost = 3000;
+        int BallWoodCost = 3000;
         int BallIronCost = 1800;
         int BallTimeCost = 50 * 60;//secs
         int BallLife= 320;
@@ -672,7 +769,7 @@ int PikeFoodCost = 150;
         string RamBuildReq2 = "Iron Working Level 8";
         string RamBuildReq3 = "Metal Casting Level 7";
         int RamFoodCost = 4000;
-        int RamLumberCost = 6000;
+        int RamWoodCost = 6000;
         int RamIronCost = 1500;
         int RamTimeCost = 75 * 60;//secs
         int RamLife= 5000;
@@ -689,7 +786,7 @@ int PikeFoodCost = 150;
         string CataBuildReq3 = "Metal Casting Level 10";
         int CataFoodCost = 5000;
         int CataStoneCost = 8000;
-        int CataLumberCost = 5000;
+        int CataWoodCost = 5000;
         int CataIronCost = 1200;
         int CataTimeCost = 100 * 60;//secs
         int CataLife= 480;
@@ -700,11 +797,11 @@ int PikeFoodCost = 150;
         int CataFoodCity = 250; //per hour
         int CataSpeed= 80;
         int CataRange= 1500;
-        //int CataQuest = { qtyCatas:10, award:{ food:500, lumber:1500, iron:100 } };
+        //int CataQuest = { qtyCatas:10, award:{ food:500, Wood:1500, iron:100 } };
         #endregion
 
         #region City
-        string ThPrereq = "Walls Level Th-2";
+        string ThPrereq = "Walls Level th-2";
         int ThFoodReq = 400;
         int ThStoneReq = 5000;
         int ThWoodReq = 6000;
@@ -719,7 +816,7 @@ int PikeFoodCost = 150;
         int AcademyTimeReq= 8 * 60;
         //lvl2 = lvl1*(2^currentlevel), etc. lvl 2 = 120 *2^2 =120*4
         //academyUnlocks
-        //lvl1 = Agg, lumbering,MS
+        //lvl1 = Agg, Wooding,MS
         //lvl2 = Masonry, mining,MT
         //lvl3=Metal Cast, info, Iron work
         //lvl4 Logistics, Compass,arch
@@ -730,7 +827,7 @@ int PikeFoodCost = 150;
         //lvl9 machinery
         //lvl10 privatering.
         //GET quest reward for every table updrage.
-        //lvl1 = prim guidline food 150,lumber 2500, stone 1500,iron 200 all * 2^currentlvl
+        //lvl1 = prim guidline food 150,Wood 2500, stone 1500,iron 200 all * 2^currentlvl
 
         //Cotts
         //req after lvl2, requires (cottLvl-1) > Th.level
@@ -769,7 +866,7 @@ int PikeFoodCost = 150;
         int FeastIronReq = 700;
         int FeastTimeReq = 6 * 60;
         //heroqty=lvl
-        //quest lvl1 gold1000,food1000,lumber3000, stone 1500, iron 1000
+        //quest lvl1 gold1000,food1000,Wood3000, stone 1500, iron 1000
 
         string EmbassyPrereq = "Town Hall Level 2";
         int EmbassyFoodReq= 200;
@@ -857,10 +954,43 @@ int PikeFoodCost = 150;
         //lvl1-2 = 2x speed, lvl3 =3x, 5-7 4x, 8-9 = 5x, 10=6x
         //quest lvl1 f2000,s5000, w5000, i 1000
 
+        ///walls...
+        string WallsPrereq = "Quarry lv2 and Workshop lvl1";
+        int WallsFoodReq = 3000; // every level x2.. lvl2 = 6000, lvl3 12000
+        int WallsStoneReq = 10000;
+        int WallsWoodReq = 1500;
+        int WallsIronReq = 500;
+        int WallsTimeReq = 30 * 60;// 30min
+                                   //Durability 10000, 30000, 60000, 100000, etc
+                                   //Fortified spaces 1000, 3000, 6000, 10000
+                                   //Allows lvl1 Trap and th lvl3
+                                   //lvl2 abatis and th lvl4
+                                   //lvl3 AT and th lvl5
+                                   //lvl5 Rolling log ...lvl7 Def Trebuchet.. lvlv 8 allow lvl10 th.
+
+        //Rewards table
+        //        Target Food    Lumber Stone   Iron
+        //Level 1	3,000	2,000	10,000	2,000
+        //Level 2	5,000	5,000	20,000	5,000
+        //Level 3	10,000	10,000	50,000	10,000
+        //Level 4	10,000	10,000	50,000	10,000
+        //Level 5	10,000	10,000	50,000	10,000
+        //Level 6	10,000	10,000	50,000	10,000
+        //Level 7	10,000	10,000	50,000	10,000
+        //Level 8	10,000	10,000	50,000	10,000
+        //Level 9	10,000	10,000	50,000	10,000
+        //Level 10	10,000	10,000	50,000	10,000
+
+//        Fortified Unit Type Vacant Space Per Unit Food    Lumber Stone   Iron Time per Unit
+//Trap	1 Space	50	500	100	50	1m
+//Abatis	2 Spaces	100	1,200	0	150	2m
+//Archer's Tower	3 Spaces	200	2,000	1,500	500	3m
+//Rolling log	4 Spaces	300	6,000	0	0	6m
+//Defensive Trebuchet	5 Spaces	600	0	8,000	0	10m
 
         #endregion
 
-        //walls...
+
 
 
         #region Research
@@ -870,11 +1000,11 @@ int PikeFoodCost = 150;
         int AggTimeReq = 6 * 60 + 40;
         //each lvl = 10% inc in food , lvl5 = 50%
 
-        string LumberingPrereq = "Academy lvl1, wood Level = level";//lvl3 needs a farm lvl3
-        int LumberingWoodReq= 500; //lvl3 500*2*2
-        int LumberingIronReq= 100; //lvl3 500*2*2
-        int LumberingGoldReq = 1200;
-        int LumberingTimeReq = 8 * 60 + 20;
+        string WoodingPrereq = "Academy lvl1, wood Level = level";//lvl3 needs a farm lvl3
+        int WoodingWoodReq= 500; //lvl3 500*2*2
+        int WoodingIronReq= 100; //lvl3 500*2*2
+        int WoodingGoldReq = 1200;
+        int WoodingTimeReq = 8 * 60 + 20;
         //each lvl = 10% inc in food , lvl5 = 50%
 
         string MasonryPrereq = "Academy lvl2, wood Level = level";//lvl3 needs a farm lvl3

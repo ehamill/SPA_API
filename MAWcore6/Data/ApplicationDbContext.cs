@@ -22,6 +22,10 @@ namespace MAWcore6.Data
         //{
         //    modelBuilder.Entity<City>().ToTable("City");
         //    modelBuilder.Entity<Building>().ToTable("Building");
+        //    modelBuilder.Entity<City>()
+        //            .HasRequired<City>(c => c.)
+        //            .WithMany(_ => _.Deck);
+
         //}
 
     }

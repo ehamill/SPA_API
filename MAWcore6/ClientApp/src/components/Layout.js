@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
-import { BottomNav } from './BottomNav';
-import { Home } from './Home';
-import { Route } from 'react-router';
-import authService from './api-authorization/AuthorizeService';
-import { ApplicationPaths } from './api-authorization/ApiAuthorizationConstants';
-import ApiAuthorizationRoutes from './api-authorization/ApiAuthorizationRoutes';
-import AuthorizeRoute from './api-authorization/AuthorizeRoute';
+//import { BottomNav } from './BottomNav';
+//import { Home } from './Home';
+//import { Route } from 'react-router';
+//import authService from './api-authorization/AuthorizeService';
+//import { ApplicationPaths } from './api-authorization/ApiAuthorizationConstants';
+//import ApiAuthorizationRoutes from './api-authorization/ApiAuthorizationRoutes';
+//import AuthorizeRoute from './api-authorization/AuthorizeRoute';
 
 export class Layout extends Component {
     static displayName = Layout.name;

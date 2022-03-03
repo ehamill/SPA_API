@@ -18,7 +18,7 @@ export class Building extends Component {
     }
 
     render() {
-        const userName = "testing";
+        //const userName = "testing";
 
 
         return (

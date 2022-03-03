@@ -18,6 +18,7 @@
         public int GoldRate { get; set; } = 0;
         public DateTime ResourcesLastUpdated { get; set; }
         public List<Building> Buildings { get; set; }
+        //public virtual ICollection<Building> Buildings { get; set; }
         //public UserResearch UserResearch { get; set; }
         public DateTime Construction1Started { get; set; } = DateTime.UtcNow;
         public DateTime Construction1Ends { get; set; } = DateTime.UtcNow;

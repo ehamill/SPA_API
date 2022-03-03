@@ -10,7 +10,6 @@ export class BottomNav extends Component {
 
     render() {
         const isAuthenticated = true;
-        const userName = "erc sjd";
 
         if (!isAuthenticated) {
             return (

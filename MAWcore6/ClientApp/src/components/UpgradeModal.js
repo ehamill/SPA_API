@@ -105,6 +105,8 @@ export class UpgradeModal extends Component {
                 return "Inn";
             case 9:
                 return "Marketplace";
+            case 21:
+                return "Walls";
 
             default:
                 return "Error";
@@ -125,6 +127,7 @@ export class UpgradeModal extends Component {
         
     }
     
+
     render() {
         const city = this.props.city;
         const activeBuildingId = this.props.activeBuildingId;
@@ -133,12 +136,14 @@ export class UpgradeModal extends Component {
         const upgradeLevel = activeBuilding.level + 1;
         const demoLevel = activeBuilding.level - 1;
         const buildingType = this.GetBuildingType(activeBuilding.buildingType);
-        const nextBuildingType = (demoLevel == 0) ? "empty" : buildingType;
+        //const nextBuildingType = (demoLevel == 0) ? "empty" : buildingType;
         
         //console.log('active: ' + this.props.activeBuildingId+'testing ...' + JSON.stringify(city));
 
         return (
-            <Modal isOpen={this.props.showUpgradeModal} >
+            <Modal isOpen={this.props.showUpgradeModal}
+                toggle={this.props.toggleUpdateModal}
+            >
                 <ModalHeader >{buildingType} Level {buildingLevel }</ModalHeader>
                 <ModalBody>
                     <div>
