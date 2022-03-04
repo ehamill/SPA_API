@@ -64,7 +64,7 @@ export class AddBuildingModal extends Component {
                                         </div>
                                         <div>
                                             <Button color="primary"
-                                                disabled={b.reqMet ? "true" : "false"}
+                                                disabled={b.reqMet ? true : false}
                                                 data-building_type={b.type}
                                                 data-level="1"
                                                 data-building_id={this.props.activeBuildingId}

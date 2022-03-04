@@ -1,6 +1,6 @@
 ﻿import React, { Component,Fragment } from 'react';
 import authService from './api-authorization/AuthorizeService';
-import { Container, Button, Table, ListGroup, ListGroupItem, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import { Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 //import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 //import { BottomNav } from './BottomNav';
 import { Building } from './Building';
@@ -28,6 +28,8 @@ export class City extends Component {
             buildLevel: 0,
             showTownHallModal: false,
             showTestModal: false,
+            showErrorMessage: false,
+            errorMessage: false,
         };
 
         this.openModal = this.openModal.bind(this);
@@ -97,6 +99,11 @@ export class City extends Component {
     toggleTownHallModal = () => {
         this.setState(prevState => ({
             showTownHallModal: !prevState.showTownHallModal
+        }));
+    };
+    toggleErrorMessage = () => {
+        this.setState(prevState => ({
+            showErrorMessage: !prevState.showErrorMessage
         }));
     };
 
@@ -210,6 +217,14 @@ export class City extends Component {
 
       return (
           <Container>
+              <Toast isOpen={this.state.showErrorMessage}>
+                  <ToastHeader toggle={this.toggleErrorMessage}>
+                     error { this.state.errorMessage}
+                  </ToastHeader>
+                  <ToastBody>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </ToastBody>
+              </Toast>
               <TownHallModal
                   activeBuildingId={this.state.activeBuildingId}
                   city={this.state.city}
@@ -245,7 +260,8 @@ export class City extends Component {
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
               {this.state.city.builder1Busy ? <BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick} buildWhat={this.state.buildWhat} location={this.state.activeSlot } level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> : ''}
               
-              <div style={{ marginTop: "20px" }} onClick={this.testClick}>
+              <div style={{ marginTop: "20px" }} onClick={this.toggleErrorMessage}>
+                  show error message
                   Build Where: {this.state.activeSlot}
                   Build What: {this.state.buildWhat}
               </div>
