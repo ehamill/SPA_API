@@ -1,6 +1,6 @@
 ﻿import React, { Component,Fragment } from 'react';
 import authService from './api-authorization/AuthorizeService';
-import { Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import {Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
 //import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 //import { BottomNav } from './BottomNav';
 import { Building } from './Building';
@@ -8,6 +8,7 @@ import { BuildingTimer } from './BuildingTimer';
 import { AddBuildingModal } from './AddBuildingModal';
 import { UpgradeModal } from './UpgradeModal';
 import { TownHallModal } from './TownHallModal';
+
 
 export class City extends Component {
 
@@ -29,7 +30,7 @@ export class City extends Component {
             showTownHallModal: false,
             showTestModal: false,
             showErrorMessage: false,
-            errorMessage: false,
+            errorMessage: "",
         };
 
         this.openModal = this.openModal.bind(this);
@@ -43,6 +44,7 @@ export class City extends Component {
         this.speedUpClick = this.speedUpClick.bind(this);
         this.upgradeBuilding = this.upgradeBuilding.bind(this);
         this.showTestModalClick = this.showTestModalClick.bind(this);
+        //this.toggleErrorMessage = this.toggleErrorMessage.bind(this);
     }
 
     componentDidMount() {
@@ -105,6 +107,12 @@ export class City extends Component {
         this.setState(prevState => ({
             showErrorMessage: !prevState.showErrorMessage
         }));
+        setTimeout(
+            () => this.setState(prevState => ({
+                showErrorMessage: !prevState.showErrorMessage
+            })),
+            3000
+        );
     };
 
     handleClickBuildWhat(e) {
@@ -217,14 +225,17 @@ export class City extends Component {
 
       return (
           <Container>
-              <Toast isOpen={this.state.showErrorMessage}>
-                  <ToastHeader toggle={this.toggleErrorMessage}>
-                     error { this.state.errorMessage}
+              <Fade>
+                  <Toast isOpen={this.state.showErrorMessage} className="error-toaster">
+                  <ToastHeader >
+                      error  <Button className="btn-close float-right" onClick={this.toggleErrorMessage}></Button>
                   </ToastHeader>
                   <ToastBody>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      {this.state.errorMessage}
                   </ToastBody>
               </Toast>
+              </Fade>
+              
               <TownHallModal
                   activeBuildingId={this.state.activeBuildingId}
                   city={this.state.city}
@@ -384,8 +395,6 @@ export class City extends Component {
 
 
     async updateCityData(buildingId, buildingType, level) {
-
-       // console.log('at update city data..');
         var updateModel = { cityId: this.state.city.cityId, buildingId: parseInt(buildingId), buildingType, level: parseInt(level) };
         //console.log('updateModel: ' + JSON.stringify(updateModel));
         const token = await authService.getAccessToken();
@@ -397,7 +406,13 @@ export class City extends Component {
         const data = await response.json();
         //console.log('at updateCityData..returned: cityID: '+ JSON.stringify(data));
         if (data.message !== 'ok') {
-            alert('oops updateCityData..' + data.message)
+            this.setState({ errorMessage: data.message, showErrorMessage: true, });
+            setTimeout(
+                () => this.setState(prevState => ({
+                    showErrorMessage: !prevState.showErrorMessage
+                })),
+                3000
+            );
         } else {
             this.setState({ city: data.city});
         }

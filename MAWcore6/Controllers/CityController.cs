@@ -141,7 +141,7 @@ namespace MAWcore6.Controllers
 
             return cost;
         }
-        private BuildingCost GetCostOfBuilding(UpdateCityModel update,City userCity, UserResearch userResearch)
+        private BuildingCost GetUpgradeCostOfBuilding(UpdateCityModel update,City userCity, UserResearch userResearch)
         {
             var building = userCity.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
             //if downgrading, time is current level.
@@ -232,10 +232,7 @@ namespace MAWcore6.Controllers
             BuildingType buildingType = GetBuildingType(update.buildingType);
             //No building can be more than one level greater than th.
             var th = city.Buildings.Where(c => c.BuildingType == BuildingType.Town_Hall).FirstOrDefault();
-            if (update.level - 1 > th.Level)
-            {
-                res = "Need to upgrade the Town Hall.";
-            }
+            
             if (buildingType == BuildingType.Academy)
             {
                 if (th.Level < 2)
@@ -248,6 +245,12 @@ namespace MAWcore6.Controllers
                 if (RallySpot == null)
                 {
                     res = "Must build a RallySpot.";
+                }
+            } else if (buildingType == BuildingType.Cottage)
+            {
+                if (update.level - 1 > th.Level)
+                {
+                    res = "Need to upgrade the Town Hall.";
                 }
             } else if (buildingType == BuildingType.Inn) { 
                 var cottageLvl2 = city.Buildings.Where(c => c.BuildingType == BuildingType.Cottage && c.Level >=2 ).FirstOrDefault();
@@ -315,7 +318,7 @@ namespace MAWcore6.Controllers
                 return new JsonResult(new { message = message });
             }
 
-            BuildingCost BuildingCost= GetCostOfBuilding(update,UserCity, UserResearch);
+            BuildingCost BuildingCost= GetUpgradeCostOfBuilding(update,UserCity, UserResearch);
             
             //Check if user has enough resources ..
             await RemoveResourcesAndUpdateConstructionFromCity(UserCity, update, BuildingCost);
@@ -434,6 +437,7 @@ namespace MAWcore6.Controllers
 
             b.Image = upgrading + buildingType.ToString() +"lvl"+ update.level;
             b.BuildingType = buildingType;
+            b.Description = GetBuildingDescription(buildingType);
 
             UserCity.BuildingWhat = buildingType.ToString();
 
@@ -479,17 +483,47 @@ namespace MAWcore6.Controllers
                 };
                 NewCity.Buildings.Add(NewBuilding);
             }
-            var th = NewCity.Buildings.Where(c => c.Location == 3).FirstOrDefault();
-            th.BuildingType = BuildingType.Town_Hall;
-            th.Level = 1;
-            th.Image = "TownHalllvl0.jpg";
-            th = NewCity.Buildings.Where(c => c.Location == 0).FirstOrDefault();
-            th.BuildingType = BuildingType.Walls;
-            th.Level = 0;
-            th.Image = "Wallslvl0.jpg";
+            var building = NewCity.Buildings.Where(c => c.Location == 3).FirstOrDefault();
+            building.BuildingType = BuildingType.Town_Hall;
+            building.Level = 1;
+            building.Image = "TownHalllvl0.jpg";
+            building.Description = "Manage your city.";
+            building = NewCity.Buildings.Where(c => c.Location == 0).FirstOrDefault();
+            building.BuildingType = BuildingType.Walls;
+            building.Level = 0;
+            building.Image = "Wallslvl0.jpg";
+            building.Description = "Walls Protect the city and offer longer range for AT's.";
             await db.SaveChangesAsync();
 
             return NewCity;
+        }
+
+        private string GetBuildingDescription(BuildingType buildingType) {
+            switch (buildingType)
+            {
+                case BuildingType.Academy:
+                    return "Academy allows you to research skills.";
+                case BuildingType.Barrack:
+                    return "Barracks are where you train your troops.";
+                case BuildingType.Cottage:
+                   return "Cottages increase your cities population allowing you to make more resoures and train more " +
+                        "troops";
+                case BuildingType.Feasting_Hall:
+                    return "Manage your Heros.";
+                case BuildingType.Inn:
+                    return "The Inn is where you hire heros. The higher the level, the more hero's to choose from"
+                        +" and the higher level of hero.";
+                case BuildingType.Rally_Spot:
+                    return "Place to heal troops. Test fighting. Limits amount of troops you can send at one time.";
+                case BuildingType.Town_Hall:
+                    return "Manage your city.";
+                case BuildingType.Walls:
+                    return "Manage your city's defenses.";
+                
+                default:
+                    return "Empty";
+            }
+
         }
 
         private List<BuildingCost> GetNewBuildingsCost(City userCity ,UserResearch userResearch)

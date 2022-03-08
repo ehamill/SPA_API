@@ -77,11 +77,13 @@ else
     app.UseHsts();
 }
 
+app.UseAuthentication();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication();
+//app.UseAuthentication();
 app.UseIdentityServer();
 app.UseAuthorization();
 

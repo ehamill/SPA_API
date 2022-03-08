@@ -6,13 +6,22 @@ a {
 code {
   color: #E01A76;
 }
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+/* reactstrap fixes */
+/* Toaster */
+.error-toaster {
+    position: absolute;
+    background-color: white;
+    right: 10%;
 }
+.mr-auto {
+    width: 100%;
+}
+/* End Toaster */
 
+/* reactstrap fix end */
+
+
+/* bootstrap fixes */
 .hidden {
  display: none;
 }
@@ -25,6 +34,17 @@ code {
 .float-right {
     float: right !important;
 }
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/*end bootstrap*/
+
+
+
+
 
 /* Progress bar*/
 .buildingWhat {

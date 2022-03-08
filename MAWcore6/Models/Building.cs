@@ -10,6 +10,7 @@ namespace MAWcore6.Models
         public BuildingType BuildingType {get; set;}
         public int Level { get; set; }
         public string Image { get; set; } = "EmptySlot.jpg";
+        public string Description { get; set; } = "Empty";
 
     }
 }

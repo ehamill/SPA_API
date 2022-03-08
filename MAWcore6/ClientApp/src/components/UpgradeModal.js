@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 //import logo from './Images/Cottage.jpg' ;
+import { WallDefenses } from './WallDefenses';
 
 export class UpgradeModal extends Component {
     
@@ -147,22 +148,25 @@ export class UpgradeModal extends Component {
         return (
             <Modal isOpen={this.props.showUpgradeModal}
                 toggle={this.props.toggleUpdateModal}
+                size="lg"
             >
                 <ModalHeader >{buildingType} Level {buildingLevel }</ModalHeader>
                 <ModalBody>
                     
                     <div className="row">
                         <div className="col-md-2">
-                            <img src={buildingImage} alt={buildingImage}  width="55px"/>
+                            <img src={buildingImage}  width="55px"/>
                         </div>
                         <div className="col-md-8">
+                            <p>
+                                {activeBuilding.description}
+                            </p>
                             <div>
-                                Upgrading {activeBuilding.image} at {activeBuilding.location} builidingID {activeBuildingId}
-                                Building Type: {buildingType} || activeBuilding.buildingType: {activeBuilding.buildingType}
+                                Upgrading {activeBuilding.image} at {activeBuilding.location} || builidingID {activeBuildingId} ||
+                                Building Type: {buildingType} || activeBuilding.buildingType: {activeBuilding.buildingType} ||
+                                image: {activeBuilding.image} || Level: {buildingLevel}
                             </div>
-                            <div>
-                                building.description - This building increases the population.
-                            </div>
+                            
                         </div>
                         <div className="col-md-2">
                             <Button className="float-right mr-2 mb-2" onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, upgradeLevel)} >
@@ -174,7 +178,7 @@ export class UpgradeModal extends Component {
                         </div>
                     </div>
                     <div>
-                        {/*{activeBuilding.buildingType === 4 && <Cottage city={this.props.city} /> }*/}
+                        {activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} /> }
                     </div>
                     <div className="row" hidden>
                         <div className="col-md-6">
@@ -183,9 +187,15 @@ export class UpgradeModal extends Component {
                             speed, defence, etc.
                         </div>
                         <div className="col-md-6" hidden></div>
-                        On left show a list of troops in training. On Right Show all troops..use cards. each one has a recruit button.
-                        On click shows archer pic with his stats..range population used
-                        speed, defence, etc.
+                        On left show a list of troops in training.
+                        On Right Show all troops..use cards: type: qty, each one has a recruit button.
+                        On troop click: open another modal: Type pic ..troop name.
+                        table with his stats..range population used
+                        speed, defence, life,etc.
+                        below that table, another table: th Res, required, youHave
+                        Below that table: You Own #, max#, Train input..max and min buttons,
+                        Below that checkbox - split to all barrs
+                        below that checkbox - share only w/ idle barrs
                     </div>
 
                     <div hidden>
@@ -221,15 +231,13 @@ export class UpgradeModal extends Component {
                                 </tr>
                         </tbody>
                     </table>
-                    <div>
+                    <div hidden>
                         You have {this.props.activeTroop}
                         <input type="text" id="troopQty" value={this.state.troopQty} onChange={this.handleTroopQtyChange} />
                         <button onClick={this.getMaximumTroops} >max {this.state.troopQty}</button>
                     </div>
                     <div >
                         Duration {this.state.duration}
-
-
                     </div>
 
                 </ModalBody>

@@ -52,7 +52,7 @@ export class AddBuildingModal extends Component {
                                     <div className="col-md-8">
                                         <div className="danger">Requires {b.reqMet ? "" : b.preReq} </div>
                                         <div>
-                                            b.description
+                                            {b.description}
                                         </div>
                                         <div>
                                             slot: {this.props.activeSlot} id: buildingID: {this.props.activeBuildingId}
