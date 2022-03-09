@@ -28,6 +28,159 @@ namespace MAWcore6.Controllers
             _userManager = userManager;
         }
 
+        public class Troop { 
+            public string Type { get; set; }
+            public string PreReq { get; set; } = "";
+            public bool ReqMet { get; set; } = false;
+            public string Description { get; set; } = "";
+            public int Qty { get; set; } = 0;
+            public int FoodCost { get; set; } = 0;
+            public int StoneCost { get; set; } = 0;
+            public int WoodCost { get; set; } = 0;
+            public int IronCost { get; set; } = 0;
+            public int TimeCost { get; set; } = 0;
+            public bool ForWalls { get; set; } = false;
+            public int Attack { get; set; } = 0;
+            public int Defense { get; set; } = 0;
+            public int Speed { get; set; } = 0;
+            public int Load { get; set; } = 0;
+            public int Life { get; set; } = 0;
+            public int Range { get; set; } = 0;
+        }
+
+        private List<Troop> GetTroops(City city,UserResearch research) {
+            List<Troop> Troops = new List<Troop>();
+
+            var Worker = new Troop()
+            {
+                Type = TroopType.Worker.ToString(),
+                PreReq = "Requires Barrack level 1.",
+                ReqMet = true,
+                Description = "Workers are cheap transporters. Not very good for fighting.",
+                Qty = city.WorkerQty,
+                FoodCost = Constants.WorkerFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.WorkerWoodCost,
+                IronCost = Constants.WorkerIronCost,
+                TimeCost = Constants.WorkerTimeCost,
+                Attack = Constants.WorkerAttk,
+                Defense = Constants.WorkerDef,
+                Life = Constants.WorkerLife,
+                Range = Constants.WorkerRange,
+                Load = Constants.WorkerLoad,
+                Speed = Constants.WorkerSpeed,
+            };
+            Troops.Add(Worker);
+            var Warrior = new Troop()
+            {
+                Type = TroopType.Warrior.ToString(),
+                PreReq = "Requires Barrack level 1.",
+                ReqMet = true,
+                Description = "Workers are cheap transporters. Not very good for fighting.",
+                Qty = city.WarriorQty,
+                FoodCost = Constants.WarrFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.WarrWoodCost,
+                IronCost = Constants.WarrIronCost,
+                TimeCost = Constants.WarrTimeCost,
+                Attack = Constants.WarrAttk,
+                Defense = Constants.WarrDef,
+                Life = Constants.WarrLife,
+                Range = Constants.WarrRange,
+                Load = Constants.WarrLoad,
+                Speed = Constants.WarrSpeed,
+            };
+            Troops.Add(Warrior);
+            var Archer = new Troop()
+            {
+                Type = TroopType.Warrior.ToString(),
+                PreReq = "Requires Barracks level 4 and Archery level 1",
+                ReqMet = true,
+                Description = "Great range.",
+                Qty = city.ArcherQty,
+                FoodCost = Constants.ArchFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.ArchWoodCost,
+                IronCost = Constants.ArchIronCost,
+                TimeCost = Constants.ArchTimeCost,
+                Attack = Constants.ArchAttk,
+                Defense = Constants.ArchDef,
+                Life = Constants.ArchLife,
+                Range = Constants.ArchRange,
+                Load = Constants.ArchLoad,
+                Speed = Constants.ArchSpeed,
+            };
+            Troops.Add(Archer);
+            var Ballista = new Troop()
+            {
+                Type = TroopType.Warrior.ToString(),
+                PreReq = "Requires Barracks level 4 and Archery level 1",
+                ReqMet = true,
+                Description = "Great range.",
+                Qty = city.BallistaeQty,
+                FoodCost = Constants.BallFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.BallWoodCost,
+                IronCost = Constants.BallIronCost,
+                TimeCost = Constants.BallTimeCost,
+                Attack = Constants.BallAttk,
+                Defense = Constants.BallDef,
+                Life = Constants.BallLife,
+                Range = Constants.BallRange,
+                Load = Constants.BallLoad,
+                Speed = Constants.BallSpeed,
+            };
+            Troops.Add(Ballista);
+            return Troops;
+        
+        }
+        private List<BuildingCost> GetCostOfTroops(City userCity, UserResearch userResearch)
+        {
+            var cost = new List<BuildingCost>();
+
+            var worker = new BuildingCost()
+            {
+                type = TroopType.Worker.ToString(),
+                preReq = Constants.WorkerBuildReq,
+                reqMet = false,
+                food = Constants.WorkerFoodCost,
+                stone = 0,
+                wood = Constants.WorkerWoodCost,
+                iron = Constants.WorkerIronCost,
+                time = Constants.WorkerTimeCost,
+            };
+            cost.Add(worker);
+
+            var warr = new BuildingCost()
+            {
+                type = TroopType.Warrior.ToString(),
+                preReq = Constants.WarrBuildReq,
+                reqMet = false,
+                food = Constants.WarrFoodCost,
+                stone = 0,
+                wood = Constants.WarrWoodCost,
+                iron = Constants.WarrIronCost,
+                time = Constants.WarrTimeCost,
+            };
+            cost.Add(warr);
+
+            var scout = new BuildingCost()
+            {
+                type = TroopType.Scout.ToString(),
+                preReq = Constants.ScoutBuildReq,
+                reqMet = false,
+                food = Constants.ScoutFoodCost,
+                stone = 0,
+                wood = Constants.ScoutWoodCost,
+                iron = Constants.ScoutIronCost,
+                time = Constants.ScoutTimeCost,
+            };
+            cost.Add(warr);
+
+            return cost;
+        }
+
+
         [HttpGet]
         public async Task<JsonResult> Get()
         {
@@ -38,14 +191,14 @@ namespace MAWcore6.Controllers
             UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
             UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
             List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
-
+            List<Troop> Troops = GetTroops(UserCity, userResearch);
             //await CheckBuilder1(UserCity);
             if (UserCity.Builder1Busy) {
                 await CheckBuilder1(UserCity);
             }
             //GetUpgradeBuildings..only need one for each, can calculate costs off of it
 
-            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+            return new JsonResult(new { city = UserCity,troops = Troops, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
         }
 
         public async Task CheckBuilder1(City userCity) {
@@ -226,7 +379,7 @@ namespace MAWcore6.Controllers
 
         }
         
-        private string CheckIfPreReqMet(City city, UpdateCityModel update) {
+        private string CheckIfBuildingPreReqMet(City city, UpdateCityModel update) {
             string res =  "ok";
             //var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
             BuildingType buildingType = GetBuildingType(update.buildingType);
@@ -283,6 +436,80 @@ namespace MAWcore6.Controllers
             return res;
         }
 
+        public class MakeTroopsModel
+        {
+            public int cityId { get; set; }
+            public int buildingId { get; set; }
+            public string troopType { get; set; } = "";
+            public int Qty { get; set; }
+        }
+
+        private string CheckIfTroopPreReqMet(City city, MakeTroopsModel update)
+        {
+            //Troops req barrack lvl and research
+            string res = "ok";
+            //var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
+            BuildingType buildingType = new BuildingType(); // GetTroopType(update.troopType);
+            //No building can be more than one level greater than th.
+            var th = city.Buildings.Where(c => c.BuildingType == BuildingType.Town_Hall).FirstOrDefault();
+
+            if (buildingType == BuildingType.Academy)
+            {
+                if (th.Level < 2)
+                {
+                    res = "Requires Town Hall level 2";
+                }
+            }
+            else if (buildingType == BuildingType.Barrack)
+            {
+                var RallySpot = city.Buildings.Where(c => c.BuildingType == BuildingType.Rally_Spot).FirstOrDefault();
+                if (RallySpot == null)
+                {
+                    res = "Must build a RallySpot.";
+                }
+            }
+            else if (buildingType == BuildingType.Cottage)
+            {
+                if (update.Qty - 1 > th.Level)
+                {
+                    res = "Need to upgrade the Town Hall.";
+                }
+            }
+            else if (buildingType == BuildingType.Inn)
+            {
+                var cottageLvl2 = city.Buildings.Where(c => c.BuildingType == BuildingType.Cottage && c.Level >= 2).FirstOrDefault();
+                if (cottageLvl2 == null)
+                {
+                    res = "Must build a Cottage to level 2.";
+                }
+            }
+            else if (buildingType == BuildingType.Town_Hall)
+            {
+                //Req quary lvl2 and forge lvl1
+                int wallsLevel = city.Buildings.Where(c => c.BuildingType == BuildingType.Walls).Select(c => c.Level).FirstOrDefault();
+                if (th.Level - wallsLevel >= 2)
+                {
+                    res = "Must upgrade walls first.";
+                }
+            }
+            else if (buildingType == BuildingType.Walls)
+            {
+                //Req quary lvl2 and forge lvl1
+                int highestLvlQuarry = city.Buildings.Where(c => c.BuildingType == BuildingType.Quarry).Max(c => c.Level);
+                int forgeCount = city.Buildings.Where(c => c.BuildingType == BuildingType.Forge).Count();
+                if (highestLvlQuarry < 2)
+                {
+                    res += "Requires Quarry level 2. ";
+                }
+                if (forgeCount == 0)
+                {
+                    res += "Requires Forge level 1.";
+                }
+            }
+            return res;
+        }
+
+
         [HttpPost("BuildingDone")]
         public async Task<JsonResult> BuildingDone([FromBody] UpdateCityModel update)
         {
@@ -311,7 +538,7 @@ namespace MAWcore6.Controllers
             //Check if builders busy ..
             await CheckBuilder1(UserCity);
 
-            string TestingResult = CheckIfPreReqMet(UserCity, update);
+            string TestingResult = CheckIfBuildingPreReqMet(UserCity, update);
             if (TestingResult != "ok")
             {
                 message = TestingResult;
@@ -559,7 +786,7 @@ namespace MAWcore6.Controllers
             if (BuildingCount == 0)
             {
                 update.buildingType = "Academy";
-                TestingResult = CheckIfPreReqMet(userCity, update);
+                TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 if (TestingResult != "ok")
                 {
                     requirementsMet = false;
@@ -579,7 +806,7 @@ namespace MAWcore6.Controllers
             }
 
             update.buildingType = "Barrack";
-            TestingResult = CheckIfPreReqMet(userCity, update);
+            TestingResult = CheckIfBuildingPreReqMet(userCity, update);
             requirementsMet = true;
             if (TestingResult != "ok")
             {
@@ -601,7 +828,7 @@ namespace MAWcore6.Controllers
             BuildingCount = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Feasting_Hall).Count();
             if (BuildingCount == 0) {
                 update.buildingType = "Feasting";
-                TestingResult = CheckIfPreReqMet(userCity, update);
+                TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
                 {
@@ -624,7 +851,7 @@ namespace MAWcore6.Controllers
             if (BuildingCount == 0)
             {
                 update.buildingType = "Forge";
-                TestingResult = CheckIfPreReqMet(userCity, update);
+                TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
                 {
@@ -648,7 +875,7 @@ namespace MAWcore6.Controllers
             if (BuildingCount == 0)
             {
                 update.buildingType = "Inn";
-                TestingResult = CheckIfPreReqMet(userCity, update);
+                TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
                 {
@@ -671,7 +898,7 @@ namespace MAWcore6.Controllers
             if (BuildingCount == 0)
             {
                 update.buildingType = "Rally";
-                TestingResult = CheckIfPreReqMet(userCity, update);
+                TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
                 {

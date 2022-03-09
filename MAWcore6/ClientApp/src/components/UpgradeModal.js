@@ -16,12 +16,17 @@ export class UpgradeModal extends Component {
         this.getMaximumTroops = this.getMaximumTroops.bind(this);
         this.handleTroopQtyChange = this.handleTroopQtyChange.bind(this);
         this.showTime = this.showTime.bind(this);
+        this.handleRecruitClick = this.handleRecruitClick.bind(this);
         this.WarrFoodCost = 80;
         this.WarrWoodCost = 100;
         this.WarrIronCost = 50;
         this.WarrTimeCost = 25;
         this.WarrPopCost = 1;
         //this.upgradeBuildingClick = this.upgradeBuildingClick.bind(this);
+    }
+
+    handleRecruitClick() {
+        console.log('at handleRecruitClick ...');
     }
 
     handleTroopQtyChange(e) {
@@ -130,7 +135,6 @@ export class UpgradeModal extends Component {
     }
     
     
-    
     render() {
         const city = this.props.city;
         const activeBuildingId = this.props.activeBuildingId;
@@ -178,11 +182,14 @@ export class UpgradeModal extends Component {
                         </div>
                     </div>
                     <div>
-                        {activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} /> }
+                        {activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} />}
+                        {activeBuilding.buildingType === 2 && <Troops handleRecruitClick={this.handleRecruitClick } troops={this.props.troops} city={this.props.city}  />}
+                        {this.state.showRecruit && <Recruit troops={this.props.troops}  />}
                     </div>
                     <div className="row" hidden>
                         <div className="col-md-6">
-                            On left show a list of troops in training. On Right Show all troops..use cards. each one has a recruit button.
+                            On left show a list of troops in training, or queue of walls being built, or research.
+                            On Right Show all troops, wall defenses, research..use cards. each one has a recruit button.
                             On click shows archer pic with his stats..range population used
                             speed, defence, etc.
                         </div>

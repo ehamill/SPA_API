@@ -1,27 +1,23 @@
 ﻿import React, { Component } from 'react';
 import {Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-//import logo from './Images/Cottage.jpg' ;
-//import { WallDefenses } from './WallDefenses';
 
-export class RecruitModal extends Component {
+export class Recruit extends Component {
     
     constructor(props) {
         super(props);
 
         this.state = {
-            //activeBuildingId : this.props.activeBuildingId,
-            //city: this.props.city,
+            foodNeeded : 0,
+            stoneNeeded: 0,
+            woodNeed: 0,
+            ironNeeded: 0,
+            trainQty: 0,
+            duration: 0,
         };
 
         this.getMaximumTroops = this.getMaximumTroops.bind(this);
         this.handleTroopQtyChange = this.handleTroopQtyChange.bind(this);
         this.showTime = this.showTime.bind(this);
-        this.WarrFoodCost = 80;
-        this.WarrWoodCost = 100;
-        this.WarrIronCost = 50;
-        this.WarrTimeCost = 25;
-        this.WarrPopCost = 1;
-        //this.upgradeBuildingClick = this.upgradeBuildingClick.bind(this);
     }
 
     handleTroopQtyChange(e) {
@@ -129,8 +125,6 @@ export class RecruitModal extends Component {
         
     }
     
-    
-    
     render() {
         //const city = this.props.city;
         //const activeBuildingId = this.props.activeBuildingId;
@@ -143,87 +137,83 @@ export class RecruitModal extends Component {
         
 
         return (
-            <Modal isOpen={this.props.showRecruitModal}
-                toggle={this.props.toggleRecruitModal}
-            >
-                <ModalHeader >
-                    <img src={buildingImage} width="55px" />
-                    Type
-                </ModalHeader>
-                <ModalBody>
-                    <Table>
-                        <tbody>
-                            <tr>
-                                <th>Attack 150 </th>
-                                <th>Defense 200 </th>
-                                <th>Range 1200 </th>
-                            </tr>
-                            <tr>
-                                <th>Speed 300 </th>
-                                <th>Load</th>
-                                <th>Life </th>
-                            </tr>
-                            <tr>
-                                <th>Food </th>
-                                <th>Population </th>
-                                <th> </th>
-                            </tr>
-                        </tbody>
-                    </Table>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th> Required</th>
-                                <th> Needed</th>
-                                <th> You Own </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Food </td>
-                                <th>{this.state.foodNeeded}</th>
-                                <th>{this.props.food} </th>
-                            </tr>
-                            <tr>
-                                <th>Wood </th>
-                                <th>{this.state.woodNeeded}</th>
-                                <th>{this.props.wood} </th>
-                            </tr>
-                            <tr>
-                                <th>Iron </th>
-                                <th>{this.state.ironNeeded}</th>
-                                <th>{this.props.iron} </th>
-                            </tr>
-                            <tr>
-                                <th>Iron </th>
-                                <th>{this.state.ironNeeded}</th>
-                                <th>{this.props.iron} </th>
-                            </tr>
-                            <tr>
-                                <td colSpan="3">
-                                    You have {this.props.activeTroop}
-                                    <input type="text" id="troopQty" value={this.state.troopQty} onChange={this.handleTroopQtyChange} />
-                                    <button onClick={this.getMaximumTroops} >max {this.state.troopQty}</button>
-                                    <button onClick={this.getMaximumTroops} >min {this.state.troopQty}</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan="3">
-                                    Duration {this.state.duration}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" data-building="feast" onClick={this.props.handleClickBuildWhat}>
-                        Train
-                    </Button>
-                    <Button color="secondary" onClick={this.props.closeRecruitModal}>
-                        Cancel
-                    </Button>
-                </ModalFooter>
-            </Modal>
+            
+                <Table>
+                    <tbody>
+                        <tr>
+                            <th>Attack 150 </th>
+                            <th>Defense 200 </th>
+                            <th>Range 1200 </th>
+                        </tr>
+                        <tr>
+                            <th>Speed 300 </th>
+                            <th>Load</th>
+                            <th>Life </th>
+                        </tr>
+                        <tr>
+                            <th>Food </th>
+                            <th>Population </th>
+                            <th> </th>
+                        </tr>
+                    </tbody>
+                </Table>
+                <Table>
+                    <thead>
+                        <tr>
+                            <th> Required</th>
+                            <th> Needed</th>
+                            <th> You Own </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Food </td>
+                            <th>{this.state.foodNeeded}</th>
+                            <th>{this.props.food} </th>
+                        </tr>
+                        <tr>
+                            <th>Wood </th>
+                            <th>{this.state.stoneNeeded}</th>
+                            <th>{this.props.stone} </th>
+                        </tr>
+                        <tr>
+                            <th>Iron </th>
+                            <th>{this.state.woodNeeded}</th>
+                            <th>{this.props.wood} </th>
+                        </tr>
+                        <tr>
+                            <th>Iron </th>
+                            <th>{this.state.ironNeeded}</th>
+                            <th>{this.props.iron} </th>
+                        </tr>
+                        <tr>
+                            <td colSpan="3">
+                                You have 100 warrs this.props.activeTroop
+                                <input type="text" id="troopQty" value={this.state.trainQty} onChange={this.handleTroopQtyChange} />
+                                <button onClick={this.getMaximumTroops} >max </button>
+                                <button hidden >min </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="3" className="float-right">
+                                Duration {this.state.duration}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="3">
+                                <Button className="float-right" color="primary" >
+                                    Train
+                                </Button>
+                                <Button className="float-right" color="secondary" >
+                                    Cancel
+                                </Button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </Table>
+                
+                
+                
         );
     }
 

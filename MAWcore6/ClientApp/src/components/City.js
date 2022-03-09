@@ -16,6 +16,7 @@ export class City extends Component {
         super(props);
         this.state = {
             city: {},
+            troops: {},
             userResearch: {},
             //userItems: {},
             newBuildingsCost: {},
@@ -49,11 +50,6 @@ export class City extends Component {
 
     componentDidMount() {
         this.getCityData();
-        //if (this.state.activeBuildingId === -1) {
-        //    this.setState({
-        //        activeBuildingId: this.state.city.buildings[0].buildingId,
-        //    });
-        //}
     }
 
     testClick() {
@@ -265,7 +261,8 @@ export class City extends Component {
                   city={this.state.city}
                   activeBuildingId={this.state.activeBuildingId}
                   activeTroop="Warr"
-                  toggleUpdateModal={ this.toggleUpdateModal}
+                  toggleUpdateModal={this.toggleUpdateModal}
+                  troops={this.state.troops}
               /> 
 
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
@@ -427,7 +424,8 @@ export class City extends Component {
         console.log('at getCityData..loading city: ' + JSON.stringify(data.newBuildingsCost));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city.buildings[0]));
-        this.setState({ city: data.city, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
+        console.log('at getCityData..loading city: ' + JSON.stringify(data.troops));
+        this.setState({ city: data.city, troops: data.troops, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
     
 

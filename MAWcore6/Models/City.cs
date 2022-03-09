@@ -28,6 +28,18 @@
         public int Builder1Time { get; set; } = 0;
         public string? BuildingWhat { get; set; }
 
+        public int WorkerQty { get; set; } = 0;
+        public int WarriorQty { get; set; } = 0;
+        public int PikeQty { get; set; } = 0;
+        public int SwordQty { get; set; } = 0;
+        public int ArcherQty { get; set; } = 0;
+        public int RamQty { get; set; } = 0;
+        public int ScoutQty { get; set; } = 0;
+        public int CavalierQty { get; set; } = 0;
+        public int CattarackQty { get; set; } = 0;
+        public int TransporterQty { get; set; } = 0;
+        public int BallistaeQty { get; set; } = 0;
+        public int CatapultQty { get; set; } = 0;
 
     }
 }
