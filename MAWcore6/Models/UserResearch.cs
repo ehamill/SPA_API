@@ -1,4 +1,5 @@
-﻿namespace MAWcore6.Models
+﻿
+namespace MAWcore6.Models
 {
     public class UserResearch
     {
@@ -16,5 +17,6 @@
         public int Attack { get; set; } = 0;
         public int HorsebackRiding { get; set; } = 0;
         public int Defense { get; set; } = 0;
+        //public virtual City City { get; set; }
     }
 }

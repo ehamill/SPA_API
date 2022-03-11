@@ -6,6 +6,14 @@ a {
 code {
   color: #E01A76;
 }
+.bottom {
+    position: absolute;
+    bottom: 0;
+}
+.width-80 {
+    width: 80%;
+}
+
 /* reactstrap fixes */
 /* Toaster */
 .error-toaster {

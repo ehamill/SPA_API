@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Button, CardGroup,Card,CardBody,CardTitle,CardImg,CardText, } from 'reactstrap';
+import {Row, Col, Button, CardGroup, Card, CardBody, CardTitle, CardImg, CardText, CardFooter } from 'reactstrap';
 
 export class Troops extends Component {
     
@@ -22,37 +22,46 @@ export class Troops extends Component {
 
 
         return (
-            //{ troops.map((troop) =>
-            //        <Card key={b.type}>
-                        
-            //}
-            <CardGroup>
-                { troops.map((troop) =>
-                    <Card key={troop.type}>
+            <Row>
+                <Col md="4">
+                    <div>
+                        Training troop1 time left 2d 12hr 23 minutes
+                    </div>
+                    <div>
+                        Training troop2 time left 2d 12hr 23 minutes
+                    </div>
+                    <div>
+                        Training troop3 time left 2d 12hr 23 minutes
+                    </div>
+                </Col>
+                <Col md="8">
+                    <CardGroup>
+                { this.props.troops.map((troop) =>
+                    <Card key={troop.typeInt}>
                         <CardBody>
                             <CardTitle tag="h5">
-                                Arch
+                                {troop.typeString}
                             </CardTitle>
                             <CardText>
-                                <CardImg
-                                    alt=""
-                                    src="https://picsum.photos/318/180"
-                                    top
-                                    width="100px"
-                                />
-                                <span>153 = qty</span>
-                                <div>onclick go to recruit troops(type,costs,details: attk,def,speed,etc)</div>
-                                <Button className="float-bottom-right" >
-                                    Recruit
-                                </Button>
+                                image <br/> Qty: {troop.qty}
                             </CardText>
-
                         </CardBody>
+                        <div className="text-center">
+                            <Button className="width-80" onClick={() => this.props.handleRecruitClick(troop.typeInt)} className="float-bottom-right" >
+                                Recruit
+                            </Button>
+                        </div>
+                        
                     </Card>
 
                 )}
                     
             </CardGroup>
+                </Col>
+            </Row>
+
+
+            
             
         );
     }

@@ -50,6 +50,7 @@ export class City extends Component {
 
     componentDidMount() {
         this.getCityData();
+        //console.log(" cityjs troops:" + JSON.stringify(this.state.troops));
     }
 
     testClick() {
@@ -366,7 +367,7 @@ export class City extends Component {
         if (data.message !== 'ok') {
             alert('oops fetchBuildingDone..' + data.message)
         } else {
-            this.setState({ city: data.city });
+            this.setState({ city: data.city, newBuildingsCost: data.newBuildingsCost,});
         }
     }
 
@@ -421,10 +422,10 @@ export class City extends Component {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
-        console.log('at getCityData..loading city: ' + JSON.stringify(data.newBuildingsCost));
+        //console.log('at getCityData..loading city: ' + JSON.stringify(data.newBuildingsCost));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city.buildings[0]));
-        console.log('at getCityData..loading city: ' + JSON.stringify(data.troops));
+        console.log('at getCityData..loading troops: ' + JSON.stringify(data.troops));
         this.setState({ city: data.city, troops: data.troops, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
     

@@ -20,11 +20,21 @@ namespace MAWcore6.Data
         //Overide if you don't wan't table name to be "Cities"
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
-        //    modelBuilder.Entity<City>().ToTable("City");
-        //    modelBuilder.Entity<Building>().ToTable("Building");
-        //    modelBuilder.Entity<City>()
-        //            .HasRequired<City>(c => c.)
-        //            .WithMany(_ => _.Deck);
+        //    //modelBuilder.Entity<City>().ToTable("City");
+        //    //modelBuilder.Entity<Building>().ToTable("Building");
+        //    //modelBuilder.Entity<City>()
+        //    //    .HasOne(c => c.UserResearch)
+        //    //    .WithOne().HasForeignKey(c => c.);
+        //    //modelBuilder.Entity<UserResearch>()
+        //    //    .HasAlternateKey(c => c.UserId);
+
+        //    //modelBuilder.Entity<UserResearch>()
+        //    //    .HasOne(c => c.City)
+        //    //    .WithOne(d => d.UserResearch)
+        //    //    .HasForeignKey<UserResearch>(c => c.UserId)
+        //    //    .HasPrincipalKey<City>(c => c.UserId);
+            
+
 
         //}
 

@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Button, Modal, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, ModalBody, ModalFooter, Table } from 'reactstrap';
+import {Row,Col, Button, Modal, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, ModalBody, ModalFooter, Table } from 'reactstrap';
 
 export class AddBuildingModal extends Component {
     
@@ -41,77 +41,79 @@ export class AddBuildingModal extends Component {
                 <ModalBody>
                 {buildings.map((b) =>
                     <Card key={ b.type}>
-                  <CardImg top width="100%" src="/assets/318x180.svg" alt={b.type} />
+                  {/*<CardImg top width="100%" src="/assets/318x180.svg" alt={b.type} />*/}
                   <CardBody>
-                    <CardTitle tag="h5">{b.type}</CardTitle>
-                            <CardSubtitle tag="h6" className="mb-2 text-muted">
-                                <div className="row">
-                                    <div className="col-md-2">
+                    <CardTitle tag="h5" className="text-center">
+                        {b.type}
+                    </CardTitle>
+                        <CardSubtitle tag="h6" className="mb-2 text-muted">
+                        </CardSubtitle>
+                            <CardText>
+                                <Row>
+                                    <Col md="2">
                                         <img src={b.type + ".jpg"} alt="a" width="55px" />
-                                    </div>
-                                    <div className="col-md-8">
-                                        <div className="danger">Requires {b.reqMet ? "" : b.preReq} </div>
+                                    </Col>
+                                    <Col md="6">
                                         <div>
                                             {b.description}
+                                        </div>
+                                        <div className="danger">
+                                            {b.reqMet ? "" : "Requires: " + b.preReq}
                                         </div>
                                         <div>
                                             slot: {this.props.activeSlot} id: buildingID: {this.props.activeBuildingId}
                                         </div>
-                                    </div>
-                                    <div className="col-md-2">
+                                    </Col>
+                                    <Col md="4">
                                         <div>
                                             Build Time {this.showTime(b.time)}
                                         </div>
                                         <div>
                                             <Button color="primary"
-                                                disabled={b.reqMet ? true : false}
+                                                disabled={b.reqMet ? false : true}
                                                 data-building_type={b.type}
                                                 data-level="1"
                                                 data-building_id={this.props.activeBuildingId}
                                                 onClick={this.props.handleClickBuildWhat}>Build</Button>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                
-                    </CardSubtitle>
-                    <CardText>
+                                    </Col>
+                                </Row>
                         <div>
-                                    <Table bordered={true}>
-                                        <tbody>
-                                            <tr>
-                                                <th> Required</th>
-                                                <th> Needed</th>
-                                                <th> You Own </th>
-                                            </tr>
-                                            <tr>
-                                                <td>Food </td>
-                                                <td>{b.food}</td>
-                                                <td className={(this.props.food < b.food) ? "text-danger" : "text-success"} >
-                                                    {this.props.food} </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Stone </th>
-                                                <th>{b.stone}</th>
-                                                <th className={(this.props.stone < b.stone) ? "text-danger" : "text-success"} >
-                                                    {this.props.stone} </th>
-                                            </tr>
-                                            <tr>
-                                                <th>Wood </th>
-                                                <th>{b.wood}</th>
-                                                <th className={(this.props.wood < b.wood) ? "text-danger" : "text-success"} >
-                                                    {this.props.wood} 
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th>Iron </th>
-                                                <th>{b.iron}</th>
-                                                <th className={(this.props.iron < b.iron) ? "text-danger" : "text-success"} >
-                                                    {this.props.iron} 
-                                                </th>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
+                            <Table bordered={true}>
+                                <tbody>
+                                    <tr>
+                                        <th> Required</th>
+                                        <th> Needed</th>
+                                        <th> You Own </th>
+                                    </tr>
+                                    <tr>
+                                        <td>Food </td>
+                                        <td>{b.food}</td>
+                                        <td className={(this.props.food < b.food) ? "text-danger" : "text-success"} >
+                                            {this.props.food} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Stone </th>
+                                        <th>{b.stone}</th>
+                                        <th className={(this.props.stone < b.stone) ? "text-danger" : "text-success"} >
+                                            {this.props.stone} </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Wood </th>
+                                        <th>{b.wood}</th>
+                                        <th className={(this.props.wood < b.wood) ? "text-danger" : "text-success"} >
+                                            {this.props.wood} 
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Iron </th>
+                                        <th>{b.iron}</th>
+                                        <th className={(this.props.iron < b.iron) ? "text-danger" : "text-success"} >
+                                            {this.props.iron} 
+                                        </th>
+                                    </tr>
+                                </tbody>
+                            </Table>
 
                       </div>
                     </CardText>

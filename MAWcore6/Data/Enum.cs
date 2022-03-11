@@ -67,15 +67,15 @@
     {
         Worker = 1,
         Warrior = 2,
-        Pike = 3,
-        Sword = 4,
+        Pikeman = 3,
+        Swordsman = 4,
         Archer = 5,
-        Ram = 6,
+        Battering_Ram = 6,
         Scout = 7,
-        Cavalier = 8,
-        Cattarack = 9,
+        Cavalry = 8,
+        Cataphract = 9,
         Transporter = 10,
-        Ballistae = 11,
+        Ballista = 11,
         Catapult = 12,
     }
 
