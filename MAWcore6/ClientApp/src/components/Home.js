@@ -7,6 +7,7 @@ export class Home extends Component {
     return (
       <div>
         Select Server... <button>S1</button>
+        have User, Server, Cities.
       </div>
     );
   }

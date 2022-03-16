@@ -5,6 +5,7 @@ namespace MAWcore6.Models
     {
         public int UserResearchId { get; set; }
         public string UserId { get; set; }
+        //public virtual ApplicationUser User { get; set; }   
         public int Aggriculture { get; set; } = 0;
         public int Building { get; set; } = 0;
         public int Lumbering { get; set; } = 0;

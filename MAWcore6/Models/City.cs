@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MAWcore6.Models
 {
     public class City
@@ -47,6 +49,9 @@ namespace MAWcore6.Models
         public int RollingLogQty { get; set; } = 0;
         public int TrebuchetQty { get; set; } = 0;
 
-        //public UserResearch UserResearch { get; set; }
+        //[ForeignKey("UserId")]
+        //public virtual UserResearch UserResearch { get; set; }
+        //[ForeignKey("TroopQueueId")]
+        //public List<TroopQueue> TroopQueues { get; set; }
     }
 }

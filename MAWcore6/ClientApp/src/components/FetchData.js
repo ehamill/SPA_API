@@ -58,7 +58,6 @@ export class FetchData extends Component {
       headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
-     
     this.setState({ forecasts: data, loading: false });
   }
 }

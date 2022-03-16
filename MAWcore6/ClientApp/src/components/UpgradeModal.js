@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 //import logo from './Images/Cottage.jpg' ;
 import { WallDefenses } from './WallDefenses';
 import { Troops } from './Troops';
-import { RecruitModal } from './RecruitModal';
+
 
 export class UpgradeModal extends Component {
     
@@ -12,46 +12,18 @@ export class UpgradeModal extends Component {
 
         this.state = {
             showTroops : true,
-            showRecruitModal: false,
             showWallDefenses: true,
-            recruitTroopType : 0,
+            
         };
 
-        this.getMaximumTroops = this.getMaximumTroops.bind(this);
-        this.handleTroopQtyChange = this.handleTroopQtyChange.bind(this);
         this.showTime = this.showTime.bind(this);
         //this.handleRecruitClick = this.handleRecruitClick.bind(this);
-        this.WarrFoodCost = 80;
-        this.WarrWoodCost = 100;
-        this.WarrIronCost = 50;
-        this.WarrTimeCost = 25;
-        this.WarrPopCost = 1;
+       
         //this.upgradeBuildingClick = this.upgradeBuildingClick.bind(this);
-        this.showRecruitModal = this.showRecruitModal.bind(this);
-        this.hideRecruitModal = this.hideRecruitModal.bind(this);
+        
     }
 
-   
-    hideRecruitModal() {
-        this.setState({
-            showRecruitModal: false,
-        });
-    }
-
-    showRecruitModal(troopTypeInt) {
-        const troop = this.props.troops.find((x) => x.typeInt === troopTypeInt);
-        this.setState({
-            showRecruitModal: true,
-            recruitTroopType: troopTypeInt,
-        });
-        console.log('at handleRecruitClick ...troopTypeInt: ' + troopTypeInt);
-        //TrainTroops();
-    }
-    toggleRecruitModal = () => {
-        this.setState(prevState => ({
-            showRecruitModal: !prevState.showRecruitModal
-        }));
-    };
+    
 
 
     showTime(secs) {
@@ -141,10 +113,7 @@ export class UpgradeModal extends Component {
         const demoLevel = activeBuilding.level - 1;
         const buildingType = this.GetBuildingType(activeBuilding.buildingType);
         const buildingImage = "Images/" + buildingType + ".jpg";
-        //if (activeBuilding.buildingType === 21) {
-        //    this.setState({
-        //        showWallDefenses: true,
-        //    });
+        
         //} else if (activeBuilding.buildingType === 2) {
         //    this.setState({
         //        showTroops: true,
@@ -164,19 +133,7 @@ export class UpgradeModal extends Component {
             >
                 <ModalHeader >{buildingType} Level {buildingLevel }</ModalHeader>
                 <ModalBody>
-                    {/*<Fragment>*/}
-
-                    {/*</Fragment>*/}
-                    <RecruitModal
-                        food={this.props.city.food}
-                        wood={this.props.city.wood}
-                        stone={this.props.city.stone}
-                        iron={this.props.city.iron}
-                        showModal={this.state.showRecruitModal} closeModal={this.hideRecruitModal}
-                        toggleRecruitModal={this.toggleRecruitModal}
-                        troopType={this.state.recruitTroopType}
-                        troops={this.props.troops} />
-
+                    
                     <div className="row">
                         <div className="col-md-2">
                             <img src={buildingImage}  width="55px"/>
@@ -203,7 +160,7 @@ export class UpgradeModal extends Component {
                     </div>
                     <div>
                         {activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} />}
-                        {activeBuilding.buildingType === 2  && <Troops handleRecruitClick={this.showRecruitModal } troops={this.props.troops} city={this.props.city}  />}
+                        {activeBuilding.buildingType === 2 && <Troops trainTroops={ this.props.trainTroops } troops={this.props.troops} troopQueues={this.props.troopQueues} city={this.props.city} activeBuildingId={activeBuildingId} />}
                         
                     </div>
                     <div className="row" hidden>
@@ -237,14 +194,6 @@ export class UpgradeModal extends Component {
                     
 
                 </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" data-building="feast" onClick={this.props.handleClickBuildWhat}>
-                        Make Warrs
-                    </Button>
-                    <Button color="secondary" onClick={this.props.closeModal}>
-                        Cancel
-                    </Button>
-                </ModalFooter>
             </Modal>
         );
     }

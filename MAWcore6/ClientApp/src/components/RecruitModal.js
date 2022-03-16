@@ -9,53 +9,62 @@ export class RecruitModal extends Component {
         this.state = {
             foodNeeded : 0,
             stoneNeeded: 0,
-            woodNeed: 0,
+            woodNeeded: 0,
             ironNeeded: 0,
             stoneNeeded: 0,
-            trainQty: 0,
+            timeNeeded: 0,
+            trainQty: "",
             duration: 0,
         };
 
         this.getMaximumTroops = this.getMaximumTroops.bind(this);
         this.handleTroopQtyChange = this.handleTroopQtyChange.bind(this);
         this.showTime = this.showTime.bind(this);
+        this.toggleRecruitModal = this.toggleRecruitModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }
 
     handleTroopQtyChange(e) {
+        const troop = (this.props.troopType === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.troopType);
         const qty = parseFloat(e.target.value);
         if (!Number.isNaN(qty)) {
             this.setState({
-                troopQty: qty,
-                foodNeeded: qty * this.WarrFoodCost,
-                woodNeeded: qty * this.WarrWoodCost,
-                ironNeeded: qty * this.WarrIronCost,
+                trainQty: qty,
+                foodNeeded: qty * troop.foodCost, 
+                stoneNeeded: qty * troop.stoneCost,
+                woodNeeded: qty * troop.woodCost,
+                ironNeeded: qty * troop.ironCost,
+                timeNeeded: this.showTime(qty * troop.timeCost),
             });
         } else {
             this.setState({
-                troopQty: "",
+                trainQty: "",
                 foodNeeded: 0,
                 woodNeeded: 0,
                 ironNeeded: 0,
+                timeNeeded: 0,
             });
         }
     }
 
     getMaximumTroops() {
+        const troop = (this.props.troopType === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.troopType);
         const food = this.props.food;
         const stone = this.props.stone;
         const wood = this.props.wood;
         const iron = this.props.iron;
         //const population = this.props.population;
-        let max = Math.floor(food / this.WarrFoodCost);
-        max = max < Math.floor(wood / this.WarrWoodCost) ? max : Math.floor(wood / this.WarrWoodCost);
-        max = max < Math.floor(iron / this.WarrIronCost) ? max : Math.floor(iron / this.WarrIronCost);
-        //max = max > Math.Floor(population/WarrPopCost) ? max : Math.Floor(wood/WarrPopCost);
+        let max = Math.floor(food / troop.foodCost);
+        max = max < Math.floor(stone / troop.stoneCost) ? max : Math.floor(stone / troop.stoneCost);
+        max = max < Math.floor(wood / troop.woodCost) ? max : Math.floor(wood / troop.woodCost);
+        max = max < Math.floor(iron / troop.ironCost) ? max : Math.floor(iron / troop.ironCost);
         this.setState({
-            troopQty: max,
-            foodNeeded: max * this.WarrFoodCost,
-            woodNeeded: max * this.WarrWoodCost,
-            ironNeeded: max * this.WarrIronCost,
-            duration: this.showTime(max * this.WarrTimeCost),
+            trainQty: max,
+            foodNeeded: max * troop.foodCost,
+            stoneNeeded: max * troop.stoneCost,
+            woodNeeded: max * troop.woodCost,
+            ironNeeded: max * troop.ironCost,
+            timeNeeded: this.showTime(max * troop.timeCost),
         });
     }
 
@@ -72,72 +81,58 @@ export class RecruitModal extends Component {
             return (m + "m " + s + "s");
         }
     }
+
+    
+    resetAndCallTrainTroops(troopTypeInt) {
+        //console.log('recruit modal mounted ...wood:' + this.props.wood);
+        this.setState({
+            trainQty: "",
+            foodNeeded: 0,
+            woodNeeded: 0,
+            ironNeeded: 0,
+            timeNeeded: 0,
+        });
+        this.props.trainTroops(troopTypeInt, this.state.trainQty)
+    }
     componentDidMount() {
        // console.log('upgrade modal mounted ...');
     }
 
-    componentWillUnmount() { }
+    componentWillUnmount() {
+       // console.log('recruit modal..componentWillUnmount...');
+    }
 
-    GetBuildingType(id) {
-        switch (id) {
-            case 0:
-                return "Empty";
-            case 1:
-                return "Academy";
-            case 2:
-                return "Barrack";
-            case 3:
-                return "Beacon_Tower";
-            case 4:
-                return "Cottage";
-            case 5:
-                return "Embassy";
-            case 6:
-                return "Feasting_Hall";
-            case 7:
-                return "Forge";
-            case 8:
-                return "Inn";
-            case 9:
-                return "Marketplace";
-            case 21:
-                return "Walls";
-
-            default:
-                return "Error";
-        }
-        
-            //Rally_Spot = 10,
-            //Relief_Station = 11,
-            //Stable = 12,
-            //Town_Hall = 13,
-            //Warehouse = 14,
-            //Workshop = 15,
-            //Farm = 16,
-            //Iron_Mill = 17,
-            //Sawmill = 18,
-            //Iron_Mine = 19,
-            //Quarry = 20,
-            //Not_Found = 21,
-        
+    toggleRecruitModal() {
+        this.setState({
+            trainQty: "",
+            foodNeeded: 0,
+            woodNeeded: 0,
+            ironNeeded: 0,
+            timeNeeded: 0,
+        });
+        this.props.toggleRecruitModal();
+    }
+    closeModal() {
+        this.setState({
+            trainQty: "",
+            foodNeeded: 0,
+            woodNeeded: 0,
+            ironNeeded: 0,
+            timeNeeded: 0,
+        });
+        this.props.closeModal();
     }
     
     render() {
         const troop = (this.props.troopType === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.troopType);
-        //const city = this.props.city;
+        
         //const activeBuildingId = this.props.activeBuildingId;
         //const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
-        //const buildingLevel = activeBuilding.level;
-        //const upgradeLevel = activeBuilding.level + 1;
-        //const demoLevel = activeBuilding.level - 1;
-        //const buildingType = this.GetBuildingType(activeBuilding.buildingType);
-        //const buildingImage = "Images/" + buildingType + ".jpg";
-        
-
+     
         return (
             <Modal
                 isOpen={this.props.showModal}
-                toggle={this.props.toggleRecruitModal}
+                toggle={this.toggleRecruitModal}
             >
                 <ModalHeader className="text-right">
                     Recruit {troop.typeString} 
@@ -151,7 +146,7 @@ export class RecruitModal extends Component {
                         {troop.preReq}
                     </div>
                     <div>
-                        <Table>
+                        <Table size="sm">
                             <tbody>
                                 <tr>
                                     <th>Attack {troop.attack} </th>
@@ -170,7 +165,7 @@ export class RecruitModal extends Component {
                                 </tr>
                             </tbody>
                         </Table>
-                        <Table>
+                        <Table size="sm">
                             <thead>
                                 <tr>
                                     <th> Required</th>
@@ -184,13 +179,16 @@ export class RecruitModal extends Component {
                                     <th>{this.state.foodNeeded}</th>
                                     <th>{this.props.food} </th>
                                 </tr>
+                                {this.state.stoneNeeded > 0 &&
+                                    <tr>
+                                        <th>Stone </th>
+                                        <th>{this.state.stoneNeeded}</th>
+                                        <th>{this.props.stone} </th>
+                                    </tr>
+                                }
+                                
                                 <tr>
                                     <th>Wood </th>
-                                    <th>{this.state.stoneNeeded}</th>
-                                    <th>{this.props.stone} </th>
-                                </tr>
-                                <tr>
-                                    <th>Iron </th>
                                     <th>{this.state.woodNeeded}</th>
                                     <th>{this.props.wood} </th>
                                 </tr>
@@ -200,25 +198,28 @@ export class RecruitModal extends Component {
                                     <th>{this.props.iron} </th>
                                 </tr>
                                 <tr>
-                                    <td colSpan="3">
-                                        You have 100 warrs this.props.activeTroop
-                                        <input type="text" id="troopQty" value={this.state.trainQty} onChange={this.handleTroopQtyChange} />
+                                    <td colSpan="2">
+                                        You have {troop.qty} {troop.typeString}s. 
+                                    </td>
+                                    <td colSpan="1" className="text-right">
+                                        Train:
+                                        <input type="text" id="troopQty" className="width-50 text-right"  value={this.state.trainQty} onChange={this.handleTroopQtyChange} />
                                         <button onClick={this.getMaximumTroops} >max </button>
                                         <button hidden >min </button>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan="3" className="float-right">
-                                        Duration {this.state.duration}
+                                    <td colSpan="3" className="text-right">
+                                        <div>Duration {this.state.timeNeeded}</div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan="3">
-                                        <Button className="float-right" onClick={this.props.trainTroops} color="primary" >
-                                            Train
-                                        </Button>
-                                        <Button className="float-right" onClick={this.props.closeModal} color="secondary" >
+                                    <td colSpan="3" className="text-right">
+                                        <Button  onClick={this.closeModal} color="secondary" >
                                             Cancel
+                                        </Button>
+                                        <Button onClick={() => this.resetAndCallTrainTroops(troop.typeInt) } color="primary" >
+                                            Train
                                         </Button>
                                     </td>
                                 </tr>
@@ -227,14 +228,6 @@ export class RecruitModal extends Component {
                     </div>
 
                 </ModalBody>
-                <ModalFooter>
-                    <Button className="">
-                        Train
-                    </Button>
-                    <Button color="secondary" onClick={this.props.closeRecruitModal}>
-                    Cancel
-                    </Button>
-                </ModalFooter>
             </Modal>
 
 

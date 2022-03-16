@@ -16,6 +16,7 @@ namespace MAWcore6.Data
         public DbSet<Building> Buildings { get; set; }
         public DbSet<UserItems> UserItems { get; set; }
         public DbSet<UserResearch> UserResearch { get; set; }
+        public DbSet<TroopQueue> TroopQueues { get; set; }
 
         //Overide if you don't wan't table name to be "Cities"
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,7 +34,7 @@ namespace MAWcore6.Data
         //    //    .WithOne(d => d.UserResearch)
         //    //    .HasForeignKey<UserResearch>(c => c.UserId)
         //    //    .HasPrincipalKey<City>(c => c.UserId);
-            
+
 
 
         //}

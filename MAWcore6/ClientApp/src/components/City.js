@@ -1,7 +1,6 @@
 ﻿import React, { Component,Fragment } from 'react';
 import authService from './api-authorization/AuthorizeService';
 import {Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-//import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 //import { BottomNav } from './BottomNav';
 import { Building } from './Building';
 import { BuildingTimer } from './BuildingTimer';
@@ -18,7 +17,7 @@ export class City extends Component {
             city: {},
             troops: {},
             userResearch: {},
-            //userItems: {},
+            troopQueues: {},
             newBuildingsCost: {},
             loading: true,
             showModal: false,
@@ -45,7 +44,7 @@ export class City extends Component {
         this.speedUpClick = this.speedUpClick.bind(this);
         this.upgradeBuilding = this.upgradeBuilding.bind(this);
         this.showTestModalClick = this.showTestModalClick.bind(this);
-        //this.toggleErrorMessage = this.toggleErrorMessage.bind(this);
+        this.trainTroops = this.trainTroops.bind(this);
     }
 
     componentDidMount() {
@@ -132,7 +131,13 @@ export class City extends Component {
         this.setState({ showTestModal: !this.state.showTestModal });
     }
     
-    
+    trainTroops(troopTypeInt, qty) {
+        //this.setState({
+        //    showRecruitModal: false,
+        //});
+        console.log('at City. train troops. typeInt: ' + troopTypeInt + ' qty: ' + qty );
+       this.postTrainTroops(troopTypeInt, qty);
+    }
     //toggleModal = () => {
     //    this.setState(prevState => ({
     //        showTestModal: !prevState.showTestModal
@@ -253,7 +258,7 @@ export class City extends Component {
                   toggleAddBuildingModal={this.toggleAddBuildingModal}
               />
 
-               <UpgradeModal
+              <UpgradeModal
                   handleClickUpgradeBuilding={this.handleClickBuildWhat}
                   upgradeBuilding={this.upgradeBuilding}
                   demoBuilding={this.upgradeBuilding}
@@ -264,6 +269,8 @@ export class City extends Component {
                   activeTroop="Warr"
                   toggleUpdateModal={this.toggleUpdateModal}
                   troops={this.state.troops}
+                  troopQueues={this.state.troopQueues}
+                  trainTroops={this.trainTroops}
               /> 
 
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
@@ -416,6 +423,27 @@ export class City extends Component {
         }
     }
 
+    async postTrainTroops(troopTypeInt, qty) {
+
+        //console.log('at postTrainTroops..troopTypeInt: '+ troopTypeInt +" qty:" + qty +" buildingId: "+ this.state.activeBuildingId);
+
+        var updateModel = { cityId: this.state.city.cityId, buildingId: this.state.activeBuildingId, troopTypeInt: parseInt(troopTypeInt), qty };
+        //console.log('updateModel: ' + JSON.stringify(updateModel));
+        const token = await authService.getAccessToken();
+        const response = await fetch('city/TrainTroops', {
+            method: 'POST',
+            headers: !token ? { 'Content-Type': 'application/json' } : { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateModel),
+        });
+        const data = await response.json();
+        //console.log('at postTrainTroops..returned: cityID: '+ JSON.stringify(data));
+        if (data.message !== 'ok') {
+            alert('oops postTrainTroops..' + data.message)
+        } else {
+            this.setState({ city: data.city, troopsQueue: data.troopsQueue, });
+        }
+    }
+
     async getCityData() {
         const token = await authService.getAccessToken();
         const response = await fetch('city', {
@@ -425,8 +453,9 @@ export class City extends Component {
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.newBuildingsCost));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city.buildings[0]));
-        console.log('at getCityData..loading troops: ' + JSON.stringify(data.troops));
-        this.setState({ city: data.city, troops: data.troops, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
+        //console.log('at getCityData..loading troops: ' + JSON.stringify(data.troops));
+        console.log('at getCityData..loading troopqueue: ' + JSON.stringify(data.troopQueues));
+        this.setState({ city: data.city, troopQueues: data.troopQueues, troops: data.troops, userResearch: data.userResearch, newBuildingsCost: data.newBuildingsCost, loading: false });
     }
     
 

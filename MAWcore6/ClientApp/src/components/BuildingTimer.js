@@ -3,7 +3,6 @@ import { Button } from 'reactstrap';
 
 export class BuildingTimer extends Component {
     
-    //static displayName = NavMenu.name;
     constructor(props) {
         super(props);
         this.state = {

@@ -195,6 +195,7 @@ namespace MAWcore6.Controllers
             var worker = new BuildingCost()
             {
                 type = TroopType.Worker.ToString(),
+                troopType = TroopType.Worker,
                 preReq = Constants.WorkerBuildReq,
                 reqMet = false,
                 food = Constants.WorkerFoodCost,
@@ -208,6 +209,7 @@ namespace MAWcore6.Controllers
             var warr = new BuildingCost()
             {
                 type = TroopType.Warrior.ToString(),
+                troopType = TroopType.Warrior,
                 preReq = Constants.WarrBuildReq,
                 reqMet = false,
                 food = Constants.WarrFoodCost,
@@ -221,6 +223,7 @@ namespace MAWcore6.Controllers
             var scout = new BuildingCost()
             {
                 type = TroopType.Scout.ToString(),
+                troopType = TroopType.Scout,
                 preReq = Constants.ScoutBuildReq,
                 reqMet = false,
                 food = Constants.ScoutFoodCost,
@@ -229,7 +232,64 @@ namespace MAWcore6.Controllers
                 iron = Constants.ScoutIronCost,
                 time = Constants.ScoutTimeCost,
             };
-            cost.Add(warr);
+            cost.Add(scout);
+
+            var pike = new BuildingCost()
+            {
+                type = TroopType.Pikeman.ToString(),
+                troopType = TroopType.Pikeman,
+                preReq = Constants.PikeBuildReq,
+                reqMet = false,
+                food = Constants.PikeFoodCost,
+                stone = 0,
+                wood = Constants.PikeWoodCost,
+                iron = Constants.PikeIronCost,
+                time = Constants.PikeTimeCost,
+            };
+            cost.Add(pike);
+
+            var arch = new BuildingCost()
+            {
+                type = TroopType.Archer.ToString(),
+                troopType = TroopType.Archer,
+                preReq = Constants.ArchBuildReq,
+                reqMet = false,
+                food = Constants.ArchFoodCost,
+                stone = 0,
+                wood = Constants.ArchWoodCost,
+                iron = Constants.ArchIronCost,
+                time = Constants.ArchTimeCost,
+            };
+            cost.Add(arch);
+
+            var cav = new BuildingCost()
+            {
+                type = TroopType.Cavalry.ToString(),
+                troopType = TroopType.Cavalry,
+                preReq = Constants.CavBuildReq,
+                reqMet = false,
+                food = Constants.CavFoodCost,
+                stone = 0,
+                wood = Constants.CavWoodCost,
+                iron = Constants.CavIronCost,
+                time = Constants.CavTimeCost,
+            };
+            cost.Add(cav);
+
+            var ball = new BuildingCost()
+            {
+                type = TroopType.Ballista.ToString(),
+                troopType = TroopType.Ballista,
+                preReq = Constants.BallBuildReq,
+                reqMet = false,
+                food = Constants.BallFoodCost,
+                stone = 0,
+                wood = Constants.BallWoodCost,
+                iron = Constants.BallIronCost,
+                time = Constants.BallTimeCost,
+            };
+            cost.Add(ball);
+
 
             return cost;
         }
@@ -253,14 +313,38 @@ namespace MAWcore6.Controllers
             UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
             List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
             List<Troop> Troops = GetTroops(UserCity, userResearch);
+            List<TroopQueue> TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId).ToListAsync(); 
             //await CheckBuilder1(UserCity);
             if (UserCity.Builder1Busy) {
                 await CheckBuilder1(UserCity);
             }
             //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+            //Sleep doesn't work..
+            //System.Diagnostics.Debug.WriteLine("Testing ... ");
+             //Attack(UserCity.CityId);
 
-            return new JsonResult(new { city = UserCity,troops = Troops, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+            return new JsonResult(new { city = UserCity,troops = Troops, troopQueues = TroopQueues, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
         }
+
+        //public void Attack(int CityId)
+        //{
+        //    var id = CityId;
+        //    Task.Delay(10000);
+        //    System.Diagnostics.Debug.WriteLine("deletting food ... ");
+
+        //    //return UserCity;
+        //    try
+        //    {
+        //        City UserCity = db.Cities.Where(c => c.CityId == id).FirstOrDefault();
+        //        UserCity.Food = UserCity.Food - 10000;
+        //        db.SaveChanges();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine("Testing ... " + ex.InnerException);
+        //    }
+
+        //}
 
         public async Task CheckBuilder1(City userCity) {
             DateTime TimeNow = DateTime.UtcNow;
@@ -596,6 +680,210 @@ namespace MAWcore6.Controllers
             return new JsonResult(new { message = message, city = UserCity, newBuildingsCost = ListOfNewBuildingsCost });
         }
 
+
+        public class TrainTroopsModel
+        {
+            public int cityId { get; set; }
+            public int buildingId { get; set; }
+            public int troopTypeInt { get; set; }
+            public int qty { get; set; }
+        }
+
+        [HttpPost("TrainTroops")]
+        public async Task<JsonResult> TrainTroops([FromBody] TrainTroopsModel update)
+        {
+            var message = "ok";
+
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
+            //Update Resources...
+            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
+            List<TroopQueue> TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId).ToListAsync();
+            var Building = UserCity.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
+            TroopType TroopType = (TroopType)update.troopTypeInt;
+            Result check = CheckTroopRequirements(Building, TroopType, UserResearch, TroopQueues.Count()); //, barrack lvl and research, check if queue full
+            if (check.Failed) {
+                return new JsonResult(new { message = check.Message});
+            }
+            
+            check = CheckResources(UserCity, UserResearch, TroopType, update.qty);
+            if (check.Failed)
+            {
+                return new JsonResult(new { message = check.Message });
+            }
+            //Get cost of troop, b/c used in Remove resources and troop queue
+            await RemoveResourcesForTroops(UserCity, UserResearch, TroopType, update.qty);
+            await UpdateTroopQueue(update, TroopQueues, UserCity, UserResearch);
+
+
+            return new JsonResult(new { message = message, city = UserCity, troopQueues = TroopQueues });
+        }
+
+        private async Task UpdateTroopQueue(TrainTroopsModel update, List<TroopQueue> troopQueues, City city, UserResearch userResearch)
+        {
+            var costOfTroops = GetCostOfTroops(city, userResearch);
+            BuildingCost singleTroopCost = costOfTroops.Where(c => c.troopType == (TroopType)update.troopTypeInt).FirstOrDefault();
+
+            var troopQueue = new TroopQueue()
+            {
+                Starts = DateTime.UtcNow,
+                Ends = DateTime.UtcNow.AddSeconds(singleTroopCost.time * update.qty), 
+                Qty = update.qty,
+                BuildingId = update.buildingId,
+                CityId = city.CityId,
+                TroopType = (TroopType)update.troopTypeInt,
+            };
+            await db.TroopQueues.AddAsync(troopQueue);
+            await db.SaveChangesAsync();
+
+            troopQueues.Add(troopQueue);
+
+        }
+
+        private async Task RemoveResourcesForTroops(City city, UserResearch userResearch, TroopType type, int qty)
+        {
+            var costOfTroops = GetCostOfTroops(city, userResearch);
+            BuildingCost singleTroopCost = costOfTroops.Where(c => c.troopType == type).FirstOrDefault();
+
+            city.Food = city.Food - singleTroopCost.food * qty;
+            city.Stone = city.Stone - singleTroopCost.stone * qty;
+            city.Wood = city.Wood - singleTroopCost.wood * qty;
+            city.Iron = city.Iron - singleTroopCost.iron * qty;
+
+            await db.SaveChangesAsync();
+        }
+        public class Result { 
+            public bool Failed { get; set; }
+            public string Message { get; set; }
+        }
+        private Result CheckResources(City city, UserResearch userResearch, TroopType type, int qty) {
+            Result result = new Result() { Failed = false, Message = "" };
+
+            var costOfTroops = GetCostOfTroops(city, userResearch);
+            var singleTroopCost = costOfTroops.Where(c => c.troopType == type).FirstOrDefault();
+
+            if (city.Food - singleTroopCost.food * qty < 0) {
+                result.Failed = true;
+                result.Message += "Requires " + singleTroopCost.food * qty + " food. ";
+            }
+            if (city.Stone - singleTroopCost.stone * qty < 0)
+            {
+                result.Failed = true;
+                result.Message += "Requires " + singleTroopCost.stone * qty + " stone. ";
+            }
+            if (city.Wood - singleTroopCost.wood * qty < 0)
+            {
+                result.Failed = true;
+                result.Message += "Requires " + singleTroopCost.wood * qty + " wood. ";
+            }
+            if (city.Iron - singleTroopCost.iron * qty < 0)
+            {
+                result.Failed = true;
+                result.Message += "Requires " + singleTroopCost.iron * qty + " iron. ";
+            }
+
+            return result;
+        }
+
+        private Result CheckTroopRequirements(Building building, TroopType type,  UserResearch research, int queueCount) {
+            Result result = new Result() { Failed = false, Message= ""};
+            
+            if (queueCount >= building.Level) {
+                result.Failed = true;
+                result.Message = "Queue is full. Upgrade barrack or cancel troops to add to queue.";
+            }
+
+            if (type == TroopType.Worker || type == TroopType.Warrior) {
+                if (building.Level < 1) {
+                    result.Failed = true;
+                    result.Message = "Requires Barrack level 1.";
+                } 
+            }
+            if (type == TroopType.Scout)
+            {
+                if (building.Level < 2)
+                {
+                    result.Failed = true;
+                    result.Message = "Requires Barrack level 2.";
+                }
+            }
+            if (type == TroopType.Pikeman)
+            {
+                if (building.Level < 2)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Barrack level 2. ";
+                }
+                if (research.IronWorking < 1)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Military Tradition level 1.";
+                }
+            }
+            if (type == TroopType.Swordsman)
+            {
+                if (building.Level < 3)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Barrack level 3. ";
+                }
+                if (research.IronWorking < 1)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Iron Working level 1.";
+                }
+            }
+            if (type == TroopType.Archer)
+            {
+                if (building.Level < 4)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Barrack level 4. ";
+                }
+                if (research.Archery < 1)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Archery level 1.";
+                }
+            }
+            if (type == TroopType.Cavalry)
+            {
+                if (building.Level < 5)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Barrack level 5. ";
+                }
+                if (research.HorsebackRiding < 1)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Horse Back Riding level 1.";
+                }
+            }
+            if (type == TroopType.Ballista)
+            {
+                if (building.Level < 9)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Barrack level 9. ";
+                }
+                if (research.Archery < 6)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Archery level 6.";
+                }
+                if (research.MetalCasting < 5)
+                {
+                    result.Failed = true;
+                    result.Message += "Requires Metal Casting level 5.";
+                }
+            }
+            if (building.BuildingType != BuildingType.Barrack)
+            {
+                result.Failed = true;
+                result.Message = "Barrack required to build troops.";
+            }
+            return result;
+        }
 
         [HttpPost("UpdateCity")]
         public async Task<JsonResult> UpdateCity([FromBody] UpdateCityModel update)

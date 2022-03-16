@@ -8,11 +8,14 @@ namespace MAWcore6.Models
         public string type {get; set;} = "";
         public bool reqMet { get; set; } = true;
         public string preReq { get; set; } = "";
-        public int food { get; set; }
-        public int stone { get; set; }
-        public int wood { get; set; }
-        public int iron { get; set; }
-        public int time { get; set; }
+        public int food { get; set; } = 0;
+        public int stone { get; set; } = 0;
+        public int wood { get; set; } = 0;
+        public int iron { get; set; } = 0;
+        public int time { get; set; } = 0;
         public string description { get; set; } = "";
+        public BuildingType? buildingType { get; set; }
+        public TroopType? troopType { get; set; }
+
     }
 }
