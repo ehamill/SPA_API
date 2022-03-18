@@ -116,7 +116,7 @@ export class UpgradeModal extends Component {
         
         //} else if (activeBuilding.buildingType === 2) {
         //    this.setState({
-        //        showTroops: true,
+       
         //    });
         //}
         //const nextBuildingType = (demoLevel == 0) ? "empty" : buildingType;

@@ -188,13 +188,137 @@ namespace MAWcore6.Controllers
             return Troops;
         
         }
+
+        private List<Troop> GetWallDefenses(City city, UserResearch research)
+        {
+            List<Troop> Troops = new List<Troop>();
+
+            var Trap = new Troop()
+            {
+                TypeString = TroopType.Trap.ToString(),
+                TypeInt = TroopType.Trap,
+                PreReq = "Requires Walls level 1.",
+                ReqMet = true,
+                Description = "Trap your enemy.",
+                Qty = city.TrapQty,
+                ForWalls = true,
+                FoodCost = Constants.TrapFoodReq,
+                StoneCost = Constants.TrapStoneReq,
+                WoodCost = Constants.TrapWoodReq,
+                IronCost = Constants.TrapIronReq,
+                TimeCost = Constants.TrapTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(Trap);
+
+            var Abatis = new Troop()
+            {
+                TypeString = TroopType.Abatis.ToString(),
+                TypeInt = TroopType.Abatis,
+                PreReq = "Requires Walls level 2.",
+                ReqMet = true,
+                Description = "Killer Defense against Cavalry.",
+                Qty = city.AbatisQty,
+                ForWalls = true,
+                FoodCost = Constants.AbatisFoodReq,
+                StoneCost = Constants.AbatisStoneReq,
+                WoodCost = Constants.AbatisWoodReq,
+                IronCost = Constants.AbatisIronReq,
+                TimeCost = Constants.AbatisTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(Abatis);
+
+            var AT = new Troop()
+            {
+                TypeString = TroopType.Archers_Tower.ToString(),
+                TypeInt = TroopType.Archers_Tower,
+                PreReq = "Requires Walls level 3.",
+                ReqMet = true,
+                Description = "Great ranged defense.",
+                Qty = city.ArcherTowerQty,
+                ForWalls = true,
+                FoodCost = Constants.ATFoodReq,
+                StoneCost = Constants.ATStoneReq,
+                WoodCost = Constants.ATWoodReq,
+                IronCost = Constants.ATIronReq,
+                TimeCost = Constants.ATTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(AT);
+
+            var rl = new Troop()
+            {
+                TypeString = TroopType.Trap.ToString(),
+                TypeInt = TroopType.Trap,
+                PreReq = "Requires Walls level 1.",
+                ReqMet = true,
+                Description = "Roll Logs on enemy when they reach the gates.",
+                Qty = city.RollingLogQty,
+                ForWalls = true,
+                FoodCost = Constants.RollLogFoodReq,
+                StoneCost = Constants.RollLogStoneReq,
+                WoodCost = Constants.RollLogWoodReq,
+                IronCost = Constants.RollLogIronReq,
+                TimeCost = Constants.RollLogTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(rl); 
+            
+            var treb = new Troop()
+            {
+                TypeString = TroopType.Defensive_Trebuchet.ToString(),
+                TypeInt = TroopType.Defensive_Trebuchet,
+                PreReq = "Requires Walls level 7.",
+                ReqMet = true,
+                Description = "Hail large stones on your enemy.",
+                Qty = city.TrebuchetQty,
+                ForWalls = true,
+                FoodCost = Constants.TrebFoodReq,
+                StoneCost = Constants.TrebStoneReq,
+                WoodCost = Constants.TrebWoodReq,
+                IronCost = Constants.TrebIronReq,
+                TimeCost = Constants.TrebTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(treb);
+
+            return Troops;
+
+        }
+
         private List<BuildingCost> GetCostOfTroops(City userCity, UserResearch userResearch)
         {
             var cost = new List<BuildingCost>();
 
             var worker = new BuildingCost()
             {
-                type = TroopType.Worker.ToString(),
+                typeString = TroopType.Worker.ToString(),
                 troopType = TroopType.Worker,
                 preReq = Constants.WorkerBuildReq,
                 reqMet = false,
@@ -208,7 +332,7 @@ namespace MAWcore6.Controllers
 
             var warr = new BuildingCost()
             {
-                type = TroopType.Warrior.ToString(),
+                typeString = TroopType.Warrior.ToString(),
                 troopType = TroopType.Warrior,
                 preReq = Constants.WarrBuildReq,
                 reqMet = false,
@@ -222,7 +346,7 @@ namespace MAWcore6.Controllers
 
             var scout = new BuildingCost()
             {
-                type = TroopType.Scout.ToString(),
+                typeString = TroopType.Scout.ToString(),
                 troopType = TroopType.Scout,
                 preReq = Constants.ScoutBuildReq,
                 reqMet = false,
@@ -236,7 +360,7 @@ namespace MAWcore6.Controllers
 
             var pike = new BuildingCost()
             {
-                type = TroopType.Pikeman.ToString(),
+                typeString = TroopType.Pikeman.ToString(),
                 troopType = TroopType.Pikeman,
                 preReq = Constants.PikeBuildReq,
                 reqMet = false,
@@ -250,7 +374,7 @@ namespace MAWcore6.Controllers
 
             var arch = new BuildingCost()
             {
-                type = TroopType.Archer.ToString(),
+                typeString = TroopType.Archer.ToString(),
                 troopType = TroopType.Archer,
                 preReq = Constants.ArchBuildReq,
                 reqMet = false,
@@ -264,7 +388,7 @@ namespace MAWcore6.Controllers
 
             var cav = new BuildingCost()
             {
-                type = TroopType.Cavalry.ToString(),
+                typeString = TroopType.Cavalry.ToString(),
                 troopType = TroopType.Cavalry,
                 preReq = Constants.CavBuildReq,
                 reqMet = false,
@@ -278,7 +402,7 @@ namespace MAWcore6.Controllers
 
             var ball = new BuildingCost()
             {
-                type = TroopType.Ballista.ToString(),
+                typeString = TroopType.Ballista.ToString(),
                 troopType = TroopType.Ballista,
                 preReq = Constants.BallBuildReq,
                 reqMet = false,
@@ -293,7 +417,62 @@ namespace MAWcore6.Controllers
 
             return cost;
         }
+        private async Task CheckTroopQueue(List<TroopQueue> troopQueues, City userCity) {
+            DateTime now = DateTime.UtcNow;
+            foreach (var queue in troopQueues)
+            {
+                if (queue.Ends < now)
+                {
+                    switch (queue.TroopTypeInt)
+                    {
+                        case (TroopType.Worker):
+                            userCity.WorkerQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Warrior):
+                            userCity.WarriorQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Pikeman):
+                            userCity.PikemanQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Scout):
+                            userCity.ScoutQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Swordsman):
+                            userCity.SwordsmanQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Archer):
+                            userCity.ArcherQty   += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Cavalry):
+                            userCity.CavalierQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Ballista):
+                            userCity.BallistaQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        case (TroopType.Transporter):
+                            userCity.TransporterQty += queue.Qty;
+                            queue.Complete = true;
+                            break;
+                        default:
+                            break;
+                    }
+                    await db.SaveChangesAsync();
+                }
+                else {
+                    queue.TimeLeft = Convert.ToInt32(Math.Floor((queue.Ends - now).TotalSeconds)); 
+                }
 
+            }
+
+        }
 
         [HttpGet]
         public async Task<JsonResult> Get()
@@ -301,20 +480,28 @@ namespace MAWcore6.Controllers
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             //var u = await _userManager.FindByIdAsync(UserId);
             City UserCity = new City();
+            UserItems UserItems = new UserItems();
+            UserResearch userResearch = new UserResearch();
+            List<TroopQueue> TroopQueues = new List<TroopQueue>();
+
             try
             {
                 UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+                UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+                userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+                TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId && c.Complete == false).ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-            UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+            
             List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
             List<Troop> Troops = GetTroops(UserCity, userResearch);
-            List<TroopQueue> TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId).ToListAsync(); 
-            //await CheckBuilder1(UserCity);
+            List<Troop> WallDefenses = GetWallDefenses(UserCity, userResearch);
+            //CheckTroopQueue(TroopQueues, UserCity);
+            //If done, add troops to city... delete queue?? Status..training-complete-cancelled
+            //if not...
             if (UserCity.Builder1Busy) {
                 await CheckBuilder1(UserCity);
             }
@@ -395,50 +582,6 @@ namespace MAWcore6.Controllers
             public bool reqMet { get; set; }
         }
 
-        private List<BuildingCost> GetCostOfTroops555(City userCity, UserResearch userResearch) { 
-            var cost = new List<BuildingCost>();
-
-            var worker = new BuildingCost()
-            {
-                type = TroopType.Worker.ToString(),
-                preReq = Constants.WorkerBuildReq,
-                reqMet = false,
-                food = Constants.WorkerFoodCost,
-                stone = 0,
-                wood = Constants.WorkerWoodCost,
-                iron = Constants.WorkerIronCost,
-                time = Constants.WorkerTimeCost,
-            };
-            cost.Add(worker);
-            
-            var warr = new BuildingCost()
-            {
-                type = TroopType.Warrior.ToString(),
-                preReq = Constants.WarrBuildReq,
-                reqMet = false,
-                food = Constants.WarrFoodCost,
-                stone = 0,
-                wood = Constants.WarrWoodCost,
-                iron = Constants.WarrIronCost,
-                time  = Constants.WarrTimeCost,
-            };
-            cost.Add(warr);
-
-            var scout = new BuildingCost()
-            {
-                type = TroopType.Scout.ToString(),
-                preReq = Constants.ScoutBuildReq,
-                reqMet = false,
-                food = Constants.ScoutFoodCost,
-                stone = 0,
-                wood = Constants.ScoutWoodCost,
-                iron = Constants.ScoutIronCost,
-                time = Constants.ScoutTimeCost,
-            };
-            cost.Add(warr);
-
-            return cost;
-        }
         private BuildingCost GetUpgradeCostOfBuilding(UpdateCityModel update,City userCity, UserResearch userResearch)
         {
             var building = userCity.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
@@ -454,7 +597,8 @@ namespace MAWcore6.Controllers
             switch (BuildingType)
             {
                 case BuildingType.Academy:
-                    bc.type = BuildingType.Academy.ToString(); ;
+                    bc.typeString = BuildingType.Academy.ToString();
+                    bc.buildingTypeInt = BuildingType.Academy;
                     bc.food = Constants.AcademyFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.AcademyStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.AcademyWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -463,7 +607,8 @@ namespace MAWcore6.Controllers
                     break;
 
                 case BuildingType.Barrack:
-                    bc.type = BuildingType.Barrack.ToString(); ;
+                    bc.typeString = BuildingType.Barrack.ToString();
+                    bc.buildingTypeInt = BuildingType.Barrack;
                     bc.food = Constants.BarrFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.BarrStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.BarrWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -471,7 +616,8 @@ namespace MAWcore6.Controllers
                     bc.time = Constants.BarrTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
                 case BuildingType.Cottage:
-                    bc.type = BuildingType.Cottage.ToString(); 
+                    bc.typeString = BuildingType.Cottage.ToString();
+                    bc.buildingTypeInt = BuildingType.Cottage;
                     bc.food = Constants.CottFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.CottStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.CottWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -479,7 +625,8 @@ namespace MAWcore6.Controllers
                     bc.time = Constants.CottTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
                 case BuildingType.Feasting_Hall:
-                    bc.type = BuildingType.Feasting_Hall.ToString().Replace("_"," "); 
+                    bc.typeString = BuildingType.Feasting_Hall.ToString().Replace("_"," ");
+                    bc.buildingTypeInt = BuildingType.Feasting_Hall;
                     bc.food = Constants.FeastFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.FeastStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.FeastWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -487,7 +634,8 @@ namespace MAWcore6.Controllers
                     bc.time = Constants.FeastTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
                 case BuildingType.Forge:
-                    bc.type = BuildingType.Forge.ToString(); 
+                    bc.typeString = BuildingType.Forge.ToString();
+                    bc.buildingTypeInt = BuildingType.Forge;
                     bc.food = Constants.ForgeFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.ForgeStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.ForgeWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -495,7 +643,8 @@ namespace MAWcore6.Controllers
                     bc.time = Constants.ForgeTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
                 case BuildingType.Inn:
-                    bc.type = BuildingType.Inn.ToString(); 
+                    bc.typeString = BuildingType.Inn.ToString();
+                    bc.buildingTypeInt = BuildingType.Inn;
                     bc.food = Constants.InnFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.InnStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.InnWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -503,7 +652,8 @@ namespace MAWcore6.Controllers
                     bc.time = Constants.InnTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
                 case BuildingType.Rally_Spot:
-                    bc.type = BuildingType.Rally_Spot.ToString().Replace("_", " "); 
+                    bc.typeString = BuildingType.Rally_Spot.ToString().Replace("_", " ");
+                    bc.buildingTypeInt = BuildingType.Rally_Spot;
                     bc.food = Constants.RallyFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.RallyStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.RallyWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -511,7 +661,8 @@ namespace MAWcore6.Controllers
                     bc.time = Constants.RallyTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
                 case BuildingType.Town_Hall:
-                    bc.type = BuildingType.Town_Hall.ToString(); 
+                    bc.typeString = BuildingType.Town_Hall.ToString();
+                    bc.buildingTypeInt = BuildingType.Town_Hall;
                     bc.food = Constants.ThFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.ThStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.ThWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
@@ -519,14 +670,32 @@ namespace MAWcore6.Controllers
                     bc.time = Constants.ThTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
                 case BuildingType.Walls: 
-                    bc.type = BuildingType.Walls.ToString(); 
+                    bc.typeString = BuildingType.Walls.ToString();
+                    bc.buildingTypeInt = BuildingType.Walls;
                     bc.food = Constants.ThFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.stone = Constants.ThStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.wood = Constants.ThWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.iron = Constants.ThIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     bc.time = Constants.ThTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
                     break;
-
+                case BuildingType.Farm:
+                    bc.typeString = BuildingType.Farm.ToString();
+                    bc.buildingTypeInt = BuildingType.Farm;
+                    bc.food = Constants.FarmFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.stone = Constants.FarmStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.wood = Constants.FarmWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.iron = Constants.FarmIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.time = Constants.FarmTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    break;
+                case BuildingType.Quarry:
+                    bc.typeString = BuildingType.Quarry.ToString();
+                    bc.buildingTypeInt = BuildingType.Quarry;
+                    bc.food = Constants.QuarryFoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.stone = Constants.QuarryStoneReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.wood = Constants.QuarryWoodReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.iron = Constants.QuarryIronReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    bc.time = Constants.QuarryTimeReq * Convert.ToInt32(Math.Pow(2, level - 1));
+                    break;
             }
             return bc;
 
@@ -713,13 +882,13 @@ namespace MAWcore6.Controllers
             }
             //Get cost of troop, b/c used in Remove resources and troop queue
             await RemoveResourcesForTroops(UserCity, UserResearch, TroopType, update.qty);
-            await UpdateTroopQueue(update, TroopQueues, UserCity, UserResearch);
+            await TroopQueueAdd(update, TroopQueues, UserCity, UserResearch);
 
 
             return new JsonResult(new { message = message, city = UserCity, troopQueues = TroopQueues });
         }
 
-        private async Task UpdateTroopQueue(TrainTroopsModel update, List<TroopQueue> troopQueues, City city, UserResearch userResearch)
+        private async Task TroopQueueAdd(TrainTroopsModel update, List<TroopQueue> troopQueues, City city, UserResearch userResearch)
         {
             var costOfTroops = GetCostOfTroops(city, userResearch);
             BuildingCost singleTroopCost = costOfTroops.Where(c => c.troopType == (TroopType)update.troopTypeInt).FirstOrDefault();
@@ -731,7 +900,10 @@ namespace MAWcore6.Controllers
                 Qty = update.qty,
                 BuildingId = update.buildingId,
                 CityId = city.CityId,
-                TroopType = (TroopType)update.troopTypeInt,
+                TroopTypeInt = (TroopType)update.troopTypeInt,
+                TroopTypeString = ((TroopType)update.troopTypeInt).ToString(),
+                TimeLeft = singleTroopCost.time * update.qty,
+                Complete = false,
             };
             await db.TroopQueues.AddAsync(troopQueue);
             await db.SaveChangesAsync();
@@ -1131,7 +1303,8 @@ namespace MAWcore6.Controllers
             }
             BuildingCost cott = new BuildingCost()
             {
-                type = BuildingType.Cottage.ToString(),
+                typeString = BuildingType.Cottage.ToString(),
+                buildingTypeInt = BuildingType.Cottage,
                 preReq = TestingResult,
                 reqMet = requirementsMet,
                 food = Constants.CottFoodReq,
@@ -1155,7 +1328,8 @@ namespace MAWcore6.Controllers
                 }
                 BuildingCost Academy = new BuildingCost()
                 {
-                    type = BuildingType.Academy.ToString().Replace("_", " "),
+                    typeString = BuildingType.Academy.ToString().Replace("_", " "),
+                    buildingTypeInt = BuildingType.Academy,
                     preReq = TestingResult,
                     reqMet = requirementsMet,
                     food = Constants.AcademyFoodReq,
@@ -1177,7 +1351,8 @@ namespace MAWcore6.Controllers
             }
             BuildingCost barr = new BuildingCost()
             {
-                type = BuildingType.Barrack.ToString(),
+                typeString = BuildingType.Barrack.ToString(),
+                buildingTypeInt = BuildingType.Barrack,
                 preReq = TestingResult,
                 reqMet = requirementsMet,
                 food = Constants.BarrFoodReq,
@@ -1200,7 +1375,8 @@ namespace MAWcore6.Controllers
                 }
                 BuildingCost Feast = new BuildingCost()
                 {
-                    type = BuildingType.Feasting_Hall.ToString().Replace("_", " "),
+                    typeString = BuildingType.Feasting_Hall.ToString().Replace("_", " "),
+                    buildingTypeInt = BuildingType.Feasting_Hall,
                     preReq = TestingResult,
                     reqMet = requirementsMet,
                     food = Constants.FeastFoodReq,
@@ -1224,7 +1400,8 @@ namespace MAWcore6.Controllers
                 }
                 BuildingCost Forge = new BuildingCost()
                 {
-                    type = BuildingType.Forge.ToString().Replace("_", " "),
+                    typeString = BuildingType.Forge.ToString().Replace("_", " "),
+                    buildingTypeInt = BuildingType.Forge,
                     preReq = TestingResult,
                     reqMet = requirementsMet,
                     food = Constants.ForgeFoodReq,
@@ -1249,7 +1426,8 @@ namespace MAWcore6.Controllers
                 }
                 BuildingCost inn = new BuildingCost()
                 {
-                    type = BuildingType.Inn.ToString(),
+                    typeString = BuildingType.Inn.ToString(),
+                    buildingTypeInt = BuildingType.Inn,
                     preReq = TestingResult,
                     reqMet = requirementsMet,
                     food = Constants.InnFoodReq,
@@ -1273,7 +1451,8 @@ namespace MAWcore6.Controllers
                 }
                 BuildingCost rally = new BuildingCost()
                 {
-                    type = BuildingType.Rally_Spot.ToString().Replace("_", " "),
+                    typeString = BuildingType.Rally_Spot.ToString().Replace("_", " "),
+                    buildingTypeInt = BuildingType.Rally_Spot,
                     preReq = TestingResult,
                     reqMet = requirementsMet,
                     food = Constants.RallyFoodReq,
@@ -1286,13 +1465,69 @@ namespace MAWcore6.Controllers
                 lbc.Add(rally);
 
             }
-            //BuildingCount = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Feasting_Hall).Count();
-            //if (BuildingCount == 0)
-            //{
+            BuildingCost farm = new BuildingCost()
+            {
+                typeString = BuildingType.Farm.ToString(),
+                buildingTypeInt = BuildingType.Farm,
+                preReq = "",
+                reqMet = true,
+                food = Constants.FarmFoodReq,
+                stone = Constants.FarmStoneReq,
+                wood = Constants.FarmWoodReq,
+                iron = Constants.FarmIronReq,
+                time = Constants.FarmTimeReq,
+                description = "Increases food production.",
+                farm = true,
+            };
+            lbc.Add(farm);
 
-            //}
-            
+            BuildingCost quarry = new BuildingCost()
+            {
+                typeString = BuildingType.Quarry.ToString(),
+                buildingTypeInt = BuildingType.Sawmill,
+                preReq = "",
+                reqMet = true,
+                food = Constants.QuarryFoodReq,
+                stone = Constants.QuarryStoneReq,
+                wood = Constants.QuarryWoodReq,
+                iron = Constants.QuarryIronReq,
+                time = Constants.QuarryTimeReq,
+                description = "Increases stone production.",
+                farm = true,
+            };
+            lbc.Add(quarry);
 
+            BuildingCost sawmill = new BuildingCost()
+            {
+                typeString = BuildingType.Sawmill.ToString(),
+                buildingTypeInt = BuildingType.Sawmill,
+                preReq = "",
+                reqMet = true,
+                food = Constants.SawFoodReq,
+                stone = Constants.SawStoneReq,
+                wood = Constants.SawWoodReq,
+                iron = Constants.SawIronReq,
+                time = Constants.SawTimeReq,
+                description = "Increases wood production.",
+                farm = true,
+            };
+            lbc.Add(sawmill);
+
+            BuildingCost ironMine = new BuildingCost()
+            {
+                typeString = BuildingType.Iron_Mine.ToString(),
+                buildingTypeInt = BuildingType.Iron_Mine,
+                preReq = "",
+                reqMet = true,
+                food = Constants.IronMineFoodReq,
+                stone = Constants.IronMineStoneReq,
+                wood = Constants.IronMineWoodReq,
+                iron = Constants.IronMineIronReq,
+                time = Constants.IronMineTimeReq,
+                description = "Increases iron production.",
+                farm = true,
+            };
+            lbc.Add(ironMine);
             return lbc;
 
         }

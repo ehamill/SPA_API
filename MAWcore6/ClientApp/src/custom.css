@@ -16,7 +16,10 @@ code {
 .width-50 {
     width: 50%;
 }
-
+.speedUpButton {
+    height: 23px;
+    font-size: 10px;
+}
 /* reactstrap fixes */
 /* Toaster */
 .error-toaster {

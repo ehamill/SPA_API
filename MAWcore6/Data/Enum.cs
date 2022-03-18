@@ -77,6 +77,11 @@
         Transporter = 10,
         Ballista = 11,
         Catapult = 12,
+        Trap = 13,
+        Abatis = 14,
+        Archers_Tower = 15,
+        Rolling_Log = 16,
+        Defensive_Trebuchet = 17
     }
 
 

@@ -1,7 +1,8 @@
-﻿import authService from './api-authorization/AuthorizeService';
+﻿//import authService from './api-authorization/AuthorizeService';
 import React, { Component } from 'react';
 import { Row, Col, Button, Card, CardBody, CardTitle, CardImg, CardText, CardFooter } from 'reactstrap';
 import { RecruitModal } from './RecruitModal';
+import { Timer } from './Timer';
 
 export class Troops extends Component {
     
@@ -12,9 +13,7 @@ export class Troops extends Component {
             recruitTroopType: 0,
             showRecruitModal: false,
         };
-        //this.showRecruitModalClick = this.showRecruitModalClick.bind(this);
         this.hideRecruitModal = this.hideRecruitModal.bind(this);
-       // this.trainTroops = this.trainTroops.bind(this);
     }
 
     
@@ -39,26 +38,12 @@ export class Troops extends Component {
         //console.log('at handleRecruitClick ...troopTypeInt: ' + troopTypeInt);
     }
 
-    //trainTroops(troopTypeInt, qty) {
-    //    this.setState({
-    //        showRecruitModal: false,
-    //    });
-    //    console.log('at troops. train troops. typeInt: ' + troopTypeInt + ' qty: ' + qty);
-    //    //this.postTrainTroops(troopTypeInt, qty, this.props.activeBuildingId);
-    //    this.props.TrainTroops(troopTypeInt, qty, this.props.activeBuildingId);
-    //}
-
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-    }
-
-    
 
     render() {
-        const userName = "testing";
-
+        const activeBuildingId = this.props.activeBuildingId;
+        const troopQueue = this.props.troopQueues.filter(function (el) {
+            return el.buildingId == activeBuildingId;
+        });
 
         return (
             
@@ -78,28 +63,38 @@ export class Troops extends Component {
                     />
                 </div>
                 <Col md="4">
-                    {this.props.troopQueues.map((queue) =>
-                        <div>
-                            Starts: {queue.starts}, Ends: {queue.ends} qty: {queue.qty}
-                            type: {queue.troopType} buidlingId: {queue.buildingId}
+                    {troopQueue.map((queue) =>
+                        <div key={queue.troopQueueId}>
+                            <div>
+                                <Timer seconds={queue.timeLeft} making={queue.qty + ' ' + queue.troopTypeString + 's'} timerExpired={this.timerExpired} />
+                            </div>
+
+                            <div hidden>
+                                this.props.activeBuildingId: {this.props.activeBuildingId}
+                               troopQueueId {queue.troopQueueId}
+                                Training {queue.qty} {queue.troopTypeString}
+                                Starts: {queue.starts}, Ends: {queue.ends} qty: {queue.qty}
+                                type: {queue.troopTypeString} buidlingId: {queue.buildingId} seconds: {queue.timeLeft}
+                            </div>
                         </div>
+                        
                     )}
                 </Col>
                 <Col md="8">
                     <Row>
                         { this.props.troops.map((troop) =>
-                            <Col md="4" key={troop.typeInt}>
+                            <Col md="4" key={troop.troopTypeInt}>
                                 <Card>
                                     <CardBody>
                                         <CardTitle tag="h5">
-                                            {troop.typeString}
+                                            {troop.troopTypeString}
                                         </CardTitle>
                                         <CardText>
                                             image <br/> Qty: {troop.qty}
                                         </CardText>
                                     </CardBody>
                                     <div className="text-center">
-                                        <Button className="width-80" onClick={() => this.showRecruitModalClick(troop.typeInt)} className="float-bottom-right" >
+                                        <Button className="width-80" onClick={() => this.showRecruitModalClick(troop.troopTypeInt)} className="float-bottom-right" >
                                             Recruit
                                         </Button>
                                     </div>

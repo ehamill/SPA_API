@@ -1,20 +1,19 @@
 ﻿import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Col } from 'reactstrap';
 
-export class BuildingTimer extends Component {
+export class Timer extends Component {
     
     constructor(props) {
         super(props);
         this.state = {
-            timeLeft: this.props.time,
+            timeLeft: this.props.seconds,
             time: {},
-            seconds: this.props.time,
-            //visible: " hidden ",
+            seconds: this.props.seconds,
+            //isHidden: this.props.isHidden,
             width: "100%",
-            buildType: this.props.buildWhat,
-            location: this.props.location,
-            level: this.props.level,
-            
+            //buildType: this.props.buildWhat,
+            //location: this.props.location,
+            //level: this.props.level,
         };
         this.timer = 0;
         this.startTimer = this.startTimer.bind(this);
@@ -40,15 +39,9 @@ export class BuildingTimer extends Component {
     }
 
     componentDidMount() {
-        console.log('building timer mount => timeSent: ' + this.props.time + ' buildWhat: '
-            + this.props.buildWhat + ' location: ' + this.props.location+ ' level: '+this.props.level);
-        //if (this.props.builder1Busy) {
-        //    let timeLeftVar = this.secondsToTime(this.state.seconds);
-        //    this.setState({
-        //        time: timeLeftVar,
-        //    });
-        //    this.startTimer();
-        //}
+        //console.log('building timer mount => timeSent: ' + this.props.time + ' buildWhat: '
+        //    + this.props.buildWhat + ' location: ' + this.props.location+ ' level: '+this.props.level);
+        
         let timeLeftVar = this.secondsToTime(this.state.seconds);
         this.setState({
             time: timeLeftVar,
@@ -75,20 +68,22 @@ export class BuildingTimer extends Component {
             this.setState({
                 //isHidden: true,
             });
-            this.props.buildingDone( this.state.location, this.state.buildType, this.state.level );
+            console.log('training done at timer.js');
+            //this.props.buildingDone( this.state.location, this.state.buildType, this.state.level );
         }
     }
 
     speedUp() {
-        console.log('at speedUp: ' + this.state.seconds);
-        this.props.speedUpClick();
+        //console.log('at speedUp: ' + this.state.seconds);
+        //this.props.speedUpClick();
         let secs = this.state.seconds - 30;
         if (secs <= 0) {
             this.setState({
                 seconds: 0,
                 //isHidden: true,
             });
-            this.props.buildingDone(this.state.location, this.state.buildType, this.state.level);
+            console.log('training done at timer.js');
+            //this.props.buildingDone(this.state.location, this.state.buildType, this.state.level);
         } else {
             this.setState({
                 seconds: secs
@@ -97,24 +92,23 @@ export class BuildingTimer extends Component {
     }
 
     render() {
-        const timerClassName = (this.props.builder1Busy) ? "" : "hidden";
+        //const timerClassName = (this.props.builder1Busy) ? "" : "hidden";
 
         return (
-            <div id="buildingTime" className={timerClassName}>
-                <div id="buildingProgress">
-                    <span id="buildingWhat" className="buildingWhat">
-                        {this.props.buildWhat} <ShowTime time={this.state.time} />{" "}
-                    </span>
-                    <div id="buildingBar" style={{ width: this.state.width }}>
-                        {" "}
-                    </div>
-                    <span id="upgradeTimer" className="upgradeTimer"></span>
+            <Col>
+                <div>
+                    {this.props.making } <ShowTime time={this.state.time} />
+                    <Button onClick={this.speedUp} className="btn-sm btn-primary speedUpButton float-right">
+                        SpeedUp
+                    </Button>
                 </div>
-                <Button onClick={this.speedUp} className="speedUpBtn btn-success">
-                    SpeedUp 
-                </Button>
-                {this.props.builder1Busy.toString()}
-            </div>
+                <div className="progress" style={{ height: "20px" }} >
+                    <div className="progress-bar" role="progressbar" style={{ width: this.state.width  }} aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+            </Col>
+            
         );
     }
 }

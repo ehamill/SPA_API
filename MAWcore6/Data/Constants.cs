@@ -2,6 +2,44 @@
 {
     public class Constants
     {
+        #region Walls
+        //public const int WallsFoodReq = 3000;
+        //public const int WallsWoodReq = 1500;
+        //public const int WallsStoneReq = 10000;
+        //public const int WallsIronReq = 500;
+        //public const int WallsTimeReq = 30*60;
+
+        public const int TrapFoodReq = 50;
+        public const int TrapWoodReq = 500;
+        public const int TrapStoneReq = 100;
+        public const int TrapIronReq = 50;
+        public const int TrapTimeReq = 1 * 60;
+
+        public const int AbatisFoodReq = 100;
+        public const int AbatisWoodReq = 1200;
+        public const int AbatisStoneReq = 0;
+        public const int AbatisIronReq = 150;
+        public const int AbatisTimeReq = 2 * 60;
+
+        public const int ATFoodReq = 200;
+        public const int ATWoodReq = 2000;
+        public const int ATStoneReq = 1500;
+        public const int ATIronReq = 500;
+        public const int ATTimeReq = 30 * 60;
+
+        public const int RollLogFoodReq = 300;
+        public const int RollLogWoodReq = 6000;
+        public const int RollLogStoneReq = 0;
+        public const int RollLogIronReq = 0;
+        public const int RollLogTimeReq = 6 * 60;
+
+        public const int TrebFoodReq = 600;
+        public const int TrebWoodReq = 10;
+        public const int TrebStoneReq = 8000;
+        public const int TrebIronReq = 0;
+        public const int TrebTimeReq = 10 * 60;
+
+        #endregion
         #region Farms
         public const string FarmPrereq  = " ";
         public const int FarmFoodReq = 50;// FoodReq = FarmFoodReq * 2^(nextLevel -1) 

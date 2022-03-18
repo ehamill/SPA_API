@@ -49,7 +49,6 @@ export class City extends Component {
 
     componentDidMount() {
         this.getCityData();
-        //console.log(" cityjs troops:" + JSON.stringify(this.state.troops));
     }
 
     testClick() {
@@ -223,7 +222,9 @@ export class City extends Component {
         let building3 = this.state.city.buildings.find((x) => x.location === 3);
         let building4 = this.state.city.buildings.find((x) => x.location === 4);
         let building5 = this.state.city.buildings.find((x) => x.location === 5);
-        
+        //let building6 = this.state.city.buildings.find((x) => x.location === 6);
+        let building24 = this.state.city.buildings.find((x) => x.location === 24);
+        let building25 = this.state.city.buildings.find((x) => x.location === 25);
 
       return (
           <Container>
@@ -305,6 +306,20 @@ export class City extends Component {
                               </td>
                               <td>
                                   <Building onBuildingClick={() => this.openModal(building5.location)} b={building5}>empty </Building>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td>
+                               </td>
+                              <td>
+                              </td>
+                              <td colSpan="2" rowSpan="2">
+                               </td>
+                              <td>
+                                  <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
+                              </td>
+                              <td>
+                                  <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
                               </td>
                           </tr>
                       </tbody>

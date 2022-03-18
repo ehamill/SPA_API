@@ -25,7 +25,7 @@ export class RecruitModal extends Component {
     }
 
     handleTroopQtyChange(e) {
-        const troop = (this.props.troopType === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.troopType);
+        const troop = (this.props.troopTypeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.troopTypeInt === this.props.troopTypeInt);
         const qty = parseFloat(e.target.value);
         if (!Number.isNaN(qty)) {
             this.setState({
@@ -48,7 +48,7 @@ export class RecruitModal extends Component {
     }
 
     getMaximumTroops() {
-        const troop = (this.props.troopType === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.troopType);
+        const troop = (this.props.troopTypeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.troopTypeInt === this.props.troopTypeInt);
         const food = this.props.food;
         const stone = this.props.stone;
         const wood = this.props.wood;
@@ -95,7 +95,6 @@ export class RecruitModal extends Component {
         this.props.trainTroops(troopTypeInt, this.state.trainQty)
     }
     componentDidMount() {
-       // console.log('upgrade modal mounted ...');
     }
 
     componentWillUnmount() {
@@ -124,7 +123,7 @@ export class RecruitModal extends Component {
     }
     
     render() {
-        const troop = (this.props.troopType === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.troopType);
+        const troop = (this.props.troopTypeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.troopTypeInt === this.props.troopTypeInt);
         
         //const activeBuildingId = this.props.activeBuildingId;
         //const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
@@ -135,7 +134,7 @@ export class RecruitModal extends Component {
                 toggle={this.toggleRecruitModal}
             >
                 <ModalHeader className="text-right">
-                    Recruit {troop.typeString} 
+                    Recruit {troop.troopTypeString}
                 </ModalHeader>
                 <ModalBody>
                     <div>
@@ -199,7 +198,7 @@ export class RecruitModal extends Component {
                                 </tr>
                                 <tr>
                                     <td colSpan="2">
-                                        You have {troop.qty} {troop.typeString}s. 
+                                        You have {troop.qty} {troop.troopTypeString}s. 
                                     </td>
                                     <td colSpan="1" className="text-right">
                                         Train:
@@ -218,7 +217,7 @@ export class RecruitModal extends Component {
                                         <Button  onClick={this.closeModal} color="secondary" >
                                             Cancel
                                         </Button>
-                                        <Button onClick={() => this.resetAndCallTrainTroops(troop.typeInt) } color="primary" >
+                                        <Button onClick={() => this.resetAndCallTrainTroops(troop.troopTypeInt) } color="primary" >
                                             Train
                                         </Button>
                                     </td>
