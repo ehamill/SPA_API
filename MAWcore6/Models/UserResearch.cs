@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MAWcore6.Models
 {
     public class UserResearch
@@ -18,6 +20,8 @@ namespace MAWcore6.Models
         public int Attack { get; set; } = 0;
         public int HorsebackRiding { get; set; } = 0;
         public int Defense { get; set; } = 0;
+
+        //[ForeignKey("UserId")]
         //public virtual City City { get; set; }
     }
 }

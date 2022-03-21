@@ -121,7 +121,7 @@ export class UpgradeModal extends Component {
         //}
         //const nextBuildingType = (demoLevel == 0) ? "empty" : buildingType;
         
-        //console.log('active: ' + this.props.activeBuildingId+'testing ...' + JSON.stringify(this.props.troops));
+        console.log('upgrade modal wallDefenses: ' + JSON.stringify(this.props.wallDefenses));
 
         return (
             
@@ -159,7 +159,8 @@ export class UpgradeModal extends Component {
                         </div>
                     </div>
                     <div>
-                        {activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} />}
+                        {/*{activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} />}*/}
+                        {activeBuilding.buildingType === 21 && <Troops trainTroops={this.props.trainTroops} troops={this.props.wallDefenses} troopQueues={this.props.troopQueues} city={this.props.city} activeBuildingId={activeBuildingId} />}
                         {activeBuilding.buildingType === 2 && <Troops trainTroops={ this.props.trainTroops } troops={this.props.troops} troopQueues={this.props.troopQueues} city={this.props.city} activeBuildingId={activeBuildingId} />}
                         
                     </div>

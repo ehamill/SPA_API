@@ -123,8 +123,9 @@ export class RecruitModal extends Component {
     }
     
     render() {
-        const troop = (this.props.troopTypeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.troopTypeInt === this.props.troopTypeInt);
-        
+        //console.log('this.props.troopTypeInt: '+ this.props.typeInt)
+        const troop = (this.props.typeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.typeInt);
+        console.log('at recruit ...troop is: ' + JSON.stringify(troop))
         //const activeBuildingId = this.props.activeBuildingId;
         //const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
      
@@ -134,7 +135,7 @@ export class RecruitModal extends Component {
                 toggle={this.toggleRecruitModal}
             >
                 <ModalHeader className="text-right">
-                    Recruit {troop.troopTypeString}
+                    Recruit {troop.typeString}
                 </ModalHeader>
                 <ModalBody>
                     <div>

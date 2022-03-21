@@ -49,7 +49,8 @@ namespace MAWcore6.Models
         public int RollingLogQty { get; set; } = 0;
         public int TrebuchetQty { get; set; } = 0;
 
-        //[ForeignKey("UserId")]
+        //[ForeignKey("UserId
+        //[ForeignKey("UserResearchId")]
         //public virtual UserResearch UserResearch { get; set; }
         //[ForeignKey("TroopQueueId")]
         //public List<TroopQueue> TroopQueues { get; set; }

@@ -510,7 +510,7 @@ namespace MAWcore6.Controllers
             //System.Diagnostics.Debug.WriteLine("Testing ... ");
              //Attack(UserCity.CityId);
 
-            return new JsonResult(new { city = UserCity,troops = Troops, troopQueues = TroopQueues, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+            return new JsonResult(new { city = UserCity,troops = Troops, troopQueues = TroopQueues, wallDefenses = WallDefenses, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
         }
 
         //public void Attack(int CityId)
@@ -572,7 +572,8 @@ namespace MAWcore6.Controllers
         {
             public int cityId { get; set; }
             public int buildingId { get; set; }
-            public string buildingType { get; set; }
+            public string buildingTypeString { get; set; }
+            public int buildingTypeInt { get; set; }
             public int level { get; set; }
             public int location { get; set; } = -1;
         }
@@ -593,8 +594,9 @@ namespace MAWcore6.Controllers
             }
             BuildingCost bc = new BuildingCost();
 
-            BuildingType BuildingType = GetBuildingType(update.buildingType);
-            switch (BuildingType)
+            //BuildingType BuildingType = GetBuildingType(update.buildingType);
+            //int buildingTypeInt = update.buildingTypeInt;
+            switch ((BuildingType)update.buildingTypeInt)
             {
                 case BuildingType.Academy:
                     bc.typeString = BuildingType.Academy.ToString();
@@ -704,7 +706,7 @@ namespace MAWcore6.Controllers
         private string CheckIfBuildingPreReqMet(City city, UpdateCityModel update) {
             string res =  "ok";
             //var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
-            BuildingType buildingType = GetBuildingType(update.buildingType);
+            BuildingType buildingType = (BuildingType)update.buildingTypeInt;
             //No building can be more than one level greater than th.
             var th = city.Buildings.Where(c => c.BuildingType == BuildingType.Town_Hall).FirstOrDefault();
             
@@ -1160,8 +1162,8 @@ namespace MAWcore6.Controllers
         }
 
         private async Task RemoveResourcesAndUpdateConstructionFromCity(City UserCity, UpdateCityModel update, BuildingCost BuildingCost) {
-           
-            BuildingType buildingType = GetBuildingType(update.buildingType);
+
+            BuildingType buildingType = (BuildingType)update.buildingTypeInt; //GetBuildingType(update.buildingType);
 
             var b = UserCity.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
             string upgrading = "upgrading";
@@ -1293,7 +1295,8 @@ namespace MAWcore6.Controllers
 
             UpdateCityModel update = new UpdateCityModel()
             {
-                buildingType = "Cottage"
+                buildingTypeString = "Cottage",
+                buildingTypeInt = (int)BuildingType.Cottage,
             };
             string TestingResult = "ok";
             bool requirementsMet = true;
@@ -1319,7 +1322,8 @@ namespace MAWcore6.Controllers
             int BuildingCount = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Academy).Count();
             if (BuildingCount == 0)
             {
-                update.buildingType = "Academy";
+                update.buildingTypeString = "Academy";
+                update.buildingTypeInt = (int)BuildingType.Academy;
                 TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
@@ -1342,7 +1346,8 @@ namespace MAWcore6.Controllers
                 lbc.Add(Academy);
             }
 
-            update.buildingType = "Barrack";
+            update.buildingTypeString = "Barrack";
+            update.buildingTypeInt = (int)BuildingType.Barrack;
             TestingResult = CheckIfBuildingPreReqMet(userCity, update);
             requirementsMet = true;
             if (TestingResult != "ok")
@@ -1366,7 +1371,8 @@ namespace MAWcore6.Controllers
 
             BuildingCount = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Feasting_Hall).Count();
             if (BuildingCount == 0) {
-                update.buildingType = "Feasting";
+                update.buildingTypeString = "Feasting";
+                update.buildingTypeInt = (int)BuildingType.Feasting_Hall;
                 TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
@@ -1391,7 +1397,8 @@ namespace MAWcore6.Controllers
             BuildingCount = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Forge).Count();
             if (BuildingCount == 0)
             {
-                update.buildingType = "Forge";
+                update.buildingTypeString = "Forge";
+                update.buildingTypeInt = (int)BuildingType.Forge;
                 TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
@@ -1417,7 +1424,8 @@ namespace MAWcore6.Controllers
             BuildingCount = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Inn).Count();
             if (BuildingCount == 0)
             {
-                update.buildingType = "Inn";
+                update.buildingTypeString = "Inn";
+                update.buildingTypeInt = (int)BuildingType.Inn;
                 TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
@@ -1442,7 +1450,8 @@ namespace MAWcore6.Controllers
             BuildingCount = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Rally_Spot).Count();
             if (BuildingCount == 0)
             {
-                update.buildingType = "Rally";
+                update.buildingTypeString = "Rally";
+                update.buildingTypeInt = (int)BuildingType.Rally_Spot;
                 TestingResult = CheckIfBuildingPreReqMet(userCity, update);
                 requirementsMet = true;
                 if (TestingResult != "ok")
@@ -1465,6 +1474,7 @@ namespace MAWcore6.Controllers
                 lbc.Add(rally);
 
             }
+
             BuildingCost farm = new BuildingCost()
             {
                 typeString = BuildingType.Farm.ToString(),

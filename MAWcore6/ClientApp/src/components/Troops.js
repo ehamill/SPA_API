@@ -1,6 +1,6 @@
 ﻿//import authService from './api-authorization/AuthorizeService';
 import React, { Component } from 'react';
-import { Row, Col, Button, Card, CardBody, CardTitle, CardImg, CardText, CardFooter } from 'reactstrap';
+import { Row, Col, Button, Card, CardBody, CardTitle, CardText, CardFooter } from 'reactstrap';
 import { RecruitModal } from './RecruitModal';
 import { Timer } from './Timer';
 
@@ -30,16 +30,18 @@ export class Troops extends Component {
     };
 
     showRecruitModalClick(troopTypeInt) {
-        //const troop = this.props.troops.find((x) => x.typeInt === troopTypeInt);
+        const troop = this.props.troops.find((x) => x.typeInt === troopTypeInt);
+        console.log('at handleRecruitClick ...troopTypeInt: ' + troopTypeInt);
         this.setState({
             showRecruitModal: true,
             recruitTroopType: troopTypeInt,
         });
-        //console.log('at handleRecruitClick ...troopTypeInt: ' + troopTypeInt);
+        
     }
 
 
     render() {
+        console.log('troops.js troops' + JSON.stringify(this.props.troops));
         const activeBuildingId = this.props.activeBuildingId;
         const troopQueue = this.props.troopQueues.filter(function (el) {
             return el.buildingId == activeBuildingId;
@@ -57,7 +59,7 @@ export class Troops extends Component {
                         showModal={this.state.showRecruitModal}
                         closeModal={this.hideRecruitModal}
                         toggleRecruitModal={this.toggleRecruitModal}
-                        troopType={this.state.recruitTroopType}
+                        typeInt={this.state.recruitTroopType}
                         troops={this.props.troops}
                         trainTroops={this.props.trainTroops}
                     />
@@ -66,15 +68,15 @@ export class Troops extends Component {
                     {troopQueue.map((queue) =>
                         <div key={queue.troopQueueId}>
                             <div>
-                                <Timer seconds={queue.timeLeft} making={queue.qty + ' ' + queue.troopTypeString + 's'} timerExpired={this.timerExpired} />
+                                <Timer seconds={queue.timeLeft} making={queue.qty + ' ' + queue.typeString + 's'} timerExpired={this.timerExpired} />
                             </div>
 
-                            <div hidden>
+                            <div >
                                 this.props.activeBuildingId: {this.props.activeBuildingId}
                                troopQueueId {queue.troopQueueId}
-                                Training {queue.qty} {queue.troopTypeString}
+                                Training {queue.qty} {queue.typeString}
                                 Starts: {queue.starts}, Ends: {queue.ends} qty: {queue.qty}
-                                type: {queue.troopTypeString} buidlingId: {queue.buildingId} seconds: {queue.timeLeft}
+                                type: {queue.typeString} typeInt: {queue.typeInt} buidlingId: {queue.buildingId} seconds: {queue.timeLeft}
                             </div>
                         </div>
                         
@@ -83,18 +85,18 @@ export class Troops extends Component {
                 <Col md="8">
                     <Row>
                         { this.props.troops.map((troop) =>
-                            <Col md="4" key={troop.troopTypeInt}>
+                            <Col md="4" key={troop.typeInt}>
                                 <Card>
                                     <CardBody>
                                         <CardTitle tag="h5">
-                                            {troop.troopTypeString}
+                                            {troop.typeString}
                                         </CardTitle>
                                         <CardText>
                                             image <br/> Qty: {troop.qty}
                                         </CardText>
                                     </CardBody>
                                     <div className="text-center">
-                                        <Button className="width-80" onClick={() => this.showRecruitModalClick(troop.troopTypeInt)} className="float-bottom-right" >
+                                        <Button className="width-80" onClick={() => this.showRecruitModalClick(troop.typeInt)} className="float-bottom-right" >
                                             Recruit
                                         </Button>
                                     </div>
