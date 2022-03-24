@@ -572,7 +572,7 @@ namespace MAWcore6.Controllers
         {
             public int cityId { get; set; }
             public int buildingId { get; set; }
-            public string buildingTypeString { get; set; }
+            public string? buildingTypeString { get; set; }
             public int buildingTypeInt { get; set; }
             public int level { get; set; }
             public int location { get; set; } = -1;
@@ -746,92 +746,35 @@ namespace MAWcore6.Controllers
             } else if (buildingType == BuildingType.Walls)
             {
                 //Req quary lvl2 and forge lvl1
-                int highestLvlQuarry = city.Buildings.Where(c => c.BuildingType == BuildingType.Quarry).Max(c => c.Level);
-                int forgeCount = city.Buildings.Where(c => c.BuildingType == BuildingType.Forge).Count();
-                if (highestLvlQuarry < 2)
-                {
-                    res += "Requires Quarry level 2. ";
-                } 
-                if (forgeCount == 0)
-                {
-                    res += "Requires Forge level 1.";
-                }
+                //int highestLvlQuarry = 0; 
+                //var quarries = city.Buildings.Where(c => c.BuildingType == BuildingType.Quarry).ToList();
+                //if (quarries.Count() > 0) {
+                //    highestLvlQuarry = quarries.Max(c => c.Level);
+                //}
+                //int forgeCount = city.Buildings.Where(c => c.BuildingType == BuildingType.Forge).Count();
+                //if (highestLvlQuarry < 2 || forgeCount == 0)
+                //{
+                //    res = "";
+                //}
+                //if (highestLvlQuarry < 2)
+                //{
+                //    res += "Requires Quarry level 2. ";
+                //} 
+                //if (forgeCount == 0)
+                //{
+                //    res += "Requires Forge level 1.";
+                //}
             }
             return res;
         }
 
-        public class MakeTroopsModel
-        {
-            public int cityId { get; set; }
-            public int buildingId { get; set; }
-            public string troopType { get; set; } = "";
-            public int Qty { get; set; }
-        }
-
-        private string CheckIfTroopPreReqMet(City city, MakeTroopsModel update)
-        {
-            //Troops req barrack lvl and research
-            string res = "ok";
-            //var updateBuilding = city.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
-            BuildingType buildingType = new BuildingType(); // GetTroopType(update.troopType);
-            //No building can be more than one level greater than th.
-            var th = city.Buildings.Where(c => c.BuildingType == BuildingType.Town_Hall).FirstOrDefault();
-
-            if (buildingType == BuildingType.Academy)
-            {
-                if (th.Level < 2)
-                {
-                    res = "Requires Town Hall level 2";
-                }
-            }
-            else if (buildingType == BuildingType.Barrack)
-            {
-                var RallySpot = city.Buildings.Where(c => c.BuildingType == BuildingType.Rally_Spot).FirstOrDefault();
-                if (RallySpot == null)
-                {
-                    res = "Must build a RallySpot.";
-                }
-            }
-            else if (buildingType == BuildingType.Cottage)
-            {
-                if (update.Qty - 1 > th.Level)
-                {
-                    res = "Need to upgrade the Town Hall.";
-                }
-            }
-            else if (buildingType == BuildingType.Inn)
-            {
-                var cottageLvl2 = city.Buildings.Where(c => c.BuildingType == BuildingType.Cottage && c.Level >= 2).FirstOrDefault();
-                if (cottageLvl2 == null)
-                {
-                    res = "Must build a Cottage to level 2.";
-                }
-            }
-            else if (buildingType == BuildingType.Town_Hall)
-            {
-                //Req quary lvl2 and forge lvl1
-                int wallsLevel = city.Buildings.Where(c => c.BuildingType == BuildingType.Walls).Select(c => c.Level).FirstOrDefault();
-                if (th.Level - wallsLevel >= 2)
-                {
-                    res = "Must upgrade walls first.";
-                }
-            }
-            else if (buildingType == BuildingType.Walls)
-            {
-                //Req quary lvl2 and forge lvl1
-                int highestLvlQuarry = city.Buildings.Where(c => c.BuildingType == BuildingType.Quarry).Max(c => c.Level);
-                int forgeCount = city.Buildings.Where(c => c.BuildingType == BuildingType.Forge).Count();
-                if (highestLvlQuarry < 2)
-                {
-                    res += "Requires Quarry level 2. ";
-                }
-                if (forgeCount == 0)
-                {
-                    res += "Requires Forge level 1.";
-                }
-            }
-            return res;
-        }
+        //public class MakeTroopsModel
+        //{
+        //    public int cityId { get; set; }
+        //    public int buildingId { get; set; }
+        //    public string troopType { get; set; } = "";
+        //    public int Qty { get; set; }
+        //}
 
 
         [HttpPost("BuildingDone")]
@@ -1059,10 +1002,34 @@ namespace MAWcore6.Controllers
             return result;
         }
 
+
+        private string CheckForUpdateErrors(UpdateCityModel update) {
+            string result = "ok";
+            if (update.cityId == 0)
+            {
+                result += "City not found. update.cityId == " + update.cityId.ToString();
+            }
+            if (update.buildingId == 0)
+            {
+                result += "No buildingId found. update.buildingId == " + update.buildingId.ToString();
+            }
+            if (update.buildingTypeInt == 0)
+            {
+                result += "No building found. update.buildingTypeInt == " + update.buildingTypeInt.ToString();
+            }
+
+            return result;
+        }
+
         [HttpPost("UpdateCity")]
         public async Task<JsonResult> UpdateCity([FromBody] UpdateCityModel update)
         {
-            var message = "ok";
+            string message = CheckForUpdateErrors(update);
+
+            if (message != "ok") {
+                return new JsonResult(new { message = message });  
+            }
+
             string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var u = await _userManager.FindByIdAsync(UserId);
 

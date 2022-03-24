@@ -53,7 +53,7 @@ export class AddBuildingModal extends Component {
                   {/*<CardImg top width="100%" src="/assets/318x180.svg" alt={b.type} />*/}
                   <CardBody>
                     <CardTitle tag="h5" className="text-center">
-                        {b.typeString}
+                                {b.typeString}
                     </CardTitle>
                         <CardSubtitle tag="h6" className="mb-2 text-muted">
                         </CardSubtitle>
@@ -63,31 +63,33 @@ export class AddBuildingModal extends Component {
                                         <img src={b.type + ".jpg"} alt="a" width="55px" />
                                     </Col>
                                     <Col md="6">
-                                        <div>
+                                        <Row>
                                             {b.description}
-                                        </div>
-                                        <div className="danger">
+                                        </Row>
+                                        <Row className="danger">
                                             {b.reqMet ? "" : "Requires: " + b.preReq}
-                                        </div>
-                                        <div>
+                                        </Row>
+                                        <Row>
+                                            typeInt : {b.buildingTypeInt}
                                             slot: {this.props.activeSlot} id: buildingID: {this.props.activeBuildingId}
-                                        </div>
+                                        </Row>
                                     </Col>
                                     <Col md="4">
-                                        <div>
+                                        <Row>
                                             Build Time {this.showTime(b.time)}
-                                        </div>
-                                        <div>
+                                        </Row>
+                                        <Row>
                                             <Button color="primary"
                                                 disabled={b.reqMet ? false : true}
                                                 data-building_type={b.typeString}
+                                                data-building_type_int={b.buildingTypeInt}
                                                 data-level="1"
                                                 data-building_id={this.props.activeBuildingId}
                                                 onClick={this.props.handleClickBuildWhat}>Build</Button>
-                                        </div>
+                                        </Row>
                                     </Col>
                                 </Row>
-                        <div>
+                        <Row>
                             <Table bordered={true}>
                                 <tbody>
                                     <tr>
@@ -124,7 +126,7 @@ export class AddBuildingModal extends Component {
                                 </tbody>
                             </Table>
 
-                      </div>
+                      </Row>
                     </CardText>
                             
                   </CardBody>

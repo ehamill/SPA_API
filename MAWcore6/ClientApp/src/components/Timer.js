@@ -1,11 +1,12 @@
 ﻿import React, { Component } from 'react';
-import { Button, Col, } from 'reactstrap';
+import { Button, Col, Text } from 'reactstrap';
 
 export class Timer extends Component {
     
     constructor(props) {
         super(props);
         this.state = {
+             intelNeeded : 0,
             timeLeft: this.props.seconds,
             time: {},
             seconds: this.props.seconds,
@@ -68,8 +69,8 @@ export class Timer extends Component {
             this.setState({
                 //isHidden: true,
             });
-            console.log('training done at timer.js');
-            //this.props.buildingDone( this.state.location, this.state.buildType, this.state.level );
+            //console.log('training done at timer.js');
+            this.props.buildingDone(this.state.location, this.props.buildTypeInt, this.state.level);
         }
     }
 
@@ -82,8 +83,8 @@ export class Timer extends Component {
                 seconds: 0,
                 //isHidden: true,
             });
-            console.log('training done at timer.js');
-            //this.props.buildingDone(this.state.location, this.state.buildType, this.state.level);
+            //console.log('training done at timer.js');
+            this.props.buildingDone(this.state.location, this.props.buildTypeInt, this.state.level);
         } else {
             this.setState({
                 seconds: secs
@@ -97,7 +98,7 @@ export class Timer extends Component {
         return (
             <Col>
                 <div>
-                    {this.props.making } <ShowTime time={this.state.time} />
+                    {this.props.making} typeint: {this.props.buildTypeInt} <ShowTime time={this.state.time} />
                     <Button onClick={this.speedUp} className="btn-sm btn-primary speedUpButton float-right">
                         SpeedUp
                     </Button>

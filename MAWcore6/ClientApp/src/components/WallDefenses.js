@@ -1,14 +1,19 @@
 ﻿import React, { Component } from 'react';
 import { Row, Col, Button, CardGroup,Card,CardBody,CardTitle,CardImg,CardText, } from 'reactstrap';
 
+//import logo from './Images/Cottage.jpg';
+
 export class WallDefenses extends Component {
     
     constructor(props) {
         super(props);
 
         this.state = {
-
+            //intelNeeded: 0,
+            defenseTypeInt: 0,
+            showWallBuildModal: false,
         };
+        //this.hideWallBuildModal = this.hideWallBuildModal.bind(this);
     }
 
     componentDidMount() {
@@ -22,7 +27,10 @@ export class WallDefenses extends Component {
 
 
         return (
-            <Row>
+
+
+
+            <Row hidden>
                 <Col md="3" >
                     <div>
                         Total spaces: calculated by Wall lvl

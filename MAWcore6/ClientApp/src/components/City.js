@@ -14,6 +14,7 @@ export class City extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            intelNeeded : 0,
             city: {},
             troops: {},
             wallDefenses: {},
@@ -25,6 +26,7 @@ export class City extends Component {
             activeSlot: -1,
             activeBuildingId : -1,
             buildWhat: "",
+            buildTypeInt : 0,
             showBuilding1Timer: false,
             build1Time: 0,
             buildLevel: 0,
@@ -58,7 +60,7 @@ export class City extends Component {
 
     openModal(slot) {
         let b = this.state.city.buildings.find((x) => x.location === slot);
-        console.log('clicked on b level...: ' + b.level +' locatoin:'+ slot);
+        //console.log('clicked on b level...: ' + b.level +' locatoin:'+ slot);
         this.setState({
             activeSlot: slot,
             activeBuildingId: b.buildingId,
@@ -113,18 +115,20 @@ export class City extends Component {
 
     handleClickBuildWhat(e) {
         let buildingId = e.target.dataset.building_id;
-        let type = e.target.dataset.building_type;
+        let typeString = e.target.dataset.building_type;
+        let typeInt = e.target.dataset.building_type_int;
         let level = e.target.dataset.level;
-        
+        //alert('typeInt: ' + typeInt);
         this.setState({
-            buildWhat: type, //gets passed to timer
+            buildWhat: typeString, //gets passed to timer
             buildLevel: level, //gets passed to timer
+            buildTypeInt: typeInt,
             showModal: false,
             //showBuilding1Timer: true,
             //build1Time: time,
             //city: newCity,
         });
-        this.updateCityData(buildingId, type, level);
+        this.updateCityData(buildingId, typeInt, level);
         //sconsole.log("handleClickBuildWhat: cityid= " + this.state.city.cityId);
     }
     showTestModalClick() {
@@ -190,9 +194,9 @@ export class City extends Component {
 
     buildingDone( location, type, level) {
         console.log("building done at loc: " + location + " type:" + type + " lvL: " + level);
-        if (level === 0) {
-            type = "Empty";
-        }
+        //if (level === 0) {
+        //    type = "Empty";
+        //}
         //Might want to update right away, avoid any server lag.
         //var newCity = this.state.city;
         //var b = newCity.buildings.find((x) => x.location == location);
@@ -268,7 +272,6 @@ export class City extends Component {
                   closeModal={this.closeUpgradeModal}
                   city={this.state.city}
                   activeBuildingId={this.state.activeBuildingId}
-                  activeTroop="Warr"
                   toggleUpdateModal={this.toggleUpdateModal}
                   troops={this.state.troops}
                   troopQueues={this.state.troopQueues}
@@ -277,7 +280,7 @@ export class City extends Component {
               /> 
 
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
-              {this.state.city.builder1Busy ? <BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick} buildWhat={this.state.buildWhat} location={this.state.activeSlot } level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> : ''}
+              {this.state.city.builder1Busy ? <BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick} buildTypeInt={ this.state.buildTypeInt} buildWhat={this.state.buildWhat} location={this.state.activeSlot } level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> : ''}
               
               <div style={{ marginTop: "20px" }} onClick={this.toggleErrorMessage}>
                   show error message
@@ -375,11 +378,11 @@ export class City extends Component {
         );
     }
 
-    async fetchBuildingDone(location, buildingType, level) {
+    async fetchBuildingDone(location, buildingTypeInt, level) {
 
-        console.log('at fetchBuildingDone..');
-        var updateModel = { cityId: this.state.city.cityId, location: parseInt(location), buildingType, level: parseInt(level) };
-        //console.log('updateModel: ' + JSON.stringify(updateModel));
+        //console.log('at fetchBuildingDone..buildingTypeInt: ' + buildingTypeInt);
+        var updateModel = { cityId: this.state.city.cityId, location: parseInt(location), buildingTypeInt: parseInt(buildingTypeInt), level: parseInt(level) };
+        console.log('at fetchBuildingDone.. updateModel: ' + JSON.stringify(updateModel));
         const token = await authService.getAccessToken();
         const response = await fetch('city/BuildingDone', {
             method: 'POST',
@@ -416,9 +419,8 @@ export class City extends Component {
     }
 
 
-    async updateCityData(buildingId, buildingType, level) {
-        var updateModel = { cityId: this.state.city.cityId, buildingId: parseInt(buildingId), buildingType, level: parseInt(level) };
-        //console.log('updateModel: ' + JSON.stringify(updateModel));
+    async updateCityData(buildingId, buildingTypeInt, level) {
+        var updateModel = { cityId: this.state.city.cityId, buildingId: parseInt(buildingId), buildingTypeInt: parseInt(buildingTypeInt), level: parseInt(level) };
         const token = await authService.getAccessToken();
         const response = await fetch('city/UpdateCity', {
             method: 'POST',
@@ -427,16 +429,19 @@ export class City extends Component {
         });
         const data = await response.json();
         //console.log('at updateCityData..returned: cityID: '+ JSON.stringify(data));
+        //console.log('at update city data ..' + JSON.stringify(data));
         if (data.message !== 'ok') {
+            //this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
             this.setState({ errorMessage: data.message, showErrorMessage: true, });
             setTimeout(
                 () => this.setState(prevState => ({
                     showErrorMessage: !prevState.showErrorMessage
                 })),
-                3000
+                6000
             );
         } else {
-            this.setState({ city: data.city});
+            let buildWhat = this.GetBuildingType(parseInt(buildingTypeInt));
+            this.setState({ city: data.city, buildTypeInt: buildingTypeInt, buildWhat: buildWhat });
         }
     }
 

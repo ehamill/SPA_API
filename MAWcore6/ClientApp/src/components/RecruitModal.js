@@ -7,6 +7,7 @@ export class RecruitModal extends Component {
         super(props);
 
         this.state = {
+            intelNeeded : 0,
             foodNeeded : 0,
             stoneNeeded: 0,
             woodNeeded: 0,
@@ -53,7 +54,6 @@ export class RecruitModal extends Component {
         const stone = this.props.stone;
         const wood = this.props.wood;
         const iron = this.props.iron;
-        //const population = this.props.population;
         let max = Math.floor(food / troop.foodCost);
         max = max < Math.floor(stone / troop.stoneCost) ? max : Math.floor(stone / troop.stoneCost);
         max = max < Math.floor(wood / troop.woodCost) ? max : Math.floor(wood / troop.woodCost);

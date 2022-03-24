@@ -11,6 +11,7 @@ export class UpgradeModal extends Component {
         super(props);
 
         this.state = {
+            intelNeeded : 0,
             showTroops : true,
             showWallDefenses: true,
             
@@ -111,17 +112,11 @@ export class UpgradeModal extends Component {
         const buildingLevel = activeBuilding.level;
         const upgradeLevel = activeBuilding.level + 1;
         const demoLevel = activeBuilding.level - 1;
-        const buildingType = this.GetBuildingType(activeBuilding.buildingType);
-        const buildingImage = "Images/" + buildingType + ".jpg";
+        const buildingTypeString = this.GetBuildingType(activeBuilding.buildingType);
+        const buildingTypeInt = activeBuilding.buildingType;
+        const buildingImage = "Images/" + buildingTypeString + ".jpg";
         
-        //} else if (activeBuilding.buildingType === 2) {
-        //    this.setState({
-       
-        //    });
-        //}
-        //const nextBuildingType = (demoLevel == 0) ? "empty" : buildingType;
-        
-        console.log('upgrade modal wallDefenses: ' + JSON.stringify(this.props.wallDefenses));
+        //console.log('upgrade modal building: ' + JSON.stringify(activeBuilding));
 
         return (
             
@@ -131,7 +126,7 @@ export class UpgradeModal extends Component {
                 toggle={this.props.toggleUpdateModal}
                 size="lg"
             >
-                <ModalHeader >{buildingType} Level {buildingLevel }</ModalHeader>
+                <ModalHeader >{buildingTypeString} Level {buildingLevel }</ModalHeader>
                 <ModalBody>
                     
                     <div className="row">
@@ -144,16 +139,16 @@ export class UpgradeModal extends Component {
                             </p>
                             <div>
                                 Upgrading {activeBuilding.image} at {activeBuilding.location} || builidingID {activeBuildingId} ||
-                                Building Type: {buildingType} || activeBuilding.buildingType: {activeBuilding.buildingType} ||
+                                BuildingTypeString: {buildingTypeString} || buildingTypeInt: {buildingTypeInt} ||
                                 image: {activeBuilding.image} || Level: {buildingLevel}
                             </div>
                             
                         </div>
                         <div className="col-md-2">
-                            <Button className="float-right mr-2 mb-2" onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, upgradeLevel)} >
+                            <Button className="float-right mr-2 mb-2" onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingTypeInt, upgradeLevel)} >
                                 Upgrade
                             </Button>
-                            <Button className="float-right mr-2" onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingType, demoLevel)} >
+                            <Button className="float-right mr-2" onClick={() => this.props.upgradeBuilding(activeBuildingId, buildingTypeInt, demoLevel)} >
                                 Demo
                             </Button>
                         </div>

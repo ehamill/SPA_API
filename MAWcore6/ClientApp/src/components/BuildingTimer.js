@@ -40,8 +40,9 @@ export class BuildingTimer extends Component {
     }
 
     componentDidMount() {
-        console.log('building timer mount => timeSent: ' + this.props.time + ' buildWhat: '
-            + this.props.buildWhat + ' location: ' + this.props.location+ ' level: '+this.props.level);
+        console.log('building timer mount => timeSent: ' + this.props.time +
+            " props.buildTypeInt: " + this.props.buildTypeInt + ' buildWhat: ' + this.props.buildWhat +
+            ' location: ' + this.props.location + ' level: ' + this.props.level);
         //if (this.props.builder1Busy) {
         //    let timeLeftVar = this.secondsToTime(this.state.seconds);
         //    this.setState({
@@ -75,7 +76,7 @@ export class BuildingTimer extends Component {
             this.setState({
                 //isHidden: true,
             });
-            this.props.buildingDone( this.state.location, this.state.buildType, this.state.level );
+            this.props.buildingDone(this.state.location, this.props.buildTypeInt, this.state.level );
         }
     }
 
@@ -88,7 +89,7 @@ export class BuildingTimer extends Component {
                 seconds: 0,
                 //isHidden: true,
             });
-            this.props.buildingDone(this.state.location, this.state.buildType, this.state.level);
+            this.props.buildingDone(this.state.location, this.props.buildTypeInt, this.state.level);
         } else {
             this.setState({
                 seconds: secs
@@ -103,7 +104,7 @@ export class BuildingTimer extends Component {
             <div id="buildingTime" className={timerClassName}>
                 <div id="buildingProgress">
                     <span id="buildingWhat" className="buildingWhat">
-                        {this.props.buildWhat} <ShowTime time={this.state.time} />{" "}
+                        {this.props.buildWhat} <ShowTime time={this.state.time} /> typeInt:  {this.props.buildTypeInt}
                     </span>
                     <div id="buildingBar" style={{ width: this.state.width }}>
                         {" "}
@@ -113,7 +114,7 @@ export class BuildingTimer extends Component {
                 <Button onClick={this.speedUp} className="speedUpBtn btn-success">
                     SpeedUp 
                 </Button>
-                {this.props.builder1Busy.toString()}
+                {/*{this.props.builder1Busy.toString()}*/}
             </div>
         );
     }

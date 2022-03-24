@@ -10,6 +10,7 @@ export class Troops extends Component {
         super(props);
 
         this.state = {
+             intelNeeded : 0,
             recruitTroopType: 0,
             showRecruitModal: false,
         };
@@ -30,7 +31,7 @@ export class Troops extends Component {
     };
 
     showRecruitModalClick(troopTypeInt) {
-        const troop = this.props.troops.find((x) => x.typeInt === troopTypeInt);
+        //const troop = this.props.troops.find((x) => x.typeInt === troopTypeInt);
         console.log('at handleRecruitClick ...troopTypeInt: ' + troopTypeInt);
         this.setState({
             showRecruitModal: true,
@@ -41,7 +42,7 @@ export class Troops extends Component {
 
 
     render() {
-        console.log('troops.js troops' + JSON.stringify(this.props.troops));
+        //console.log('troops.js troops' + JSON.stringify(this.props.troops));
         const activeBuildingId = this.props.activeBuildingId;
         const troopQueue = this.props.troopQueues.filter(function (el) {
             return el.buildingId == activeBuildingId;
@@ -65,8 +66,8 @@ export class Troops extends Component {
                     />
                 </div>
                 <Col md="4">
-                    {troopQueue.map((queue) =>
-                        <div key={queue.troopQueueId}>
+                    {troopQueue.map((queue, index) =>
+                        <div key={index}>
                             <div>
                                 <Timer seconds={queue.timeLeft} making={queue.qty + ' ' + queue.typeString + 's'} timerExpired={this.timerExpired} />
                             </div>
@@ -79,7 +80,6 @@ export class Troops extends Component {
                                 type: {queue.typeString} typeInt: {queue.typeInt} buidlingId: {queue.buildingId} seconds: {queue.timeLeft}
                             </div>
                         </div>
-                        
                     )}
                 </Col>
                 <Col md="8">
