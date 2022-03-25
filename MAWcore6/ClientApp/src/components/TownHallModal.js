@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap';
 
 
 export class TownHallModal extends Component {
@@ -55,6 +55,31 @@ export class TownHallModal extends Component {
                     </div>
                     <div>
                     Overview - show all buildings and levels. Production rates. how much is made.
+                       <Table size="sm">
+                            <tbody>
+                                <tr>
+                                    <th>Resource</th>
+                                    <th>Rate </th>
+                                </tr>
+                                <tr>
+                                    <td>Food</td>
+                                    <td>{this.props.city.foodRate}</td>
+                                </tr>
+                                <tr>
+                                    <td>Stone</td>
+                                    <td>{this.props.city.stoneRate}</td>
+                                </tr>
+                                <tr>
+                                    <td>Wood</td>
+                                    <td>{this.props.city.woodRate}</td>
+                                </tr>
+                                <tr>
+                                    <td>Iron</td>
+                                    <td>{this.props.city.ironRate}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+
                     </div>
                     <div>Levy button -
                         borrow resourses from city..decreases loyalty alot

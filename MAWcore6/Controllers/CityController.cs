@@ -495,7 +495,8 @@ namespace MAWcore6.Controllers
             {
                 Console.WriteLine(ex.Message);
             }
-            
+
+            //await UpdateResources(UserCity);
             List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
             List<Troop> Troops = GetTroops(UserCity, userResearch);
             List<Troop> WallDefenses = GetWallDefenses(UserCity, userResearch);
@@ -567,6 +568,75 @@ namespace MAWcore6.Controllers
             }
             await db.SaveChangesAsync();
         }
+
+        public async Task UpdateResources(City userCity)
+        {
+            DateTime TimeNow = DateTime.UtcNow;
+            
+            int duration = Convert.ToInt32(Math.Floor((DateTime.UtcNow - userCity.ResourcesLastUpdated).TotalMinutes));
+            duration = 6;
+            if (duration < 5) {
+                return;
+            }
+            int FoodRate = 100;
+            int StoneRate = 100;
+            int WoodRate = 100;
+            int IronRate = 100;
+            int GoldRate = 0;
+            
+            var farms = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Farm).ToList();
+            if (farms.Count() > 0) {
+                foreach (var farm in farms)
+                {
+                    int rate = Constants.FarmFoodRate * farm.Level * (farm.Level + 1) / 2;
+                    FoodRate += rate;
+                }
+            }
+            var quarries = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Quarry).ToList();
+            if (quarries.Count() > 0)
+            {
+                foreach (var q in quarries)
+                {
+                    int rate = Constants.QuarryStoneRate * q.Level * (q.Level + 1) / 2;
+                    StoneRate += rate;
+                }
+            }
+            var mills = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Sawmill).ToList();
+            if (mills.Count() > 0)
+            {
+                foreach (var mill in mills)
+                {
+                    int rate = Constants.SawWoodRate * mill.Level * (mill.Level + 1) / 2;
+                    WoodRate += rate;
+                }
+            }
+            var mines = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Iron_Mine).ToList();
+            if (mills.Count() > 0)
+            {
+                foreach (var mine in mines)
+                {
+                    int rate = Constants.IronMineRate * mine.Level * (mine.Level + 1) / 2;
+                    IronRate += rate;
+                }
+            }
+           
+            int foodMade = FoodRate * duration / 60;
+            userCity.Food = userCity.Food + FoodRate * duration / 60;
+            userCity.Stone = userCity.Stone + StoneRate * duration / 60;
+            userCity.Wood = userCity.Wood + WoodRate * duration / 60;
+            userCity.Iron = userCity.Iron + IronRate * duration / 60;
+            userCity.Gold = userCity.Gold + GoldRate * duration / 60;
+            userCity.FoodRate = FoodRate;
+            userCity.StoneRate = StoneRate;
+            userCity.WoodRate = WoodRate;
+            userCity.IronRate = IronRate;
+            userCity.GoldRate = GoldRate;
+            userCity.ResourcesLastUpdated = DateTime.UtcNow;
+
+            await db.SaveChangesAsync();
+        }
+
+
 
         public class UpdateCityModel
         {
@@ -1509,26 +1579,7 @@ namespace MAWcore6.Controllers
 
         }
         
-        public async Task<City> UpdateResources(City City)
-        {
-            DateTime Now = DateTime.UtcNow;
-            DateTime Before = City.ResourcesLastUpdated;
-            TimeSpan diff = Now.Subtract(Before);
-            int mins = (int)Math.Floor(diff.TotalMinutes);
-            if (mins > 5)
-            {
-                //Recalculate ResRates based on farms, tech levels, and bonuses
-                //City.Food += City.FoodRate * mins / 60;
-                //City.Stone += City.StoneRate * mins / 60;
-                //City.Wood += City.WoodRate * mins / 60;
-                //City.Iron += City.IronRate * mins / 60;
-                City.ResourcesLastUpdated = Now;
-            }
 
-            await db.SaveChangesAsync();
-
-            return City;
-        }
 
         //public class test
         //{

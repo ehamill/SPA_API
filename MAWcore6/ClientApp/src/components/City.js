@@ -170,11 +170,32 @@ export class City extends Component {
                 return "Inn";
             case 9:
                 return "Marketplace";
+            case 10:
+                return "Rally_Spot";
+            case 11:
+                return "Relief_Station";
+            case 12:
+                return "Stable";
+            case 13:
+                return "Town_Hall";
+            case 14:
+                return "Warehouse";
+            case 15:
+                return "Workshop";
+            case 16:
+                return "Farm";
+            case 17:
+                return "Iron_Mine";
+            case 18:
+                return "Sawmill";
+            case 19:
+                return "Iron_Mine";
+            case 20:
+                return "Quarry";
             case 21:
-                return "Town Hall";
-
+                return "Walls";
             default:
-                return "Error";
+                return "Not_Found";
         }
 
         //Rally_Spot = 10,
@@ -236,7 +257,7 @@ export class City extends Component {
               <Fade>
                   <Toast isOpen={this.state.showErrorMessage} className="error-toaster">
                   <ToastHeader >
-                      error  <Button className="btn-close float-right" onClick={this.toggleErrorMessage}></Button>
+                      Error  <Button className="btn-close float-right" onClick={this.toggleErrorMessage}></Button>
                   </ToastHeader>
                   <ToastBody>
                       {this.state.errorMessage}
@@ -304,7 +325,7 @@ export class City extends Component {
                                   <Building onBuildingClick={() => this.openModal(building2.location)} b={building2}>empty </Building>
                               </td>
                               <td colSpan="2" rowSpan="2">
-                                  <Button color="primary" onClick={() => this.openModal(building3.location)} b={building2}>town hall</Button>
+                                  <Building onClick={() => this.openModal(building3.location)} b={building3} />                  
                               </td>
                               <td>
                                   <Building onBuildingClick={() => this.openModal(building4.location)} b={building4}>empty </Building>
@@ -473,7 +494,7 @@ export class City extends Component {
         });
         const data = await response.json();
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.newBuildingsCost));
-        //console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
+        console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city.buildings[0]));
         //console.log('at getCityData..loading troops: ' + JSON.stringify(data.troops));
         //console.log('at getCityData..loading troopqueue: ' + JSON.stringify(data.troopQueues));
