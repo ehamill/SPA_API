@@ -474,6 +474,107 @@ namespace MAWcore6.Controllers
 
         }
 
+        private void GetHeroPercentages(List<Hero> NewHeros) {
+            List<int> highPols = new List<int>();
+            List<int> highAttk = new List<int>();
+            List<int> highIntel = new List<int>();
+
+            foreach (var h in NewHeros)
+            {
+                if (h.Politics > 60)
+                {
+                    highPols.Add(h.Politics);
+                }
+                if (h.Attack > 60)
+                {
+                    highAttk.Add(h.Attack);
+                }
+                if (h.Intelligence > 60)
+                {
+                    highIntel.Add(h.Intelligence);
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine("HighPols: ");
+            foreach (var h in highPols)
+            {
+                System.Diagnostics.Debug.WriteLine(h + ", ");
+            }
+            System.Diagnostics.Debug.WriteLine("HighAttk: ");
+            foreach (var h in highAttk)
+            {
+                System.Diagnostics.Debug.WriteLine(h + ", ");
+            }
+            System.Diagnostics.Debug.WriteLine("HighIntel: ");
+            foreach (var h in highIntel)
+            {
+                System.Diagnostics.Debug.WriteLine(h + ", ");
+            }
+            var percentHighPol = highPols.Count() * 100 / NewHeros.Count();
+            var percentHighAttk = highAttk.Count() * 100 / NewHeros.Count();
+            var percentHighIntel = highIntel.Count() * 100 / NewHeros.Count();
+
+            System.Diagnostics.Debug.WriteLine("percentHighPol: " + percentHighPol + " percentHighAttk:" + percentHighAttk
+                + " percentHighIntel: " + percentHighIntel);
+        }
+
+
+        public async Task<List<Hero>> CreateHeros(int Qty, int CityId)
+        {
+            List<Hero> NewHeros = new List<Hero>();
+            //System.Diagnostics.Debug.WriteLine("hero" + i + ": Pol:" + PolPoints + " Attck: " + AttkPoints + " intel: " + IntelPoints);
+
+            for (int i = 0; i < Qty; i++)
+            {
+                Random random = new Random();
+                double rand = random.NextDouble();
+                int PolPoints = (rand < 0.3) ? random.Next(3, 70) : random.Next(3, 50);
+                int IntelPoints = (rand < 0.2) ? random.Next(3, 70) : random.Next(3, 50);
+                int AttkPoints = (rand > 0.9) ? random.Next(3, 70) : random.Next(3, 50);
+                Hero NewHero = new Hero();
+                NewHero.CityId = CityId;
+                NewHero.Politics = PolPoints;
+                NewHero.Intelligence = IntelPoints;
+                NewHero.Attack = AttkPoints;
+                NewHero.Level = random.Next(1, 10); ////Adjust Hero Level by Inn level
+                NewHero.Name = "George" + random.Next(1, 300);
+
+                NewHeros.Add(NewHero);
+                //db.Heros.Add(NewHero);
+            }
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                var m = e.InnerException.Message;
+            }
+
+            return NewHeros;
+
+        }
+
+        public async Task<List<Hero>> GetHeros(City userCity)
+        {
+            var CityHeros = await db.Heros.Where(c => c.CityId == userCity.CityId).ToListAsync();
+
+            if (CityHeros.Where(c => c.IsHired == false).Count() < 5) {
+                int Qty = 5 - CityHeros.Where(c => c.IsHired == false).Count();
+                List<Hero> newHeros = await CreateHeros(Qty, userCity.CityId);
+                foreach (var hero in newHeros)
+                {
+                    CityHeros.Add(hero);
+                }
+            }
+            //System.Diagnostics.Debug.WriteLine("hero" + i + ": Pol:" + PolPoints + " Attck: " + AttkPoints + " intel: " + IntelPoints);
+
+            //GetHeroPercentages(NewHeros);
+
+            return CityHeros;
+
+        }
+
         [HttpGet]
         public async Task<JsonResult> Get()
         {
@@ -496,6 +597,7 @@ namespace MAWcore6.Controllers
                 Console.WriteLine(ex.Message);
             }
 
+            List<Hero> Heros = await GetHeros(UserCity);
             //await UpdateResources(UserCity);
             List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
             List<Troop> Troops = GetTroops(UserCity, userResearch);
@@ -511,7 +613,7 @@ namespace MAWcore6.Controllers
             //System.Diagnostics.Debug.WriteLine("Testing ... ");
              //Attack(UserCity.CityId);
 
-            return new JsonResult(new { city = UserCity,troops = Troops, troopQueues = TroopQueues, wallDefenses = WallDefenses, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+            return new JsonResult(new { city = UserCity,heros = Heros, troops = Troops, troopQueues = TroopQueues, wallDefenses = WallDefenses, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
         }
 
         //public void Attack(int CityId)
@@ -1157,6 +1259,81 @@ namespace MAWcore6.Controllers
             await CheckBuilder1(UserCity);
 
             return new JsonResult(new { message = message, city = UserCity });
+        }
+
+
+        public class HireHeroModel { 
+            public int CityId { get; set; } 
+            public int HeroId { get; set; }
+        }
+
+
+        [HttpPost("HireHero")]
+        public async Task<JsonResult> HireHero([FromBody] HireHeroModel model)
+        {
+            ///GetHeros, check if have enough gold, remove gold,
+            //change IsHired to true.
+            //Generate a new Hero, and add it to hero list. Return herollst.
+            //return city with new gold amt.
+
+            var message = "ok";
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == model.CityId).FirstOrDefaultAsync();
+
+            if (UserCity.UserId != UserId) {
+                message = "You dont own this city.";
+                return new JsonResult(new { message = message });
+            }
+            var heros = await db.Heros.Where(c => c.CityId == model.CityId).ToListAsync();
+
+            var HiredHero = heros.Where(c => c.HeroId == model.HeroId).FirstOrDefault();
+
+            var HeroCostInGold = HiredHero.Level * 1000;
+
+            await UpdateResources(UserCity);
+
+            var GotEnoughGold = UserCity.Gold - HeroCostInGold;
+
+            if (GotEnoughGold < 0 )
+            {
+                return new JsonResult(new { message = "Need more gold for this hero." });
+            }
+            var removeGold = new Resources() { 
+                Gold = HeroCostInGold,
+            };
+
+            await RemoveResourcesFromCity(removeGold, UserCity);
+
+            HiredHero.IsHired = true;
+
+            var newHero = await CreateHeros(1, UserCity.CityId);
+
+            heros.Add(newHero.FirstOrDefault());
+    
+            
+            await db.SaveChangesAsync();
+
+            
+            return new JsonResult(new { message = message, city = UserCity });
+        }
+
+        public class Resources {
+            public int Food { get; set; } = 0;
+            public int Stone { get; set; } = 0;
+            public int Wood { get; set; } = 0;
+            public int Iron { get; set; } = 0;
+            public int Gold { get; set; } = 0;
+        }
+        private async Task RemoveResourcesFromCity(Resources res, City UserCity)
+        {
+            UserCity.Food = UserCity.Food - res.Food;
+            UserCity.Stone = UserCity.Stone - res.Stone;
+            UserCity.Wood = UserCity.Wood - res.Wood;
+            UserCity.Iron = UserCity.Iron - res.Iron;
+            UserCity.Gold = UserCity.Gold - res.Gold;
+
+            await db.SaveChangesAsync();
         }
 
         public BuildingType GetBuildingType(string name) {

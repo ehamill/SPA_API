@@ -70,40 +70,48 @@ export class UpgradeModal extends Component {
             case 2:
                 return "Barrack";
             case 3:
-                return "Beacon_Tower";
+                return "Beacon Tower";
             case 4:
                 return "Cottage";
             case 5:
                 return "Embassy";
             case 6:
-                return "Feasting_Hall";
+                return "Feasting Hall";
             case 7:
                 return "Forge";
             case 8:
                 return "Inn";
             case 9:
                 return "Marketplace";
+            case 10:
+                return "Rally Spot";
+            case 11:
+                return "Relief Station";
+            case 12:
+                return "Stable";
+            case 13:
+                return "Town Hall";
+            case 14:
+                return "Warehouse";
+            case 15:
+                return "Workshop";
+            case 16:
+                return "Farm";
+            case 17:
+                return "Iron Mine";
+            case 18:
+                return "Sawmill";
+            case 19:
+                return "Iron Mine";
+            case 20:
+                return "Quarry";
             case 21:
                 return "Walls";
-
             default:
-                return "Error";
+                return "Not Found";
         }
-        
-            //Rally_Spot = 10,
-            //Relief_Station = 11,
-            //Stable = 12,
-            //Town_Hall = 13,
-            //Warehouse = 14,
-            //Workshop = 15,
-            //Farm = 16,
-            //Iron_Mill = 17,
-            //Sawmill = 18,
-            //Iron_Mine = 19,
-            //Quarry = 20,
-            //Not_Found = 21,
-        
     }
+
     
     render() {
         const city = this.props.city;

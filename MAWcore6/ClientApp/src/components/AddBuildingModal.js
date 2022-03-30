@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react';
 import {Row,Col, Button, Modal, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, ModalBody, ModalFooter, Table } from 'reactstrap';
 
+//import crap forom crap
+
 export class AddBuildingModal extends Component {
     
     constructor(props) {

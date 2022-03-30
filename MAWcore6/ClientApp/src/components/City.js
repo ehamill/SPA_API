@@ -7,6 +7,7 @@ import { BuildingTimer } from './BuildingTimer';
 import { AddBuildingModal } from './AddBuildingModal';
 import { UpgradeModal } from './UpgradeModal';
 import { TownHallModal } from './TownHallModal';
+import { InnModal } from './InnModal';
 
 
 export class City extends Component {
@@ -17,6 +18,7 @@ export class City extends Component {
             intelNeeded : 0,
             city: {},
             troops: {},
+            heros: {},
             wallDefenses: {},
             userResearch: {},
             troopQueues: {},
@@ -31,6 +33,7 @@ export class City extends Component {
             build1Time: 0,
             buildLevel: 0,
             showTownHallModal: false,
+            showInnModal: false,
             showTestModal: false,
             showErrorMessage: false,
             errorMessage: "",
@@ -40,6 +43,7 @@ export class City extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.closeUpgradeModal = this.closeUpgradeModal.bind(this);
         this.closeTownHallModal = this.closeTownHallModal.bind(this);
+        this.closeInnModal = this.closeInnModal.bind(this);
         this.handleClickBuildWhat = this.handleClickBuildWhat.bind(this);
         this.testClick = this.testClick.bind(this);
         this.renderCity = this.renderCity.bind(this);
@@ -48,6 +52,7 @@ export class City extends Component {
         this.upgradeBuilding = this.upgradeBuilding.bind(this);
         this.showTestModalClick = this.showTestModalClick.bind(this);
         this.trainTroops = this.trainTroops.bind(this);
+        this.hireHero = this.hireHero.bind(this);
     }
 
     componentDidMount() {
@@ -60,7 +65,7 @@ export class City extends Component {
 
     openModal(slot) {
         let b = this.state.city.buildings.find((x) => x.location === slot);
-        //console.log('clicked on b level...: ' + b.level +' locatoin:'+ slot);
+        console.log('clicked on building: ' + JSON.stringify(b) +' slot:'+ slot);
         this.setState({
             activeSlot: slot,
             activeBuildingId: b.buildingId,
@@ -71,8 +76,12 @@ export class City extends Component {
         } else if (b.location === 0) {
             this.setState({ showUpgradeModal: !this.state.showUpgradeModal });
         } else if (b.level === 0) {
+            ///Show AddBUildingModal..ie add new building modal
             this.setState({ showModal: !this.state.showModal });
-        } else {
+        } else if (b.buildingType === 8) {
+            this.setState({ showInnModal: !this.state.showInnModal });
+        }
+        else {
             this.setState({ showUpgradeModal: !this.state.showUpgradeModal});
         }
     }
@@ -86,6 +95,14 @@ export class City extends Component {
     toggleUpdateModal = () => {
         this.setState(prevState => ({
             showUpgradeModal: !prevState.showUpgradeModal
+        }));
+    };
+    closeInnModal() {
+        this.setState({ showInnModal: false });
+    }
+    toggleInnModal = () => {
+        this.setState(prevState => ({
+            showInnModal: !prevState.showInnModal
         }));
     };
     toggleAddBuildingModal = () => {
@@ -213,6 +230,18 @@ export class City extends Component {
 
     }
 
+
+    hireHero(heroId) {
+        console.log("cityjs at hireHero fn. heroid: " + heroId );
+       
+        this.setState({
+            //showBuilding1Timer: false,
+            //city: newCity,
+        });
+        this.fetchHireHero(heroId);
+    }
+
+
     buildingDone( location, type, level) {
         console.log("building done at loc: " + location + " type:" + type + " lvL: " + level);
         //if (level === 0) {
@@ -248,7 +277,7 @@ export class City extends Component {
         let building3 = this.state.city.buildings.find((x) => x.location === 3);
         let building4 = this.state.city.buildings.find((x) => x.location === 4);
         let building5 = this.state.city.buildings.find((x) => x.location === 5);
-        //let building6 = this.state.city.buildings.find((x) => x.location === 6);
+        let building6 = this.state.city.buildings.find((x) => x.location === 6);
         let building24 = this.state.city.buildings.find((x) => x.location === 24);
         let building25 = this.state.city.buildings.find((x) => x.location === 25);
 
@@ -264,7 +293,17 @@ export class City extends Component {
                   </ToastBody>
               </Toast>
               </Fade>
-              
+
+              <InnModal
+                  activeBuildingId={this.state.activeBuildingId}
+                  city={this.state.city}
+                  heros={this.state.heros}
+                  showModal={this.state.showInnModal}
+                  closeModal={this.closeInnModal}
+                  toggleModal={this.toggleInnModal}
+                  hireHero={ this.hireHero}
+              />
+
               <TownHallModal
                   activeBuildingId={this.state.activeBuildingId}
                   city={this.state.city}
@@ -325,7 +364,7 @@ export class City extends Component {
                                   <Building onBuildingClick={() => this.openModal(building2.location)} b={building2}>empty </Building>
                               </td>
                               <td colSpan="2" rowSpan="2">
-                                  <Building onClick={() => this.openModal(building3.location)} b={building3} />                  
+                                  <Building onBuildingClick={() => this.openModal(building3.location)} b={building3} />
                               </td>
                               <td>
                                   <Building onBuildingClick={() => this.openModal(building4.location)} b={building4}>empty </Building>
@@ -336,6 +375,7 @@ export class City extends Component {
                           </tr>
                           <tr>
                               <td>
+                                  <Building onBuildingClick={() => this.openModal(building6.location)} b={building6}>empty </Building>
                                </td>
                               <td>
                               </td>
@@ -398,6 +438,33 @@ export class City extends Component {
             </div>
         );
     }
+
+    async fetchHireHero(heroId) {
+        var hireHeroModel = { CityId: this.state.city.cityId, HeroId: parseInt(66) };
+        const token = await authService.getAccessToken();
+        const response = await fetch('city/HireHero', {
+            method: 'POST',
+            headers: !token ? { 'Content-Type': 'application/json' } : { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(hireHeroModel),
+        });
+        const data = await response.json();
+        //console.log('at updateCityData..returned: cityID: '+ JSON.stringify(data));
+        if (data.message !== 'ok') {
+            //this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
+            console.log('data.message: ' + data.message)
+            this.setState({ errorMessage: data.message, showErrorMessage: true, });
+            setTimeout(
+                () => this.setState(prevState => ({
+                    showErrorMessage: !prevState.showErrorMessage
+                })),
+                6000000
+            );
+        } else {
+            this.setState({ city: data.city, newBuildingsCost: data.newBuildingsCost, });
+        }
+
+    }
+
 
     async fetchBuildingDone(location, buildingTypeInt, level) {
 
@@ -494,13 +561,14 @@ export class City extends Component {
         });
         const data = await response.json();
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.newBuildingsCost));
-        console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
+        //console.log('at getCityData..loading city: ' + JSON.stringify(data.city));
         //console.log('at getCityData..loading city: ' + JSON.stringify(data.city.buildings[0]));
         //console.log('at getCityData..loading troops: ' + JSON.stringify(data.troops));
         //console.log('at getCityData..loading troopqueue: ' + JSON.stringify(data.troopQueues));
         //console.log('at getCityData..loading wallDefenses: ' + JSON.stringify(data.wallDefenses));
         this.setState({
             city: data.city,
+            heros: data.heros,
             troopQueues: data.troopQueues,
             troops: data.troops,
             wallDefenses: data.wallDefenses,

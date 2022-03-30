@@ -14,7 +14,6 @@ export class Timer extends Component {
             width: "100%",
             //buildType: this.props.buildWhat,
             //location: this.props.location,
-            //level: this.props.level,
         };
         this.timer = 0;
         this.startTimer = this.startTimer.bind(this);
