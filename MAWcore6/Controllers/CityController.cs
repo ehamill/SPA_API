@@ -659,6 +659,7 @@ namespace MAWcore6.Controllers
                 BuildingType BuildingType = GetBuildingType(userCity.BuildingWhat);
                 if (b.Level == 0) {
                     BuildingType = BuildingType.Empty;
+                    b.BuildingType = BuildingType.Empty;
                 }
                 b.Image = BuildingType.ToString() + "lvl" + b.Level +".jpg";
                 userCity.Construction1BuildingId = -1; //Building Complete.
@@ -1291,7 +1292,7 @@ namespace MAWcore6.Controllers
 
             var HeroCostInGold = HiredHero.Level * 1000;
 
-            await UpdateResources(UserCity);
+            //await UpdateResources(UserCity);
 
             var GotEnoughGold = UserCity.Gold - HeroCostInGold;
 
@@ -1306,14 +1307,11 @@ namespace MAWcore6.Controllers
             await RemoveResourcesFromCity(removeGold, UserCity);
 
             HiredHero.IsHired = true;
+            await db.SaveChangesAsync();
 
             var newHero = await CreateHeros(1, UserCity.CityId);
 
             heros.Add(newHero.FirstOrDefault());
-    
-            
-            await db.SaveChangesAsync();
-
             
             return new JsonResult(new { message = message, city = UserCity });
         }
@@ -1340,6 +1338,14 @@ namespace MAWcore6.Controllers
             if (name.ToLower().Contains("academy"))
             {
                 return BuildingType.Academy;
+            }
+            else if (name.ToLower().Contains("forge"))
+            {
+                return BuildingType.Forge;
+            }
+            else if (name.ToLower().Contains("feast"))
+            {
+                return BuildingType.Feasting_Hall;
             }
             else if (name.ToLower().Contains("beacon"))
             {
@@ -1368,6 +1374,22 @@ namespace MAWcore6.Controllers
             else if (name.ToLower().Contains("town"))
             {
                 return BuildingType.Town_Hall;
+            }
+            else if (name.ToLower().Contains("farm"))
+            {
+                return BuildingType.Farm;
+            }
+            else if (name.ToLower().Contains("sawmill"))
+            {
+                return BuildingType.Sawmill;
+            }
+            else if (name.ToLower().Contains("quar"))
+            {
+                return BuildingType.Quarry;
+            }
+            else if (name.ToLower().Contains("iron"))
+            {
+                return BuildingType.Iron_Mine;
             }
             else {
                 return BuildingType.Not_Found;

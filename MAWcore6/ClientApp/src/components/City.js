@@ -8,6 +8,7 @@ import { AddBuildingModal } from './AddBuildingModal';
 import { UpgradeModal } from './UpgradeModal';
 import { TownHallModal } from './TownHallModal';
 import { InnModal } from './InnModal';
+import { FeastModal } from './FeastModal';
 
 
 export class City extends Component {
@@ -34,6 +35,7 @@ export class City extends Component {
             buildLevel: 0,
             showTownHallModal: false,
             showInnModal: false,
+            showFeastModal: false,
             showTestModal: false,
             showErrorMessage: false,
             errorMessage: "",
@@ -44,6 +46,7 @@ export class City extends Component {
         this.closeUpgradeModal = this.closeUpgradeModal.bind(this);
         this.closeTownHallModal = this.closeTownHallModal.bind(this);
         this.closeInnModal = this.closeInnModal.bind(this);
+        this.closeFeastModal = this.closeFeastModal.bind(this);
         this.handleClickBuildWhat = this.handleClickBuildWhat.bind(this);
         this.testClick = this.testClick.bind(this);
         this.renderCity = this.renderCity.bind(this);
@@ -78,7 +81,11 @@ export class City extends Component {
         } else if (b.level === 0) {
             ///Show AddBUildingModal..ie add new building modal
             this.setState({ showModal: !this.state.showModal });
-        } else if (b.buildingType === 8) {
+        }
+        else if (b.buildingType === 6) {
+            this.setState({ showFeastModal: !this.state.showFeastModal });
+        }
+        else if (b.buildingType === 8) {
             this.setState({ showInnModal: !this.state.showInnModal });
         }
         else {
@@ -97,6 +104,15 @@ export class City extends Component {
             showUpgradeModal: !prevState.showUpgradeModal
         }));
     };
+    closeFeastModal() {
+        this.setState({ showFeastModal: false });
+    }
+    toggleFeastModal = () => {
+        this.setState(prevState => ({
+            showFeastModal: !prevState.showFeastModal
+        }));
+    };
+
     closeInnModal() {
         this.setState({ showInnModal: false });
     }
@@ -259,12 +275,13 @@ export class City extends Component {
         });
         this.fetchBuildingDone(location, type, level);
     }
+
     speedUpClick() {
         this.speedUpUsed();
     }
 
     upgradeBuilding(buildingId, type ,level) {
-        console.log('at upgradeBuilding buildingid: ' + buildingId +' type: '+ type+ " level: "+ level);
+        //console.log('at upgradeBuilding buildingid: ' + buildingId +' type: '+ type+ " level: "+ level);
         this.closeUpgradeModal();
         this.updateCityData(buildingId, type, level);
     }
@@ -293,6 +310,15 @@ export class City extends Component {
                   </ToastBody>
               </Toast>
               </Fade>
+
+              <FeastModal
+                  activeBuildingId={this.state.activeBuildingId}
+                  city={this.state.city}
+                  heros={this.state.heros}
+                  showModal={this.state.showFeastModal}
+                  closeModal={this.closeFeastModal}
+                  toggleModal={this.toggleFeastModal}
+                />
 
               <InnModal
                   activeBuildingId={this.state.activeBuildingId}
@@ -440,7 +466,7 @@ export class City extends Component {
     }
 
     async fetchHireHero(heroId) {
-        var hireHeroModel = { CityId: this.state.city.cityId, HeroId: parseInt(66) };
+        var hireHeroModel = { CityId: this.state.city.cityId, HeroId: parseInt(heroId) };
         const token = await authService.getAccessToken();
         const response = await fetch('city/HireHero', {
             method: 'POST',

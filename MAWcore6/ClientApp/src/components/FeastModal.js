@@ -33,11 +33,11 @@ export class FeastModal extends Component {
                     <Button close  onClick={this.props.toggleModal}>X</Button>
                 </ModalHeader>
                 <ModalBody>
-                    <Row>
+                    <div>
                         Img
                         <Button className="float-right">Upgrade</Button> 
                         <Button className="float-right">Demo</Button>
-                    </Row>
+                    </div>
                     <hr/>
                     <Row>
                        <Table dark size="sm">
@@ -61,7 +61,10 @@ export class FeastModal extends Component {
                                         <td>{hero.attack}</td>
                                         <td>{hero.intelligence}</td>
                                         <td>{hero.loyalty}</td>
-                                        <td>Status=idle, marching, mayor</td>
+                                        <td>
+{hero.isMayor ? 'Mayor' : 'Idle'}
+            
+                                        </td>
                                         <td>
                                             <Button>Recall</Button>
                                         </td>
