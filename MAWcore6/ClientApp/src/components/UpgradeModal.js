@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-//import logo from './Images/Cottage.jpg' ;
+//import logo from './Images/Cottages.jpg' ;
 import { WallDefenses } from './WallDefenses';
 import { Troops } from './Troops';
 
@@ -42,7 +42,6 @@ export class UpgradeModal extends Component {
     }
     componentDidMount() {
         //const city = this.props.city;
-        //const activeBuildingId = this.props.activeBuildingId;
         //const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
 
         //console.log("comp did mount activeBuilding.buildingType: " + activeBuilding.buildingType)

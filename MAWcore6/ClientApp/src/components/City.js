@@ -1,7 +1,7 @@
 ﻿import React, { Component,Fragment } from 'react';
 import authService from './api-authorization/AuthorizeService';
-import {Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-//import { BottomNav } from './BottomNav';
+import { Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+//import { BottomNav } from './BottomNav'; will do this later....
 import { Building } from './Building';
 import { BuildingTimer } from './BuildingTimer';
 import { AddBuildingModal } from './AddBuildingModal';
@@ -56,6 +56,7 @@ export class City extends Component {
         this.showTestModalClick = this.showTestModalClick.bind(this);
         this.trainTroops = this.trainTroops.bind(this);
         this.hireHero = this.hireHero.bind(this);
+        this.next = this.next.bind(this);
     }
 
     componentDidMount() {
@@ -286,6 +287,10 @@ export class City extends Component {
         this.updateCityData(buildingId, type, level);
     }
 
+    next() {
+        console.log('city js at next...');
+    }
+
     renderCity() {
          
         let building0 = this.state.city.buildings.find((x) => x.location === 0);
@@ -295,15 +300,18 @@ export class City extends Component {
         let building4 = this.state.city.buildings.find((x) => x.location === 4);
         let building5 = this.state.city.buildings.find((x) => x.location === 5);
         let building6 = this.state.city.buildings.find((x) => x.location === 6);
+        let building7 = this.state.city.buildings.find((x) => x.location === 7);
         let building24 = this.state.city.buildings.find((x) => x.location === 24);
         let building25 = this.state.city.buildings.find((x) => x.location === 25);
+        
 
       return (
           <Container>
               <Fade>
                   <Toast isOpen={this.state.showErrorMessage} className="error-toaster">
-                  <ToastHeader >
-                      Error  <Button className="btn-close float-right" onClick={this.toggleErrorMessage}></Button>
+                      <ToastHeader toggle={this.toggleErrorMessage}>
+                          Error
+                          {/*<Button className="btn-close float-right" onClick={this.toggleErrorMessage}></Button>*/}
                   </ToastHeader>
                   <ToastBody>
                       {this.state.errorMessage}
@@ -368,11 +376,13 @@ export class City extends Component {
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
               {this.state.city.builder1Busy ? <BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick} buildTypeInt={ this.state.buildTypeInt} buildWhat={this.state.buildWhat} location={this.state.activeSlot } level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> : ''}
               
-              <div style={{ marginTop: "20px" }} onClick={this.toggleErrorMessage}>
+              <div style={{ marginTop: "20px" }} className="mb-6" onClick={this.toggleErrorMessage}>
                   show error message
                   Build Where: {this.state.activeSlot}
                   Build What: {this.state.buildWhat}
               </div>
+
+
 
               <div>
                   <Table bordered={true}>
@@ -404,6 +414,8 @@ export class City extends Component {
                                   <Building onBuildingClick={() => this.openModal(building6.location)} b={building6}>empty </Building>
                                </td>
                               <td>
+                                  <Building onBuildingClick={() => this.openModal(building7.location)} b={building7}>empty </Building>
+
                               </td>
                               <td colSpan="2" rowSpan="2">
                                </td>
@@ -561,7 +573,7 @@ export class City extends Component {
 
     async postTrainTroops(troopTypeInt, qty) {
 
-        //console.log('at postTrainTroops..troopTypeInt: '+ troopTypeInt +" qty:" + qty +" buildingId: "+ this.state.activeBuildingId);
+        console.log('at postTrainTroops..troopTypeInt: '+ troopTypeInt +" qty:" + qty +" buildingId: "+ this.state.activeBuildingId);
 
         var updateModel = { cityId: this.state.city.cityId, buildingId: this.state.activeBuildingId, troopTypeInt: parseInt(troopTypeInt), qty };
         //console.log('updateModel: ' + JSON.stringify(updateModel));
@@ -574,7 +586,8 @@ export class City extends Component {
         const data = await response.json();
         //console.log('at postTrainTroops..returned: cityID: '+ JSON.stringify(data));
         if (data.message !== 'ok') {
-            alert('oops postTrainTroops..' + data.message)
+            let message = 'oops error at city.js postTrainTroops..' + data.message;
+            this.setState({ errorMessage: message, showErrorMessage: true, });
         } else {
             this.setState({ city: data.city, troopsQueue: data.troopsQueue, });
         }

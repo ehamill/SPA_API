@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import {Col, Row, Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap';
 
+// use this to upgrade to the next thing
 
 export class FeastModal extends Component {
     

@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import {Col, Row, Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap';
 
+//use this for intelli sense
 
 export class InnModal extends Component {
     

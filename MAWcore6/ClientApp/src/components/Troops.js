@@ -32,7 +32,7 @@ export class Troops extends Component {
 
     showRecruitModalClick(troopTypeInt) {
         //const troop = this.props.troops.find((x) => x.typeInt === troopTypeInt);
-        console.log('at handleRecruitClick ...troopTypeInt: ' + troopTypeInt);
+        //console.log('at handleRecruitClick ...troopTypeInt: ' + troopTypeInt);
         this.setState({
             showRecruitModal: true,
             recruitTroopType: troopTypeInt,
@@ -42,7 +42,7 @@ export class Troops extends Component {
 
 
     render() {
-        //console.log('troops.js troops' + JSON.stringify(this.props.troops));
+        console.log('troops.js troops' + JSON.stringify(this.props.troops));
         const activeBuildingId = this.props.activeBuildingId;
         const troopQueue = this.props.troopQueues.filter(function (el) {
             return el.buildingId == activeBuildingId;
@@ -97,7 +97,7 @@ export class Troops extends Component {
                                     </CardBody>
                                     <div className="text-center">
                                         <Button className="width-80" onClick={() => this.showRecruitModalClick(troop.typeInt)} className="float-bottom-right" >
-                                            Recruit
+                                            Recruit troop.typeInt{troop.typeInt}
                                         </Button>
                                     </div>
                                 </Card>

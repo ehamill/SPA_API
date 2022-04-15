@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
-import {Row,Col, Button, Modal, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, ModalBody, ModalFooter, Table } from 'reactstrap';
-
-//import crap forom crap
+import { Carousel, CarouselIndicators, CarouselItem, CarouselCaption, CarouselControl, Row,Col, Button, Modal, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, ModalBody, ModalFooter, Table } from 'reactstrap';
+//import { } from 'reactstrap';
+//import crap forom crap those who said
 
 export class AddBuildingModal extends Component {
     
@@ -9,9 +9,32 @@ export class AddBuildingModal extends Component {
         super(props);
 
         this.state = {
-            //activeSlot : this.props.activeSlot,
+            activeIndex: 0, setActiveIndex: 0,
+            animating: false, setAnimating: false,
+            items : [],
         };
         this.showTime = this.showTime.bind(this);
+        this.previous = this.previous.bind(this);
+        this.next = this.next.bind(this);
+        this.goToIndex = this.goToIndex.bind(this);
+    }
+    
+    previous() {
+        var itemsCount = this.state.items.length;
+        const nextIndex = this.state.activeIndex === 0 ? itemsCount - 1 : this.state.activeIndex - 1;
+        this.setState({ activeIndex: nextIndex });
+        //console.log('at prev..activeIndex' + this.state.activeIndex + ' items count: ' + c);
+    }
+    next() {
+        var itemsCount = this.state.items.length;
+        const nextIndex = this.state.activeIndex === itemsCount - 1 ? 0 : this.state.activeIndex + 1;
+        this.setState({ activeIndex: nextIndex });
+        //console.log('at nexyt..');
+    }
+
+    goToIndex(x) {
+        this.setState({ activeIndex: x });
+        //console.log('at goToIndex..index: '+ x);
     }
 
     showTime(secs) {
@@ -28,11 +51,103 @@ export class AddBuildingModal extends Component {
         }
     }
 
-    componentDidMount() { }
+    componentDidMount() {
+        console.log('mounted add build modal');
+        this.setState({
+            items: [
+                {
+                altText: 'Slide1',
+                caption: 'Slide1',
+                key: 1,
+                    src: 'https://picsum.photos/id/456/1200/600'
+                },
+                {
+                    altText: 'Slide 2',
+                    caption: 'Slide2',
+                    key: 2,
+                    
+                    src: 'https://picsum.photos/id/123/1200/600'
+                },
+                {
+                    altText: 'Slide 3',
+                    caption: 'Slide3',
+                    key: 3,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 4',
+                    caption: 'Slide 4',
+                    key: 4,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 5',
+                    caption: 'Slide 5',
+                    key: 5,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 6',
+                    caption: 'Slide6',
+                    key: 6,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 7',
+                    caption: 'Slide7',
+                    key: 7,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 8',
+                    caption: 'Slide8',
+                    key: 8,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 9',
+                    caption: 'Slide9',
+                    key: 9,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 10',
+                    caption: 'Slide10',
+                    key: 10,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 11',
+                    caption: 'Slide11',
+                    key: 11,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 12',
+                    caption: 'Slide12',
+                    key: 12,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 13',
+                    caption: 'Slide 13',
+                    key: 13,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                },
+                {
+                    altText: 'Slide 14',
+                    caption: 'Slide 143',
+                    key: 143,
+                    src: 'https://picsum.photos/id/678/1200/600'
+                }
+                ],
+        });
+    }
 
     componentWillUnmount() { }
 
     render() {
+        
         let buildings = this.props.newBuildings.filter(function (el) {
             return el.farm == false;
         });
@@ -43,13 +158,72 @@ export class AddBuildingModal extends Component {
             });
             
         }
+        
+        
 
         return (
+           
                 <Modal
                     isOpen={this.props.showModal}
                     toggle={this.props.toggleAddBuildingModal}
                 >
                 <ModalBody>
+                    <Row>
+
+                        <div style={{
+                           // display: 'block', width: 320, 
+                        }}>
+                            <Carousel
+                                activeIndex={this.state.activeIndex}
+                                next={this.next}
+                                previous={this.previous}
+                                slide={ false}
+                            >
+                                <CarouselIndicators
+                                    activeIndex={this.state.activeIndex}
+                                    items={this.state.items}
+                                    onClickHandler={this.goToIndex}
+                                />
+                                {this.state.items.map(item => {
+                                    return (
+                                        <CarouselItem
+                                            key={item.key}
+                                            src={item.src}
+                                            altText={item.altText}
+                                        >
+                                            <img
+                                                alt="Slide 1"
+                                                src={item.src}
+                                                //height="100px"
+                                                className="w-100"
+                                            />
+                                            <div>Cottage</div>
+                                        {/*<CarouselCaption*/}
+                                        {/*  captionHeader="Slide 2"*/}
+                                        {/*  captionText="Slide 2"*/}
+                                        {/*/>*/}
+                                        </CarouselItem>
+                                    );
+                                })}
+
+                                <CarouselControl
+                                    direction="prev"
+                                    //directionText="Prev"
+                                    onClickHandler={this.previous}
+                                />
+                                <CarouselControl
+                                    direction="next"
+                                    directionText="Next"
+                                    onClickHandler={this.next}
+                                />
+                            </Carousel>
+                        </div >
+                    </Row>
+                    <Row>
+                        
+                    </Row>
+
+
                 {buildings.map((b) =>
                     <Card key={ b.typeString}>
                   {/*<CardImg top width="100%" src="/assets/318x180.svg" alt={b.type} />*/}

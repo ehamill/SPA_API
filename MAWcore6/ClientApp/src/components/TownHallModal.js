@@ -32,8 +32,8 @@ export class TownHallModal extends Component {
     componentWillUnmount() { }
 
     render() {
-       //const className = "jlsaldfjl";
-        //const toggle = "";
+       const className = "jlsaldfjl";
+        const toggle = "";
         //const buildings = this.props.newBuildings;
 
         return (

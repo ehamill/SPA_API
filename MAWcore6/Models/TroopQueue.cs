@@ -15,5 +15,6 @@ namespace MAWcore6.Models
         public int Qty { get; set; } = 0;
         public string TroopTypeString { get; set; }
         public bool Complete { get; set; } = false;
+        public bool Walls { get; set; } = false;
     }
 }

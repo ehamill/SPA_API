@@ -264,9 +264,9 @@ namespace MAWcore6.Controllers
 
             var rl = new Troop()
             {
-                TypeString = TroopType.Trap.ToString(),
-                TypeInt = TroopType.Trap,
-                PreReq = "Requires Walls level 1.",
+                TypeString = TroopType.Rolling_Log.ToString().Replace("_"," "),
+                TypeInt = TroopType.Rolling_Log,
+                PreReq = "Requires Walls level 5.",
                 ReqMet = true,
                 Description = "Roll Logs on enemy when they reach the gates.",
                 Qty = city.RollingLogQty,
@@ -276,12 +276,6 @@ namespace MAWcore6.Controllers
                 WoodCost = Constants.RollLogWoodReq,
                 IronCost = Constants.RollLogIronReq,
                 TimeCost = Constants.RollLogTimeReq,
-                //Attack = Constants.TrapAttk,
-                //Defense = Constants.TrapDef,
-                //Life = Constants.TrapLife,
-                //Range = Constants.TrapRange,
-                //Load = Constants.TrapLoad,
-                //Speed = Constants.TrapSpeed,
             };
             Troops.Add(rl); 
             
@@ -1011,6 +1005,8 @@ namespace MAWcore6.Controllers
             var costOfTroops = GetCostOfTroops(city, userResearch);
             BuildingCost singleTroopCost = costOfTroops.Where(c => c.troopType == (TroopType)update.troopTypeInt).FirstOrDefault();
 
+            bool walls = (update.troopTypeInt >= 13) ? true : false;
+            
             var troopQueue = new TroopQueue()
             {
                 Starts = DateTime.UtcNow,
@@ -1022,6 +1018,7 @@ namespace MAWcore6.Controllers
                 TroopTypeString = ((TroopType)update.troopTypeInt).ToString(),
                 TimeLeft = singleTroopCost.time * update.qty,
                 Complete = false,
+                Walls = walls,
             };
             await db.TroopQueues.AddAsync(troopQueue);
             await db.SaveChangesAsync();
@@ -1078,9 +1075,13 @@ namespace MAWcore6.Controllers
         private Result CheckTroopRequirements(Building building, TroopType type,  UserResearch research, int queueCount) {
             Result result = new Result() { Failed = false, Message= ""};
             
+            if (building.BuildingType != BuildingType.Walls) {
+                return result;
+            }
+
             if (queueCount >= building.Level) {
                 result.Failed = true;
-                result.Message = "Queue is full. Upgrade barrack or cancel troops to add to queue.";
+                result.Message = "Queue is full. Upgrade level or cancel troops to add to queue.";
             }
 
             if (type == TroopType.Worker || type == TroopType.Warrior) {
@@ -1167,7 +1168,7 @@ namespace MAWcore6.Controllers
                     result.Message += "Requires Metal Casting level 5.";
                 }
             }
-            if (building.BuildingType != BuildingType.Barrack)
+            if (building.BuildingType != BuildingType.Barrack && building.BuildingType != BuildingType.Walls)
             {
                 result.Failed = true;
                 result.Message = "Barrack required to build troops.";

@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "reactstrap@9.0.2",
+      "destination": "ClientApp/src/components/reactstrap/"
+    }
+  ,
+{
+  "provider": "cdnjs",
+  "library": "bootstrap@5.1.3",
+  "destination": "ClientApp/node_modules/bootstrap/"
+}
+,
+{
+  "provider": "cdnjs",
+  "library": "reactstrap@9.0.2",
+  "destination": "ClientApp/node_modules/reactstrap/"
+}
+]
+}

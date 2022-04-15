@@ -1,6 +1,8 @@
 ﻿import React, { Component } from 'react';
 import {Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+//use this for intellisense sdfjlja s dfl jlsajfdl
+
 export class RecruitModal extends Component {
     
     constructor(props) {
@@ -125,7 +127,7 @@ export class RecruitModal extends Component {
     render() {
         //console.log('this.props.troopTypeInt: '+ this.props.typeInt)
         const troop = (this.props.typeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.typeInt);
-        console.log('at recruit ...troop is: ' + JSON.stringify(troop))
+        //console.log('at recruit ...troop is: ' + JSON.stringify(troop))
         //const activeBuildingId = this.props.activeBuildingId;
         //const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
      
@@ -135,7 +137,7 @@ export class RecruitModal extends Component {
                 toggle={this.toggleRecruitModal}
             >
                 <ModalHeader className="text-right">
-                    Recruit {troop.typeString}
+                    Recruit {troop.typeString} 
                 </ModalHeader>
                 <ModalBody>
                     <div>
@@ -218,7 +220,7 @@ export class RecruitModal extends Component {
                                         <Button  onClick={this.closeModal} color="secondary" >
                                             Cancel
                                         </Button>
-                                        <Button onClick={() => this.resetAndCallTrainTroops(troop.troopTypeInt) } color="primary" >
+                                        <Button onClick={() => this.resetAndCallTrainTroops(this.props.typeInt) } color="primary" >
                                             Train
                                         </Button>
                                     </td>

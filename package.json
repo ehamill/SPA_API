@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "bootstrap": "^4.6.1",
-    "reactstrap": "^9.0.1"
+    "bootstrap": "^4.6.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "reactstrap": "^9.0.2"
   }
 }
