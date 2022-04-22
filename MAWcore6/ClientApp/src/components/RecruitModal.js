@@ -201,7 +201,7 @@ export class RecruitModal extends Component {
                                 </tr>
                                 <tr>
                                     <td colSpan="2">
-                                        You have {troop.qty} {troop.troopTypeString}s. 
+                                        You have {troop.qty} {troop.typeString}s.
                                     </td>
                                     <td colSpan="1" className="text-right">
                                         Train:

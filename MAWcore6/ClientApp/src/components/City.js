@@ -1,7 +1,7 @@
 ﻿import React, { Component,Fragment } from 'react';
 import authService from './api-authorization/AuthorizeService';
 import { Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-//import { BottomNav } from './BottomNav'; will do this later....
+//import { BottomNav } from './BottomNav'; will do this later....TEsting...
 import { Building } from './Building';
 import { BuildingTimer } from './BuildingTimer';
 import { AddBuildingModal } from './AddBuildingModal';
@@ -9,9 +9,9 @@ import { UpgradeModal } from './UpgradeModal';
 import { TownHallModal } from './TownHallModal';
 import { InnModal } from './InnModal';
 import { FeastModal } from './FeastModal';
+//import testing form the beging...
 
-
-export class City extends Component {
+export class City extends Component { 
 
     constructor(props) {
         super(props);
@@ -589,7 +589,7 @@ export class City extends Component {
             let message = 'oops error at city.js postTrainTroops..' + data.message;
             this.setState({ errorMessage: message, showErrorMessage: true, });
         } else {
-            this.setState({ city: data.city, troopsQueue: data.troopsQueue, });
+            this.setState({ city: data.city, troopsQueue: data.troopQueues, });
         }
     }
 

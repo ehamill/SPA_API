@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Carousel, CarouselIndicators, CarouselItem, CarouselCaption, CarouselControl, Row,Col, Button, Modal, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText, ModalBody, ModalFooter, Table } from 'reactstrap';
 //import { } from 'reactstrap';
-//import crap forom crap those who said
+//import crap forom crap those who said is the only way to do it
 
 export class AddBuildingModal extends Component {
     

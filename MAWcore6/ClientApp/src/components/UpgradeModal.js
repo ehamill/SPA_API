@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-//import logo from './Images/Cottages.jpg' ;
+//import logo from './Images/Cottages.jpg' ; Testing for the java
 import { WallDefenses } from './WallDefenses';
 import { Troops } from './Troops';
 
