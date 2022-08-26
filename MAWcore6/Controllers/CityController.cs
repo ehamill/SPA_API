@@ -25,8 +25,6 @@ namespace MAWcore6.Controllers
             db = _db;
             _userManager = userManager;
         }
-
-        
         
         [HttpGet]
         public async Task<JsonResult> Get()
@@ -69,25 +67,164 @@ namespace MAWcore6.Controllers
             return new JsonResult(new { city = UserCity,heros = Heros, troops = Troops, troopQueues = TroopQueues, wallDefenses = WallDefenses, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
         }
 
-        //public void Attack(int CityId)
-        //{
-        //    var id = CityId;
-        //    Task.Delay(10000);
-        //    System.Diagnostics.Debug.WriteLine("deletting food ... ");
+        [HttpPost("BuildingDone")]
+        public async Task<JsonResult> BuildingDone([FromBody] UpdateCityModel update)
+        {
+            var message = "ok";
 
-        //    //return UserCity;
-        //    try
-        //    {
-        //        City UserCity = db.Cities.Where(c => c.CityId == id).FirstOrDefault();
-        //        UserCity.Food = UserCity.Food - 10000;
-        //        db.SaveChanges();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine("Testing ... " + ex.InnerException);
-        //    }
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
+            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
 
-        //}
+            //Check if builders busy ..
+            await CheckBuilder1(UserCity);
+
+            List<BuildingCost> ListOfNewBuildingsCost = GetNewBuildingsCost(UserCity, UserResearch);
+            
+            return new JsonResult(new { message = message, city = UserCity, newBuildingsCost = ListOfNewBuildingsCost });
+        }
+
+        [HttpPost("TrainTroops")]
+        public async Task<JsonResult> TrainTroops([FromBody] TrainTroopsModel update)
+        {
+            var message = "ok";
+
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
+            //Update Resources...
+            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
+            List<TroopQueue> TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId).ToListAsync();
+            await CheckTroopQueues(TroopQueues, UserCity);
+            var Building = UserCity.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
+            TroopType TroopType = (TroopType)update.troopTypeInt;
+            Result check = CheckTroopRequirements(Building, TroopType, UserResearch, TroopQueues.Count()); //, barrack lvl and research, check if queue full
+            if (check.Failed) {
+                return new JsonResult(new { message = check.Message});
+            }
+            
+            check = CheckResources(UserCity, UserResearch, TroopType, update.qty);
+            if (check.Failed)
+            {
+                return new JsonResult(new { message = check.Message });
+            }
+            //Get cost of troop, b/c used in Remove resources and troop queue
+            await RemoveResourcesForTroops(UserCity, UserResearch, TroopType, update.qty);
+            await TroopQueueAdd(update, TroopQueues, UserCity, UserResearch);
+
+
+            return new JsonResult(new { message = message, city = UserCity, troopQueues = TroopQueues });
+        }
+
+        [HttpPost("UpdateCity")]
+        public async Task<JsonResult> UpdateCity([FromBody] UpdateCityModel update)
+        {
+            string message = CheckForUpdateErrors(update);
+
+            if (message != "ok") {
+                return new JsonResult(new { message = message });  
+            }
+
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var u = await _userManager.FindByIdAsync(UserId);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
+            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
+
+            //Check if builders busy ..
+            await CheckBuilder1(UserCity);
+
+            string TestingResult = CheckIfBuildingPreReqMet(UserCity, update);
+            if (TestingResult != "ok")
+            {
+                message = TestingResult;
+                return new JsonResult(new { message = message });
+            }
+
+            BuildingCost BuildingCost= GetUpgradeCostOfBuilding(update,UserCity, UserResearch);
+            
+            //Check if user has enough resources ..
+            await RemoveResourcesAndUpdateConstructionFromCity(UserCity, update, BuildingCost);
+            
+            List<BuildingCost> ListOfNewBuildingsCost = GetNewBuildingsCost(UserCity, UserResearch);
+            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+
+            return new JsonResult(new { message = message, city = UserCity, newBuildingsCost = ListOfNewBuildingsCost });
+        }
+
+        [HttpPost("SpeedUpUsed")]
+        public async Task<JsonResult> SpeedUpUsed([FromBody] SpeedUpModel model)
+        {
+            var message = "ok";
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == model.cityId).FirstOrDefaultAsync() ?? new City();
+            //UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
+            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserItems();
+
+            if (model.usedOn == "builder1") {
+                if (model.speedUp5min) {
+                    UserCity.Construction1Ends = UserCity.Construction1Ends.AddMinutes(-5);
+                    UserItems.FiveMinuteSpeedups--;
+                }
+                
+            }
+            await db.SaveChangesAsync();
+
+            //Check if builders busy ..
+            await CheckBuilder1(UserCity);
+
+            return new JsonResult(new { message = message, city = UserCity });
+        }
+
+
+        [HttpPost("HireHero")]
+        public async Task<JsonResult> HireHero([FromBody] HireHeroModel model)
+        {
+            ///GetHeros, check if have enough gold, remove gold,
+            //change IsHired to true.
+            //Generate a new Hero, and add it to hero list. Return herollst.
+            //return city with new gold amt.
+
+            var message = "ok";
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == model.CityId).FirstOrDefaultAsync();
+
+            if (UserCity.UserId != UserId) {
+                message = "You dont own this city.";
+                return new JsonResult(new { message = message });
+            }
+            var heros = await db.Heros.Where(c => c.CityId == model.CityId).ToListAsync();
+
+            var HiredHero = heros.Where(c => c.HeroId == model.HeroId).FirstOrDefault();
+
+            var HeroCostInGold = HiredHero.Level * 1000;
+
+            //await UpdateResources(UserCity);
+
+            var GotEnoughGold = UserCity.Gold - HeroCostInGold;
+
+            if (GotEnoughGold < 0 )
+            {
+                return new JsonResult(new { message = "Need more gold for this hero." });
+            }
+            var removeGold = new Resources() { 
+                Gold = HeroCostInGold,
+            };
+
+            await RemoveResourcesFromCity(removeGold, UserCity);
+
+            HiredHero.IsHired = true;
+            await db.SaveChangesAsync();
+
+            var newHero = await CreateHeros(1, UserCity.CityId);
+
+            heros.Add(newHero.FirstOrDefault());
+            
+            return new JsonResult(new { message = message, city = UserCity });
+        }
+
+
 
         public async Task CheckBuilder1(City userCity) {
             DateTime TimeNow = DateTime.UtcNow;
@@ -403,22 +540,6 @@ namespace MAWcore6.Controllers
         //}
 
 
-        [HttpPost("BuildingDone")]
-        public async Task<JsonResult> BuildingDone([FromBody] UpdateCityModel update)
-        {
-            var message = "ok";
-
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
-            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
-
-            //Check if builders busy ..
-            await CheckBuilder1(UserCity);
-
-            List<BuildingCost> ListOfNewBuildingsCost = GetNewBuildingsCost(UserCity, UserResearch);
-            
-            return new JsonResult(new { message = message, city = UserCity, newBuildingsCost = ListOfNewBuildingsCost });
-        }
 
 
         public class TrainTroopsModel
@@ -429,36 +550,6 @@ namespace MAWcore6.Controllers
             public int qty { get; set; }
         }
 
-        [HttpPost("TrainTroops")]
-        public async Task<JsonResult> TrainTroops([FromBody] TrainTroopsModel update)
-        {
-            var message = "ok";
-
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
-            //Update Resources...
-            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
-            List<TroopQueue> TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId).ToListAsync();
-            await CheckTroopQueues(TroopQueues, UserCity);
-            var Building = UserCity.Buildings.Where(c => c.BuildingId == update.buildingId).FirstOrDefault();
-            TroopType TroopType = (TroopType)update.troopTypeInt;
-            Result check = CheckTroopRequirements(Building, TroopType, UserResearch, TroopQueues.Count()); //, barrack lvl and research, check if queue full
-            if (check.Failed) {
-                return new JsonResult(new { message = check.Message});
-            }
-            
-            check = CheckResources(UserCity, UserResearch, TroopType, update.qty);
-            if (check.Failed)
-            {
-                return new JsonResult(new { message = check.Message });
-            }
-            //Get cost of troop, b/c used in Remove resources and troop queue
-            await RemoveResourcesForTroops(UserCity, UserResearch, TroopType, update.qty);
-            await TroopQueueAdd(update, TroopQueues, UserCity, UserResearch);
-
-
-            return new JsonResult(new { message = message, city = UserCity, troopQueues = TroopQueues });
-        }
 
         private async Task AddTroopsToCity(TroopQueue queue, City city) {
             
@@ -741,128 +832,6 @@ namespace MAWcore6.Controllers
             }
 
             return result;
-        }
-
-        [HttpPost("UpdateCity")]
-        public async Task<JsonResult> UpdateCity([FromBody] UpdateCityModel update)
-        {
-            string message = CheckForUpdateErrors(update);
-
-            if (message != "ok") {
-                return new JsonResult(new { message = message });  
-            }
-
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var u = await _userManager.FindByIdAsync(UserId);
-
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == update.cityId).FirstOrDefaultAsync() ?? new City();
-            UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
-
-            //Check if builders busy ..
-            await CheckBuilder1(UserCity);
-
-            string TestingResult = CheckIfBuildingPreReqMet(UserCity, update);
-            if (TestingResult != "ok")
-            {
-                message = TestingResult;
-                return new JsonResult(new { message = message });
-            }
-
-            BuildingCost BuildingCost= GetUpgradeCostOfBuilding(update,UserCity, UserResearch);
-            
-            //Check if user has enough resources ..
-            await RemoveResourcesAndUpdateConstructionFromCity(UserCity, update, BuildingCost);
-            
-            List<BuildingCost> ListOfNewBuildingsCost = GetNewBuildingsCost(UserCity, UserResearch);
-            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
-
-            return new JsonResult(new { message = message, city = UserCity, newBuildingsCost = ListOfNewBuildingsCost });
-        }
-
-        public class SpeedUpModel
-        {
-            public int cityId { get; set; }
-            public bool speedUp5min { get; set; }
-            public string usedOn { get; set; }
-        }
-
-        [HttpPost("SpeedUpUsed")]
-        public async Task<JsonResult> SpeedUpUsed([FromBody] SpeedUpModel model)
-        {
-            var message = "ok";
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == model.cityId).FirstOrDefaultAsync() ?? new City();
-            //UserResearch UserResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserResearch();
-            UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? new UserItems();
-
-            if (model.usedOn == "builder1") {
-                if (model.speedUp5min) {
-                    UserCity.Construction1Ends = UserCity.Construction1Ends.AddMinutes(-5);
-                    UserItems.FiveMinuteSpeedups--;
-                }
-                
-            }
-            await db.SaveChangesAsync();
-
-            //Check if builders busy ..
-            await CheckBuilder1(UserCity);
-
-            return new JsonResult(new { message = message, city = UserCity });
-        }
-
-
-        public class HireHeroModel { 
-            public int CityId { get; set; } 
-            public int HeroId { get; set; }
-        }
-
-
-        [HttpPost("HireHero")]
-        public async Task<JsonResult> HireHero([FromBody] HireHeroModel model)
-        {
-            ///GetHeros, check if have enough gold, remove gold,
-            //change IsHired to true.
-            //Generate a new Hero, and add it to hero list. Return herollst.
-            //return city with new gold amt.
-
-            var message = "ok";
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == model.CityId).FirstOrDefaultAsync();
-
-            if (UserCity.UserId != UserId) {
-                message = "You dont own this city.";
-                return new JsonResult(new { message = message });
-            }
-            var heros = await db.Heros.Where(c => c.CityId == model.CityId).ToListAsync();
-
-            var HiredHero = heros.Where(c => c.HeroId == model.HeroId).FirstOrDefault();
-
-            var HeroCostInGold = HiredHero.Level * 1000;
-
-            //await UpdateResources(UserCity);
-
-            var GotEnoughGold = UserCity.Gold - HeroCostInGold;
-
-            if (GotEnoughGold < 0 )
-            {
-                return new JsonResult(new { message = "Need more gold for this hero." });
-            }
-            var removeGold = new Resources() { 
-                Gold = HeroCostInGold,
-            };
-
-            await RemoveResourcesFromCity(removeGold, UserCity);
-
-            HiredHero.IsHired = true;
-            await db.SaveChangesAsync();
-
-            var newHero = await CreateHeros(1, UserCity.CityId);
-
-            heros.Add(newHero.FirstOrDefault());
-            
-            return new JsonResult(new { message = message, city = UserCity });
         }
 
         public class Resources {
