@@ -6,7 +6,6 @@ using MAWcore6.Data;
 using MAWcore6.Models;
 using System.Security.Claims;
 
-
 namespace MAWcore6.Controllers
 {
 
@@ -27,627 +26,8 @@ namespace MAWcore6.Controllers
             _userManager = userManager;
         }
 
-        public class Troop { 
-            public string TypeString { get; set; } = "";
-            public TroopType TypeInt { get; set; } 
-            public string PreReq { get; set; } = "";
-            public bool ReqMet { get; set; } = false;
-            public string Description { get; set; } = "";
-            public int Qty { get; set; } = 0;
-            public int FoodCost { get; set; } = 0;
-            public int StoneCost { get; set; } = 0;
-            public int WoodCost { get; set; } = 0;
-            public int IronCost { get; set; } = 0;
-            public int TimeCost { get; set; } = 0;
-            public bool ForWalls { get; set; } = false;
-            public int Attack { get; set; } = 0;
-            public int Defense { get; set; } = 0;
-            public int Speed { get; set; } = 0;
-            public int Load { get; set; } = 0;
-            public int Life { get; set; } = 0;
-            public int Range { get; set; } = 0;
-            public string Image { get; set; } = "missing.jpg";
-        }
-
-        private List<Troop> GetTroops(City city,UserResearch research) {
-            List<Troop> Troops = new List<Troop>();
-
-            var Worker = new Troop()
-            {
-                TypeString = TroopType.Worker.ToString(),
-                TypeInt = TroopType.Worker,
-                PreReq = "Requires Barrack level 1.",
-                ReqMet = true,
-                Description = "Workers are cheap transporters. Not very good for fighting.",
-                Qty = city.WorkerQty,
-                FoodCost = Constants.WorkerFoodCost,
-                StoneCost = 0,
-                WoodCost = Constants.WorkerWoodCost,
-                IronCost = Constants.WorkerIronCost,
-                TimeCost = Constants.WorkerTimeCost,
-                Attack = Constants.WorkerAttk,
-                Defense = Constants.WorkerDef,
-                Life = Constants.WorkerLife,
-                Range = Constants.WorkerRange,
-                Load = Constants.WorkerLoad,
-                Speed = Constants.WorkerSpeed,
-            };
-            Troops.Add(Worker);
-            var Warrior = new Troop()
-            {
-                TypeString = TroopType.Warrior.ToString(),
-                TypeInt = TroopType.Warrior,
-                PreReq = "Requires Barrack level 1.",
-                ReqMet = true,
-                Description = "Workers are cheap transporters. Not very good for fighting.",
-                Qty = city.WarriorQty,
-                FoodCost = Constants.WarrFoodCost,
-                StoneCost = 0,
-                WoodCost = Constants.WarrWoodCost,
-                IronCost = Constants.WarrIronCost,
-                TimeCost = Constants.WarrTimeCost,
-                Attack = Constants.WarrAttk,
-                Defense = Constants.WarrDef,
-                Life = Constants.WarrLife,
-                Range = Constants.WarrRange,
-                Load = Constants.WarrLoad,
-                Speed = Constants.WarrSpeed,
-                Image = "Warrior.jpg",
-            };
-            Troops.Add(Warrior);
-            var Scout = new Troop()
-            {
-                TypeString = TroopType.Scout.ToString(),
-                TypeInt = TroopType.Scout,
-                PreReq = "Requires Barrack level 2.",
-                ReqMet = true,
-                Description = "Workers are cheap transporters. Not very good for fighting.",
-                Qty = city.WarriorQty,
-                FoodCost = Constants.ScoutFoodCost,
-                StoneCost = 0,
-                WoodCost = Constants.ScoutWoodCost,
-                IronCost = Constants.ScoutIronCost,
-                TimeCost = Constants.ScoutTimeCost,
-                Attack = Constants.ScoutAttk,
-                Defense = Constants.ScoutDef,
-                Life = Constants.ScoutLife,
-                Range = Constants.ScoutRange,
-                Load = Constants.ScoutLoad,
-                Speed = Constants.ScoutSpeed,
-                Image = "Scout.jpg",
-            };
-            Troops.Add(Scout);
-            var Pike = new Troop()
-            {
-                TypeString = TroopType.Pikeman.ToString(),
-                TypeInt = TroopType.Pikeman,
-                PreReq = "Requires Barracks level 2 and Military Tradition Level 1.",
-                ReqMet = true,
-                Description = "Great range.",
-                Qty = city.ArcherQty,
-                FoodCost = Constants.PikeFoodCost,
-                StoneCost = 0,
-                WoodCost = Constants.PikeWoodCost,
-                IronCost = Constants.PikeIronCost,
-                TimeCost = Constants.PikeTimeCost,
-                Attack = Constants.PikeAttk,
-                Defense = Constants.PikeDef,
-                Life = Constants.PikeLife,
-                Range = Constants.PikeRange,
-                Load = Constants.PikeLoad,
-                Speed = Constants.PikeSpeed,
-                Image = "Pikeman.jpg",
-            };
-            Troops.Add(Pike);
-
-            var Archer = new Troop()
-            {
-                TypeString = TroopType.Archer.ToString(),
-                TypeInt = TroopType.Archer,
-                PreReq = "Requires Barracks level 4 and Archery level 1",
-                ReqMet = true,
-                Description = "Great range.",
-                Qty = city.ArcherQty,
-                FoodCost = Constants.ArchFoodCost,
-                StoneCost = 0,
-                WoodCost = Constants.ArchWoodCost,
-                IronCost = Constants.ArchIronCost,
-                TimeCost = Constants.ArchTimeCost,
-                Attack = Constants.ArchAttk,
-                Defense = Constants.ArchDef,
-                Life = Constants.ArchLife,
-                Range = Constants.ArchRange,
-                Load = Constants.ArchLoad,
-                Speed = Constants.ArchSpeed,
-                Image = "Archer.jpg",
-            };
-            Troops.Add(Archer);
-            var Ballista = new Troop()
-            {
-                TypeString = TroopType.Ballista.ToString(),
-                TypeInt = TroopType.Ballista,
-                PreReq = "Requires Barracks level 4 and Archery level 1",
-                ReqMet = true,
-                Description = "Great range.",
-                Qty = city.BallistaQty,
-                FoodCost = Constants.BallFoodCost,
-                StoneCost = 0,
-                WoodCost = Constants.BallWoodCost,
-                IronCost = Constants.BallIronCost,
-                TimeCost = Constants.BallTimeCost,
-                Attack = Constants.BallAttk,
-                Defense = Constants.BallDef,
-                Life = Constants.BallLife,
-                Range = Constants.BallRange,
-                Load = Constants.BallLoad,
-                Speed = Constants.BallSpeed,
-                Image = "Ballista.jpg",
-            };
-            Troops.Add(Ballista);
-            return Troops;
         
-        }
-
-        private List<Troop> GetWallDefenses(City city, UserResearch research)
-        {
-            List<Troop> Troops = new List<Troop>();
-
-            var Trap = new Troop()
-            {
-                TypeString = TroopType.Trap.ToString(),
-                TypeInt = TroopType.Trap,
-                PreReq = "Requires Walls level 1.",
-                ReqMet = true,
-                Description = "Trap your enemy.",
-                Qty = city.TrapQty,
-                ForWalls = true,
-                FoodCost = Constants.TrapFoodReq,
-                StoneCost = Constants.TrapStoneReq,
-                WoodCost = Constants.TrapWoodReq,
-                IronCost = Constants.TrapIronReq,
-                TimeCost = Constants.TrapTimeReq,
-                //Attack = Constants.TrapAttk,
-                //Defense = Constants.TrapDef,
-                //Life = Constants.TrapLife,
-                //Range = Constants.TrapRange,
-                //Load = Constants.TrapLoad,
-                //Speed = Constants.TrapSpeed,
-            };
-            Troops.Add(Trap);
-
-            var Abatis = new Troop()
-            {
-                TypeString = TroopType.Abatis.ToString(),
-                TypeInt = TroopType.Abatis,
-                PreReq = "Requires Walls level 2.",
-                ReqMet = true,
-                Description = "Killer Defense against Cavalry.",
-                Qty = city.AbatisQty,
-                ForWalls = true,
-                FoodCost = Constants.AbatisFoodReq,
-                StoneCost = Constants.AbatisStoneReq,
-                WoodCost = Constants.AbatisWoodReq,
-                IronCost = Constants.AbatisIronReq,
-                TimeCost = Constants.AbatisTimeReq,
-                //Attack = Constants.TrapAttk,
-                //Defense = Constants.TrapDef,
-                //Life = Constants.TrapLife,
-                //Range = Constants.TrapRange,
-                //Load = Constants.TrapLoad,
-                //Speed = Constants.TrapSpeed,
-            };
-            Troops.Add(Abatis);
-
-            var AT = new Troop()
-            {
-                TypeString = TroopType.Archers_Tower.ToString(),
-                TypeInt = TroopType.Archers_Tower,
-                PreReq = "Requires Walls level 3.",
-                ReqMet = true,
-                Description = "Great ranged defense.",
-                Qty = city.ArcherTowerQty,
-                ForWalls = true,
-                FoodCost = Constants.ATFoodReq,
-                StoneCost = Constants.ATStoneReq,
-                WoodCost = Constants.ATWoodReq,
-                IronCost = Constants.ATIronReq,
-                TimeCost = Constants.ATTimeReq,
-            };
-            Troops.Add(AT);
-
-            var rl = new Troop()
-            {
-                TypeString = TroopType.Rolling_Log.ToString().Replace("_"," "),
-                TypeInt = TroopType.Rolling_Log,
-                PreReq = "Requires Walls level 5.",
-                ReqMet = true,
-                Description = "Roll Logs on enemy when they reach the gates.",
-                Qty = city.RollingLogQty,
-                ForWalls = true,
-                FoodCost = Constants.RollLogFoodReq,
-                StoneCost = Constants.RollLogStoneReq,
-                WoodCost = Constants.RollLogWoodReq,
-                IronCost = Constants.RollLogIronReq,
-                TimeCost = Constants.RollLogTimeReq,
-            };
-            Troops.Add(rl); 
-            
-            var treb = new Troop()
-            {
-                TypeString = TroopType.Defensive_Trebuchet.ToString(),
-                TypeInt = TroopType.Defensive_Trebuchet,
-                PreReq = "Requires Walls level 7.",
-                ReqMet = true,
-                Description = "Hail large stones on your enemy.",
-                Qty = city.TrebuchetQty,
-                ForWalls = true,
-                FoodCost = Constants.TrebFoodReq,
-                StoneCost = Constants.TrebStoneReq,
-                WoodCost = Constants.TrebWoodReq,
-                IronCost = Constants.TrebIronReq,
-                TimeCost = Constants.TrebTimeReq,
-                //Attack = Constants.TrapAttk,
-                //Defense = Constants.TrapDef,
-                //Life = Constants.TrapLife,
-                //Range = Constants.TrapRange,
-                //Load = Constants.TrapLoad,
-                //Speed = Constants.TrapSpeed,
-            };
-            Troops.Add(treb);
-
-            return Troops;
-
-        }
-
-        private List<BuildingCost> GetCostOfTroops(City userCity, UserResearch userResearch)
-        {
-            var cost = new List<BuildingCost>();
-
-            var worker = new BuildingCost()
-            {
-                typeString = TroopType.Worker.ToString(),
-                troopType = TroopType.Worker,
-                preReq = Constants.WorkerBuildReq,
-                reqMet = false,
-                food = Constants.WorkerFoodCost,
-                stone = 0,
-                wood = Constants.WorkerWoodCost,
-                iron = Constants.WorkerIronCost,
-                time = Constants.WorkerTimeCost,
-            };
-            cost.Add(worker);
-
-            var warr = new BuildingCost()
-            {
-                typeString = TroopType.Warrior.ToString(),
-                troopType = TroopType.Warrior,
-                preReq = Constants.WarrBuildReq,
-                reqMet = false,
-                food = Constants.WarrFoodCost,
-                stone = 0,
-                wood = Constants.WarrWoodCost,
-                iron = Constants.WarrIronCost,
-                time = Constants.WarrTimeCost,
-            };
-            cost.Add(warr);
-
-            var scout = new BuildingCost()
-            {
-                typeString = TroopType.Scout.ToString(),
-                troopType = TroopType.Scout,
-                preReq = Constants.ScoutBuildReq,
-                reqMet = false,
-                food = Constants.ScoutFoodCost,
-                stone = 0,
-                wood = Constants.ScoutWoodCost,
-                iron = Constants.ScoutIronCost,
-                time = Constants.ScoutTimeCost,
-            };
-            cost.Add(scout);
-
-            var pike = new BuildingCost()
-            {
-                typeString = TroopType.Pikeman.ToString(),
-                troopType = TroopType.Pikeman,
-                preReq = Constants.PikeBuildReq,
-                reqMet = false,
-                food = Constants.PikeFoodCost,
-                stone = 0,
-                wood = Constants.PikeWoodCost,
-                iron = Constants.PikeIronCost,
-                time = Constants.PikeTimeCost,
-            };
-            cost.Add(pike);
-
-            var arch = new BuildingCost()
-            {
-                typeString = TroopType.Archer.ToString(),
-                troopType = TroopType.Archer,
-                preReq = Constants.ArchBuildReq,
-                reqMet = false,
-                food = Constants.ArchFoodCost,
-                stone = 0,
-                wood = Constants.ArchWoodCost,
-                iron = Constants.ArchIronCost,
-                time = Constants.ArchTimeCost,
-            };
-            cost.Add(arch);
-
-            var cav = new BuildingCost()
-            {
-                typeString = TroopType.Cavalry.ToString(),
-                troopType = TroopType.Cavalry,
-                preReq = Constants.CavBuildReq,
-                reqMet = false,
-                food = Constants.CavFoodCost,
-                stone = 0,
-                wood = Constants.CavWoodCost,
-                iron = Constants.CavIronCost,
-                time = Constants.CavTimeCost,
-            };
-            cost.Add(cav);
-
-            var ball = new BuildingCost()
-            {
-                typeString = TroopType.Ballista.ToString(),
-                troopType = TroopType.Ballista,
-                preReq = Constants.BallBuildReq,
-                reqMet = false,
-                food = Constants.BallFoodCost,
-                stone = 0,
-                wood = Constants.BallWoodCost,
-                iron = Constants.BallIronCost,
-                time = Constants.BallTimeCost,
-            };
-            cost.Add(ball);
-
-            var cata = new BuildingCost()
-            {
-                typeString = TroopType.Catapult.ToString(),
-                troopType = TroopType.Catapult,
-                preReq = Constants.CataBuildReq,
-                reqMet = false,
-                food = Constants.CataFoodCost,
-                stone = Constants.CataStoneCost,
-                wood = Constants.CataWoodCost,
-                iron = Constants.CataIronCost,
-                time = Constants.CataTimeCost,
-            };
-            cost.Add(cata);
-
-            var Trap = new BuildingCost()
-            {
-                typeString = TroopType.Trap.ToString(),
-                troopType = TroopType.Trap,
-                preReq = "Requires Walls level 1.",
-                reqMet = false,
-                food = Constants.TrapFoodReq,
-                stone = Constants.TrapStoneReq,
-                wood = Constants.TrapWoodReq,
-                iron = Constants.TrapIronReq,
-                time = Constants.TrapTimeReq,
-            };
-            cost.Add(Trap);
-
-            
-            var Abatis = new BuildingCost()
-            {
-                typeString = TroopType.Abatis.ToString().Replace("_", " "),
-                troopType = TroopType.Abatis,
-                preReq = "Requires Walls level 2.",
-                reqMet = false,
-                food = Constants.AbatisFoodReq,
-                stone = Constants.AbatisStoneReq,
-                wood = Constants.AbatisWoodReq,
-                iron = Constants.AbatisIronReq,
-                time = Constants.AbatisTimeReq,
-            };
-            cost.Add(Abatis);
-
-            var AT = new BuildingCost()
-            {
-                typeString = TroopType.Archers_Tower.ToString().Replace("_", " "),
-                troopType = TroopType.Archers_Tower,
-                preReq = "Requires Walls level 3.",
-                reqMet = false,
-                food = Constants.ATFoodReq,
-                stone = Constants.ATStoneReq,
-                wood = Constants.ATWoodReq,
-                iron = Constants.ATIronReq,
-                time = Constants.ATTimeReq,
-            };
-            cost.Add(AT);
-
-            var rl = new BuildingCost()
-            {
-                typeString = TroopType.Rolling_Log.ToString().Replace("_", " "),
-                troopType = TroopType.Rolling_Log,
-                preReq = "Requires Walls level 5.",
-                reqMet = false,
-                food = Constants.RollLogFoodReq,
-                stone = Constants.RollLogStoneReq,
-                wood = Constants.RollLogWoodReq,
-                iron = Constants.RollLogIronReq,
-                time = Constants.RollLogTimeReq,
-            };
-            cost.Add(rl);
-
-            var treb = new BuildingCost()
-            {
-                typeString = TroopType.Defensive_Trebuchet.ToString(),
-                troopType = TroopType.Defensive_Trebuchet,
-                preReq = "Requires Walls level 7.",
-                reqMet = false,
-                food = Constants.TrebFoodReq,
-                stone = Constants.TrebStoneReq,
-                wood = Constants.TrebWoodReq,
-                iron = Constants.TrebIronReq,
-                time = Constants.TrebTimeReq,
-            };
-            cost.Add(treb);
-
-
-
-            return cost;
-        }
-        //private async Task CheckTroopQueue(List<TroopQueue> troopQueues, City userCity) {
-        //    DateTime now = DateTime.UtcNow;
-        //    foreach (var queue in troopQueues)
-        //    {
-        //        if (queue.Ends < now)
-        //        {
-        //            switch (queue.TroopTypeInt)
-        //            {
-        //                case (TroopType.Worker):
-        //                    userCity.WorkerQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Warrior):
-        //                    userCity.WarriorQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Pikeman):
-        //                    userCity.PikemanQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Scout):
-        //                    userCity.ScoutQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Swordsman):
-        //                    userCity.SwordsmanQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Archer):
-        //                    userCity.ArcherQty   += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Cavalry):
-        //                    userCity.CavalierQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Ballista):
-        //                    userCity.BallistaQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                case (TroopType.Transporter):
-        //                    userCity.TransporterQty += queue.Qty;
-        //                    queue.Complete = true;
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-        //            await db.SaveChangesAsync();
-        //        }
-        //        else {
-        //            queue.TimeLeft = Convert.ToInt32(Math.Floor((queue.Ends - now).TotalSeconds)); 
-        //        }
-
-        //    }
-
-        //}
-
-        private void GetHeroPercentages(List<Hero> NewHeros) {
-            List<int> highPols = new List<int>();
-            List<int> highAttk = new List<int>();
-            List<int> highIntel = new List<int>();
-
-            foreach (var h in NewHeros)
-            {
-                if (h.Politics > 60)
-                {
-                    highPols.Add(h.Politics);
-                }
-                if (h.Attack > 60)
-                {
-                    highAttk.Add(h.Attack);
-                }
-                if (h.Intelligence > 60)
-                {
-                    highIntel.Add(h.Intelligence);
-                }
-            }
-
-            System.Diagnostics.Debug.WriteLine("HighPols: ");
-            foreach (var h in highPols)
-            {
-                System.Diagnostics.Debug.WriteLine(h + ", ");
-            }
-            System.Diagnostics.Debug.WriteLine("HighAttk: ");
-            foreach (var h in highAttk)
-            {
-                System.Diagnostics.Debug.WriteLine(h + ", ");
-            }
-            System.Diagnostics.Debug.WriteLine("HighIntel: ");
-            foreach (var h in highIntel)
-            {
-                System.Diagnostics.Debug.WriteLine(h + ", ");
-            }
-            var percentHighPol = highPols.Count() * 100 / NewHeros.Count();
-            var percentHighAttk = highAttk.Count() * 100 / NewHeros.Count();
-            var percentHighIntel = highIntel.Count() * 100 / NewHeros.Count();
-
-            System.Diagnostics.Debug.WriteLine("percentHighPol: " + percentHighPol + " percentHighAttk:" + percentHighAttk
-                + " percentHighIntel: " + percentHighIntel);
-        }
-
-
-        public async Task<List<Hero>> CreateHeros(int Qty, int CityId)
-        {
-            List<Hero> NewHeros = new List<Hero>();
-            //System.Diagnostics.Debug.WriteLine("hero" + i + ": Pol:" + PolPoints + " Attck: " + AttkPoints + " intel: " + IntelPoints);
-
-            for (int i = 0; i < Qty; i++)
-            {
-                Random random = new Random();
-                double rand = random.NextDouble();
-                int PolPoints = (rand < 0.3) ? random.Next(3, 70) : random.Next(3, 50);
-                int IntelPoints = (rand < 0.2) ? random.Next(3, 70) : random.Next(3, 50);
-                int AttkPoints = (rand > 0.9) ? random.Next(3, 70) : random.Next(3, 50);
-                Hero NewHero = new Hero();
-                NewHero.CityId = CityId;
-                NewHero.Politics = PolPoints;
-                NewHero.Intelligence = IntelPoints;
-                NewHero.Attack = AttkPoints;
-                NewHero.Level = random.Next(1, 10); ////Adjust Hero Level by Inn level
-                NewHero.Name = "George" + random.Next(1, 300);
-
-                NewHeros.Add(NewHero);
-                //db.Heros.Add(NewHero);
-            }
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                var m = e.InnerException.Message;
-            }
-
-            return NewHeros;
-
-        }
-
-        public async Task<List<Hero>> GetHeros(City userCity)
-        {
-            var CityHeros = await db.Heros.Where(c => c.CityId == userCity.CityId).ToListAsync();
-
-            if (CityHeros.Where(c => c.IsHired == false).Count() < 5) {
-                int Qty = 5 - CityHeros.Where(c => c.IsHired == false).Count();
-                List<Hero> newHeros = await CreateHeros(Qty, userCity.CityId);
-                foreach (var hero in newHeros)
-                {
-                    CityHeros.Add(hero);
-                }
-            }
-            //System.Diagnostics.Debug.WriteLine("hero" + i + ": Pol:" + PolPoints + " Attck: " + AttkPoints + " intel: " + IntelPoints);
-
-            //GetHeroPercentages(NewHeros);
-
-            return CityHeros;
-
-        }
-
+        
         [HttpGet]
         public async Task<JsonResult> Get()
         {
@@ -1949,32 +1329,627 @@ namespace MAWcore6.Controllers
         
 
 
-        //public class test
-        //{
-        //    public int id2 { get; set; }
-        //    public string fuck { get; set; }
+public class Troop { 
+            public string TypeString { get; set; } = "";
+            public TroopType TypeInt { get; set; } 
+            public string PreReq { get; set; } = "";
+            public bool ReqMet { get; set; } = false;
+            public string Description { get; set; } = "";
+            public int Qty { get; set; } = 0;
+            public int FoodCost { get; set; } = 0;
+            public int StoneCost { get; set; } = 0;
+            public int WoodCost { get; set; } = 0;
+            public int IronCost { get; set; } = 0;
+            public int TimeCost { get; set; } = 0;
+            public bool ForWalls { get; set; } = false;
+            public int Attack { get; set; } = 0;
+            public int Defense { get; set; } = 0;
+            public int Speed { get; set; } = 0;
+            public int Load { get; set; } = 0;
+            public int Life { get; set; } = 0;
+            public int Range { get; set; } = 0;
+            public string Image { get; set; } = "missing.jpg";
+        }
+
+     private List<Troop> GetTroops(City city,UserResearch research) {
+            List<Troop> Troops = new List<Troop>();
+
+            var Worker = new Troop()
+            {
+                TypeString = TroopType.Worker.ToString(),
+                TypeInt = TroopType.Worker,
+                PreReq = "Requires Barrack level 1.",
+                ReqMet = true,
+                Description = "Workers are cheap transporters. Not very good for fighting.",
+                Qty = city.WorkerQty,
+                FoodCost = Constants.WorkerFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.WorkerWoodCost,
+                IronCost = Constants.WorkerIronCost,
+                TimeCost = Constants.WorkerTimeCost,
+                Attack = Constants.WorkerAttk,
+                Defense = Constants.WorkerDef,
+                Life = Constants.WorkerLife,
+                Range = Constants.WorkerRange,
+                Load = Constants.WorkerLoad,
+                Speed = Constants.WorkerSpeed,
+            };
+            Troops.Add(Worker);
+            var Warrior = new Troop()
+            {
+                TypeString = TroopType.Warrior.ToString(),
+                TypeInt = TroopType.Warrior,
+                PreReq = "Requires Barrack level 1.",
+                ReqMet = true,
+                Description = "Workers are cheap transporters. Not very good for fighting.",
+                Qty = city.WarriorQty,
+                FoodCost = Constants.WarrFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.WarrWoodCost,
+                IronCost = Constants.WarrIronCost,
+                TimeCost = Constants.WarrTimeCost,
+                Attack = Constants.WarrAttk,
+                Defense = Constants.WarrDef,
+                Life = Constants.WarrLife,
+                Range = Constants.WarrRange,
+                Load = Constants.WarrLoad,
+                Speed = Constants.WarrSpeed,
+                Image = "Warrior.jpg",
+            };
+            Troops.Add(Warrior);
+            var Scout = new Troop()
+            {
+                TypeString = TroopType.Scout.ToString(),
+                TypeInt = TroopType.Scout,
+                PreReq = "Requires Barrack level 2.",
+                ReqMet = true,
+                Description = "Workers are cheap transporters. Not very good for fighting.",
+                Qty = city.WarriorQty,
+                FoodCost = Constants.ScoutFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.ScoutWoodCost,
+                IronCost = Constants.ScoutIronCost,
+                TimeCost = Constants.ScoutTimeCost,
+                Attack = Constants.ScoutAttk,
+                Defense = Constants.ScoutDef,
+                Life = Constants.ScoutLife,
+                Range = Constants.ScoutRange,
+                Load = Constants.ScoutLoad,
+                Speed = Constants.ScoutSpeed,
+                Image = "Scout.jpg",
+            };
+            Troops.Add(Scout);
+            var Pike = new Troop()
+            {
+                TypeString = TroopType.Pikeman.ToString(),
+                TypeInt = TroopType.Pikeman,
+                PreReq = "Requires Barracks level 2 and Military Tradition Level 1.",
+                ReqMet = true,
+                Description = "Great range.",
+                Qty = city.ArcherQty,
+                FoodCost = Constants.PikeFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.PikeWoodCost,
+                IronCost = Constants.PikeIronCost,
+                TimeCost = Constants.PikeTimeCost,
+                Attack = Constants.PikeAttk,
+                Defense = Constants.PikeDef,
+                Life = Constants.PikeLife,
+                Range = Constants.PikeRange,
+                Load = Constants.PikeLoad,
+                Speed = Constants.PikeSpeed,
+                Image = "Pikeman.jpg",
+            };
+            Troops.Add(Pike);
+
+            var Archer = new Troop()
+            {
+                TypeString = TroopType.Archer.ToString(),
+                TypeInt = TroopType.Archer,
+                PreReq = "Requires Barracks level 4 and Archery level 1",
+                ReqMet = true,
+                Description = "Great range.",
+                Qty = city.ArcherQty,
+                FoodCost = Constants.ArchFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.ArchWoodCost,
+                IronCost = Constants.ArchIronCost,
+                TimeCost = Constants.ArchTimeCost,
+                Attack = Constants.ArchAttk,
+                Defense = Constants.ArchDef,
+                Life = Constants.ArchLife,
+                Range = Constants.ArchRange,
+                Load = Constants.ArchLoad,
+                Speed = Constants.ArchSpeed,
+                Image = "Archer.jpg",
+            };
+            Troops.Add(Archer);
+            var Ballista = new Troop()
+            {
+                TypeString = TroopType.Ballista.ToString(),
+                TypeInt = TroopType.Ballista,
+                PreReq = "Requires Barracks level 4 and Archery level 1",
+                ReqMet = true,
+                Description = "Great range.",
+                Qty = city.BallistaQty,
+                FoodCost = Constants.BallFoodCost,
+                StoneCost = 0,
+                WoodCost = Constants.BallWoodCost,
+                IronCost = Constants.BallIronCost,
+                TimeCost = Constants.BallTimeCost,
+                Attack = Constants.BallAttk,
+                Defense = Constants.BallDef,
+                Life = Constants.BallLife,
+                Range = Constants.BallRange,
+                Load = Constants.BallLoad,
+                Speed = Constants.BallSpeed,
+                Image = "Ballista.jpg",
+            };
+            Troops.Add(Ballista);
+            return Troops;
+        
+        }
+
+        private List<Troop> GetWallDefenses(City city, UserResearch research)
+        {
+            List<Troop> Troops = new List<Troop>();
+
+            var Trap = new Troop()
+            {
+                TypeString = TroopType.Trap.ToString(),
+                TypeInt = TroopType.Trap,
+                PreReq = "Requires Walls level 1.",
+                ReqMet = true,
+                Description = "Trap your enemy.",
+                Qty = city.TrapQty,
+                ForWalls = true,
+                FoodCost = Constants.TrapFoodReq,
+                StoneCost = Constants.TrapStoneReq,
+                WoodCost = Constants.TrapWoodReq,
+                IronCost = Constants.TrapIronReq,
+                TimeCost = Constants.TrapTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(Trap);
+
+            var Abatis = new Troop()
+            {
+                TypeString = TroopType.Abatis.ToString(),
+                TypeInt = TroopType.Abatis,
+                PreReq = "Requires Walls level 2.",
+                ReqMet = true,
+                Description = "Killer Defense against Cavalry.",
+                Qty = city.AbatisQty,
+                ForWalls = true,
+                FoodCost = Constants.AbatisFoodReq,
+                StoneCost = Constants.AbatisStoneReq,
+                WoodCost = Constants.AbatisWoodReq,
+                IronCost = Constants.AbatisIronReq,
+                TimeCost = Constants.AbatisTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(Abatis);
+
+            var AT = new Troop()
+            {
+                TypeString = TroopType.Archers_Tower.ToString(),
+                TypeInt = TroopType.Archers_Tower,
+                PreReq = "Requires Walls level 3.",
+                ReqMet = true,
+                Description = "Great ranged defense.",
+                Qty = city.ArcherTowerQty,
+                ForWalls = true,
+                FoodCost = Constants.ATFoodReq,
+                StoneCost = Constants.ATStoneReq,
+                WoodCost = Constants.ATWoodReq,
+                IronCost = Constants.ATIronReq,
+                TimeCost = Constants.ATTimeReq,
+            };
+            Troops.Add(AT);
+
+            var rl = new Troop()
+            {
+                TypeString = TroopType.Rolling_Log.ToString().Replace("_"," "),
+                TypeInt = TroopType.Rolling_Log,
+                PreReq = "Requires Walls level 5.",
+                ReqMet = true,
+                Description = "Roll Logs on enemy when they reach the gates.",
+                Qty = city.RollingLogQty,
+                ForWalls = true,
+                FoodCost = Constants.RollLogFoodReq,
+                StoneCost = Constants.RollLogStoneReq,
+                WoodCost = Constants.RollLogWoodReq,
+                IronCost = Constants.RollLogIronReq,
+                TimeCost = Constants.RollLogTimeReq,
+            };
+            Troops.Add(rl); 
+            
+            var treb = new Troop()
+            {
+                TypeString = TroopType.Defensive_Trebuchet.ToString(),
+                TypeInt = TroopType.Defensive_Trebuchet,
+                PreReq = "Requires Walls level 7.",
+                ReqMet = true,
+                Description = "Hail large stones on your enemy.",
+                Qty = city.TrebuchetQty,
+                ForWalls = true,
+                FoodCost = Constants.TrebFoodReq,
+                StoneCost = Constants.TrebStoneReq,
+                WoodCost = Constants.TrebWoodReq,
+                IronCost = Constants.TrebIronReq,
+                TimeCost = Constants.TrebTimeReq,
+                //Attack = Constants.TrapAttk,
+                //Defense = Constants.TrapDef,
+                //Life = Constants.TrapLife,
+                //Range = Constants.TrapRange,
+                //Load = Constants.TrapLoad,
+                //Speed = Constants.TrapSpeed,
+            };
+            Troops.Add(treb);
+
+            return Troops;
+
+        }
+
+        private List<BuildingCost> GetCostOfTroops(City userCity, UserResearch userResearch)
+        {
+            var cost = new List<BuildingCost>();
+
+            var worker = new BuildingCost()
+            {
+                typeString = TroopType.Worker.ToString(),
+                troopType = TroopType.Worker,
+                preReq = Constants.WorkerBuildReq,
+                reqMet = false,
+                food = Constants.WorkerFoodCost,
+                stone = 0,
+                wood = Constants.WorkerWoodCost,
+                iron = Constants.WorkerIronCost,
+                time = Constants.WorkerTimeCost,
+            };
+            cost.Add(worker);
+
+            var warr = new BuildingCost()
+            {
+                typeString = TroopType.Warrior.ToString(),
+                troopType = TroopType.Warrior,
+                preReq = Constants.WarrBuildReq,
+                reqMet = false,
+                food = Constants.WarrFoodCost,
+                stone = 0,
+                wood = Constants.WarrWoodCost,
+                iron = Constants.WarrIronCost,
+                time = Constants.WarrTimeCost,
+            };
+            cost.Add(warr);
+
+            var scout = new BuildingCost()
+            {
+                typeString = TroopType.Scout.ToString(),
+                troopType = TroopType.Scout,
+                preReq = Constants.ScoutBuildReq,
+                reqMet = false,
+                food = Constants.ScoutFoodCost,
+                stone = 0,
+                wood = Constants.ScoutWoodCost,
+                iron = Constants.ScoutIronCost,
+                time = Constants.ScoutTimeCost,
+            };
+            cost.Add(scout);
+
+            var pike = new BuildingCost()
+            {
+                typeString = TroopType.Pikeman.ToString(),
+                troopType = TroopType.Pikeman,
+                preReq = Constants.PikeBuildReq,
+                reqMet = false,
+                food = Constants.PikeFoodCost,
+                stone = 0,
+                wood = Constants.PikeWoodCost,
+                iron = Constants.PikeIronCost,
+                time = Constants.PikeTimeCost,
+            };
+            cost.Add(pike);
+
+            var arch = new BuildingCost()
+            {
+                typeString = TroopType.Archer.ToString(),
+                troopType = TroopType.Archer,
+                preReq = Constants.ArchBuildReq,
+                reqMet = false,
+                food = Constants.ArchFoodCost,
+                stone = 0,
+                wood = Constants.ArchWoodCost,
+                iron = Constants.ArchIronCost,
+                time = Constants.ArchTimeCost,
+            };
+            cost.Add(arch);
+
+            var cav = new BuildingCost()
+            {
+                typeString = TroopType.Cavalry.ToString(),
+                troopType = TroopType.Cavalry,
+                preReq = Constants.CavBuildReq,
+                reqMet = false,
+                food = Constants.CavFoodCost,
+                stone = 0,
+                wood = Constants.CavWoodCost,
+                iron = Constants.CavIronCost,
+                time = Constants.CavTimeCost,
+            };
+            cost.Add(cav);
+
+            var ball = new BuildingCost()
+            {
+                typeString = TroopType.Ballista.ToString(),
+                troopType = TroopType.Ballista,
+                preReq = Constants.BallBuildReq,
+                reqMet = false,
+                food = Constants.BallFoodCost,
+                stone = 0,
+                wood = Constants.BallWoodCost,
+                iron = Constants.BallIronCost,
+                time = Constants.BallTimeCost,
+            };
+            cost.Add(ball);
+
+            var cata = new BuildingCost()
+            {
+                typeString = TroopType.Catapult.ToString(),
+                troopType = TroopType.Catapult,
+                preReq = Constants.CataBuildReq,
+                reqMet = false,
+                food = Constants.CataFoodCost,
+                stone = Constants.CataStoneCost,
+                wood = Constants.CataWoodCost,
+                iron = Constants.CataIronCost,
+                time = Constants.CataTimeCost,
+            };
+            cost.Add(cata);
+
+            var Trap = new BuildingCost()
+            {
+                typeString = TroopType.Trap.ToString(),
+                troopType = TroopType.Trap,
+                preReq = "Requires Walls level 1.",
+                reqMet = false,
+                food = Constants.TrapFoodReq,
+                stone = Constants.TrapStoneReq,
+                wood = Constants.TrapWoodReq,
+                iron = Constants.TrapIronReq,
+                time = Constants.TrapTimeReq,
+            };
+            cost.Add(Trap);
+
+            
+            var Abatis = new BuildingCost()
+            {
+                typeString = TroopType.Abatis.ToString().Replace("_", " "),
+                troopType = TroopType.Abatis,
+                preReq = "Requires Walls level 2.",
+                reqMet = false,
+                food = Constants.AbatisFoodReq,
+                stone = Constants.AbatisStoneReq,
+                wood = Constants.AbatisWoodReq,
+                iron = Constants.AbatisIronReq,
+                time = Constants.AbatisTimeReq,
+            };
+            cost.Add(Abatis);
+
+            var AT = new BuildingCost()
+            {
+                typeString = TroopType.Archers_Tower.ToString().Replace("_", " "),
+                troopType = TroopType.Archers_Tower,
+                preReq = "Requires Walls level 3.",
+                reqMet = false,
+                food = Constants.ATFoodReq,
+                stone = Constants.ATStoneReq,
+                wood = Constants.ATWoodReq,
+                iron = Constants.ATIronReq,
+                time = Constants.ATTimeReq,
+            };
+            cost.Add(AT);
+
+            var rl = new BuildingCost()
+            {
+                typeString = TroopType.Rolling_Log.ToString().Replace("_", " "),
+                troopType = TroopType.Rolling_Log,
+                preReq = "Requires Walls level 5.",
+                reqMet = false,
+                food = Constants.RollLogFoodReq,
+                stone = Constants.RollLogStoneReq,
+                wood = Constants.RollLogWoodReq,
+                iron = Constants.RollLogIronReq,
+                time = Constants.RollLogTimeReq,
+            };
+            cost.Add(rl);
+
+            var treb = new BuildingCost()
+            {
+                typeString = TroopType.Defensive_Trebuchet.ToString(),
+                troopType = TroopType.Defensive_Trebuchet,
+                preReq = "Requires Walls level 7.",
+                reqMet = false,
+                food = Constants.TrebFoodReq,
+                stone = Constants.TrebStoneReq,
+                wood = Constants.TrebWoodReq,
+                iron = Constants.TrebIronReq,
+                time = Constants.TrebTimeReq,
+            };
+            cost.Add(treb);
+
+
+
+            return cost;
+        }
+        //private async Task CheckTroopQueue(List<TroopQueue> troopQueues, City userCity) {
+        //    DateTime now = DateTime.UtcNow;
+        //    foreach (var queue in troopQueues)
+        //    {
+        //        if (queue.Ends < now)
+        //        {
+        //            switch (queue.TroopTypeInt)
+        //            {
+        //                case (TroopType.Worker):
+        //                    userCity.WorkerQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Warrior):
+        //                    userCity.WarriorQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Pikeman):
+        //                    userCity.PikemanQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Scout):
+        //                    userCity.ScoutQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Swordsman):
+        //                    userCity.SwordsmanQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Archer):
+        //                    userCity.ArcherQty   += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Cavalry):
+        //                    userCity.CavalierQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Ballista):
+        //                    userCity.BallistaQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                case (TroopType.Transporter):
+        //                    userCity.TransporterQty += queue.Qty;
+        //                    queue.Complete = true;
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //            await db.SaveChangesAsync();
+        //        }
+        //        else {
+        //            queue.TimeLeft = Convert.ToInt32(Math.Floor((queue.Ends - now).TotalSeconds)); 
+        //        }
+
+        //    }
+
         //}
 
-        //[HttpPost("Fucker")]
-        ////[Route("Fucker")]
-        //public async Task<JsonResult> Fucker55([FromBody] test tt)
-        //{
-        //    string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var u = await _userManager.FindByIdAsync(UserId);
+        private void GetHeroPercentages(List<Hero> NewHeros) {
+            List<int> highPols = new List<int>();
+            List<int> highAttk = new List<int>();
+            List<int> highIntel = new List<int>();
 
-        //    City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.CityId == tt.id2).FirstOrDefaultAsync();
-        //    //City UserCity = await db.Cities.Include(c => c.Buildings).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
-        //    UserItems UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-        //    UserResearch userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-        //    List<BuildingCost> ListOfBuildingsCost = GetBuildingsCost(userResearch);
-        //    //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+            foreach (var h in NewHeros)
+            {
+                if (h.Politics > 60)
+                {
+                    highPols.Add(h.Politics);
+                }
+                if (h.Attack > 60)
+                {
+                    highAttk.Add(h.Attack);
+                }
+                if (h.Intelligence > 60)
+                {
+                    highIntel.Add(h.Intelligence);
+                }
+            }
 
-        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
-        //}
+            System.Diagnostics.Debug.WriteLine("HighPols: ");
+            foreach (var h in highPols)
+            {
+                System.Diagnostics.Debug.WriteLine(h + ", ");
+            }
+            System.Diagnostics.Debug.WriteLine("HighAttk: ");
+            foreach (var h in highAttk)
+            {
+                System.Diagnostics.Debug.WriteLine(h + ", ");
+            }
+            System.Diagnostics.Debug.WriteLine("HighIntel: ");
+            foreach (var h in highIntel)
+            {
+                System.Diagnostics.Debug.WriteLine(h + ", ");
+            }
+            var percentHighPol = highPols.Count() * 100 / NewHeros.Count();
+            var percentHighAttk = highAttk.Count() * 100 / NewHeros.Count();
+            var percentHighIntel = highIntel.Count() * 100 / NewHeros.Count();
+
+            System.Diagnostics.Debug.WriteLine("percentHighPol: " + percentHighPol + " percentHighAttk:" + percentHighAttk
+                + " percentHighIntel: " + percentHighIntel);
+        }
 
 
+        public async Task<List<Hero>> CreateHeros(int Qty, int CityId)
+        {
+            List<Hero> NewHeros = new List<Hero>();
+            //System.Diagnostics.Debug.WriteLine("hero" + i + ": Pol:" + PolPoints + " Attck: " + AttkPoints + " intel: " + IntelPoints);
 
-       
+            for (int i = 0; i < Qty; i++)
+            {
+                Random random = new Random();
+                double rand = random.NextDouble();
+                int PolPoints = (rand < 0.3) ? random.Next(3, 70) : random.Next(3, 50);
+                int IntelPoints = (rand < 0.2) ? random.Next(3, 70) : random.Next(3, 50);
+                int AttkPoints = (rand > 0.9) ? random.Next(3, 70) : random.Next(3, 50);
+                Hero NewHero = new Hero();
+                NewHero.CityId = CityId;
+                NewHero.Politics = PolPoints;
+                NewHero.Intelligence = IntelPoints;
+                NewHero.Attack = AttkPoints;
+                NewHero.Level = random.Next(1, 10); ////Adjust Hero Level by Inn level
+                NewHero.Name = "George" + random.Next(1, 300);
+
+                NewHeros.Add(NewHero);
+                //db.Heros.Add(NewHero);
+            }
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                var m = e.InnerException.Message;
+            }
+
+            return NewHeros;
+
+        }
+
+        public async Task<List<Hero>> GetHeros(City userCity)
+        {
+            var CityHeros = await db.Heros.Where(c => c.CityId == userCity.CityId).ToListAsync();
+
+            if (CityHeros.Where(c => c.IsHired == false).Count() < 5) {
+                int Qty = 5 - CityHeros.Where(c => c.IsHired == false).Count();
+                List<Hero> newHeros = await CreateHeros(Qty, userCity.CityId);
+                foreach (var hero in newHeros)
+                {
+                    CityHeros.Add(hero);
+                }
+            }
+            //System.Diagnostics.Debug.WriteLine("hero" + i + ": Pol:" + PolPoints + " Attck: " + AttkPoints + " intel: " + IntelPoints);
+
+            //GetHeroPercentages(NewHeros);
+
+            return CityHeros;
+
+        }
+  
 
     }
 
