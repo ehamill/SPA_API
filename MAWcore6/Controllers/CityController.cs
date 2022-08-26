@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using MAWcore6.Data;
 using MAWcore6.Models;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace MAWcore6.Controllers
