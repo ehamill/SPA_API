@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using MAWcore6.Data;
 using MAWcore6.Models;
 using System.Security.Claims;
+using static MAWcore6.Models.CityModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace MAWcore6.Controllers
 {
@@ -226,7 +228,7 @@ namespace MAWcore6.Controllers
 
 
 
-        public async Task CheckBuilder1(City userCity) {
+        private async Task CheckBuilder1(City userCity) {
             DateTime TimeNow = DateTime.UtcNow;
             DateTime ConstructionEnds = userCity.Construction1Ends;
 
