@@ -18,7 +18,7 @@ export class InnModal extends Component {
     
 
     render() {
-        //const className = "jlsaldfjl";
+        const className = "jlsaldfjl";
         //console.log('at in modal. heros:' + JSON.stringify(this.props.heros))
         const herosForHire = this.props.heros.filter(function (attr) {
             return attr.isHired === false;
@@ -31,7 +31,7 @@ export class InnModal extends Component {
             >
                 <ModalHeader className="text-center" style={{ 'display': 'block' }}>
                     Inn
-                    <Button close  onClick={this.props.toggleModal}>X</Button>
+                    <Button close className="float-right" onClick={this.props.toggleModal}></Button>
                 </ModalHeader>
                 <ModalBody>
                     <div>

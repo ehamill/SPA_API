@@ -10,13 +10,13 @@ namespace MAWcore6.Models
         public string PreReq { get; set; } = "";
         public int Food { get; set; } = 0;
         public int Stone { get; set; } = 0;
-        public int wood { get; set; } = 0;
-        public int iron { get; set; } = 0;
-        public int time { get; set; } = 0;
-        public string description { get; set; } = "";
-        public BuildingType? buildingTypeInt { get; set; }
-        public TroopType? troopType { get; set; }
-        public bool farm { get; set; } = false;
+        public int Wood { get; set; } = 0;
+        public int Iron { get; set; } = 0;
+        public int Time { get; set; } = 0;
+        public string Description { get; set; } = "";
+        public BuildingType? BuildingTypeInt { get; set; }
+        public TroopType? TroopType { get; set; }
+        public bool Farm { get; set; } = false;
 
     }
 }

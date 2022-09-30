@@ -19,7 +19,7 @@ export class UpgradeModal extends Component {
 
         this.showTime = this.showTime.bind(this);
         //this.handleRecruitClick = this.handleRecruitClick.bind(this);
-       
+       //test 
         //this.upgradeBuildingClick = this.upgradeBuildingClick.bind(this);
         
     }

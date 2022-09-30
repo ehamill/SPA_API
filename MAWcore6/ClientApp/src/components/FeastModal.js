@@ -15,8 +15,6 @@ export class FeastModal extends Component {
         //this.showTime = this.showTime.bind(this);
     }
 
-    
-
     render() {
         //const className = "jlsaldfjl";
         //console.log('at in modal. heros:' + JSON.stringify(this.props.heros))
@@ -31,7 +29,7 @@ export class FeastModal extends Component {
             >
                 <ModalHeader className="text-center" style={{ 'display': 'block' }}>
                     Feasting Hall
-                    <Button close  onClick={this.props.toggleModal}>X</Button>
+                    <Button close className="float-right" onClick={this.props.toggleModal}></Button>
                 </ModalHeader>
                 <ModalBody>
                     <div>
