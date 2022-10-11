@@ -37,7 +37,7 @@ namespace MAWcore6.Controllers
 
             try
             {
-                UserCity = await db.Cities.Include(c => c.Buildings).Include(c => c.Heros).Where(c => c.UserId == UserId).FirstOrDefaultAsync() ?? await CreateCity(UserId);
+                UserCity = await db.Cities.Include(c => c.Buildings).Include(c => c.Heros).Where(c => c.UserId == UserId).AsSplitQuery().FirstOrDefaultAsync() ?? await CreateCity(UserId);
                 UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
                 userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
                 TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId && c.Complete == false).ToListAsync();
@@ -49,7 +49,7 @@ namespace MAWcore6.Controllers
             }
 
             List<Hero> Heros = await GetHeros(UserCity);
-            //await UpdateResources(UserCity);
+            await UpdateResources(UserCity);
             List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
             List<Troop> Troops = GetTroops(UserCity, userResearch);
             List<Troop> WallDefenses = GetWallDefenses(UserCity, userResearch);
@@ -323,7 +323,16 @@ namespace MAWcore6.Controllers
             userCity.GoldRate = GoldRate;
             userCity.ResourcesLastUpdated = DateTime.UtcNow;
 
-            await db.SaveChangesAsync();
+            try
+            {
+                //db.Update(userCity);
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error at CityController DeleteTroopQueues, []: " + ex.Message + ex.InnerException.Message);
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private BuildingCost GetUpgradeCostOfBuilding(UpdateCityModel update,City userCity, UserResearch userResearch)
@@ -517,70 +526,86 @@ namespace MAWcore6.Controllers
             {
                 case TroopType.Worker:
                     city.WorkerQty = city.WorkerQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Warrior:
                     city.WarriorQty = city.WarriorQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Scout:
                     city.ScoutQty = city.ScoutQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Pikeman:
                     city.PikemanQty = city.PikemanQty + queue.Qty;
-                    return;
+                    break;
                 case (TroopType.Swordsman):
                     city.SwordsmanQty += queue.Qty;
                     break;
                 case TroopType.Transporter:
                     city.TransporterQty = city.TransporterQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Archer:
                     city.ArcherQty = city.ArcherQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Cavalry:
                     city.CavalierQty = city.CavalierQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Cataphract:
                     city.CataphractQty = city.CataphractQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Ballista:
                     city.BallistaQty = city.BallistaQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Catapult:
                     city.CatapultQty = city.CatapultQty + queue.Qty;
-                    return;
+                    break;
 
                 case TroopType.Trap:
                     city.TrapQty = city.TrapQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Abatis:
                     city.AbatisQty = city.AbatisQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Archers_Tower:
                     city.ArcherTowerQty = city.ArcherTowerQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Rolling_Log:
                     city.RollingLogQty = city.RollingLogQty + queue.Qty;
-                    return;
+                    break;
                 case TroopType.Defensive_Trebuchet:
                     city.TrebuchetQty = city.TrebuchetQty + queue.Qty;
-                    return;
+                    break;
                 default:
                     //log error..
-                    return;
+                    break;
             }
 
             queue.Complete = true;
-
-            await db.SaveChangesAsync();
-        }
-        private async Task DeleteTroopQueues(List<int> queueIds)
-        {
-            foreach (var id in queueIds)
+            try
             {
-                var q = await db.TroopQueues.Where(c => c.TroopQueueId == id).FirstOrDefaultAsync();
-                db.TroopQueues.Remove(q);
+                await db.SaveChangesAsync();
             }
-            await db.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error at CityController AddTroopsToCity, []: " + ex.Message + ex.InnerException.Message);
+                Console.WriteLine(ex.Message);
+            }
+        }
+        private async Task DeleteTroopQueues(List<int> queueIds, List<TroopQueue> troopQueues)
+        {
+            try
+            {
+                foreach (var id in queueIds)
+                {
+                    //var q = await db.TroopQueues.Where(c => c.TroopQueueId == id).FirstOrDefaultAsync();
+                    var q = troopQueues.Where(c => c.TroopQueueId == id).FirstOrDefault();
+                    db.TroopQueues.Remove(q);
+                }
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error at CityController DeleteTroopQueues, []: " + ex.Message);
+                Console.WriteLine(ex.Message);
+            }
         }
         private async Task CheckTroopQueues(List<TroopQueue> troopQueues, City city)
         {
@@ -598,6 +623,8 @@ namespace MAWcore6.Controllers
                     await db.SaveChangesAsync();
                 }
             }
+            await DeleteTroopQueues(QueuesToDelete, troopQueues);
+
         }
         private async Task TroopQueueAdd(TrainTroopsModel update, List<TroopQueue> troopQueues, City city, UserResearch userResearch)
         {
