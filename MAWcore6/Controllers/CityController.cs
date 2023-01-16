@@ -49,7 +49,7 @@ namespace MAWcore6.Controllers
             }
 
             List<Hero> Heros = await GetHeros(UserCity);
-            await UpdateResources(UserCity);
+            //await UpdateResources(UserCity);
             List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
             List<Troop> Troops = GetTroops(UserCity, userResearch);
             List<Troop> WallDefenses = GetWallDefenses(UserCity, userResearch);
@@ -325,7 +325,6 @@ namespace MAWcore6.Controllers
 
             try
             {
-                //db.Update(userCity);
                 await db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -1818,6 +1817,9 @@ namespace MAWcore6.Controllers
         {
             List<Hero> NewHeros = new List<Hero>();
             //System.Diagnostics.Debug.WriteLine("hero" + i + ": Pol:" + PolPoints + " Attck: " + AttkPoints + " intel: " + IntelPoints);
+            var HeroNames = new List<string>() {
+                "Zion", "Davis", "April", "Fritz", "Aarav", "Gates", "Valentino", "Shannon", "Kaya", "Cook", "Jadiel", "Humphrey", "Bria", "Brennan", "Maya", "Leblanc", "Corbin", "Hood", "Yaretzi", "Townsend", "Keira", "Warner", "Broderick", "Landry", "Malakai", "Grant", "Ryan", "Small", "Hayden", "Cole", "Katrina", "Conner", "Caitlyn", "Wells", "Edith", "Barker", "Ivy", "Marquez", "Alexander", "Harvey", "Brynn", "Mcdaniel", "Jarrett", "Olson", "Alayna", "Colon", "Regan", "Fox", "Julio", "Walker", "Sierra", "Elliott", "Janet", "Shelton", "Tess", "Willis"
+            }; 
 
             for (int i = 0; i < Qty; i++)
             {
@@ -1832,7 +1834,7 @@ namespace MAWcore6.Controllers
                 NewHero.Intelligence = IntelPoints;
                 NewHero.Attack = AttkPoints;
                 NewHero.Level = random.Next(1, 10); ////Adjust Hero Level by Inn level
-                NewHero.Name = "George" + random.Next(1, 300);
+                NewHero.Name = HeroNames[random.Next(0, HeroNames.Count())];
 
                 NewHeros.Add(NewHero);
                 //db.Heros.Add(NewHero);

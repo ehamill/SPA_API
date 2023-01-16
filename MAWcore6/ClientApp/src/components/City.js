@@ -449,7 +449,15 @@ export class City extends Component {
 
                   <ListGroup className="fixed-bottom" >
                       <ListGroupItem>
-                          food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron}
+                          food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron} || gold {this.state.city.gold}
+
+                      </ListGroupItem>
+                      <ListGroupItem>
+                          {this.state.troops.map((troop, index) =>
+                              <span className="ml-2" key={index}>
+                                  {troop.typeString} {troop.qty} ||
+                              </span>
+                          )}
                       </ListGroupItem>
                       <ListGroupItem>
                           builder1Busy: {this.state.city.builder1Busy.toString()} || BuldingID: {this.state.city.construction1BuildingId}

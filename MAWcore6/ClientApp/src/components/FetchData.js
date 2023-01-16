@@ -53,16 +53,16 @@ export class FetchData extends Component {
     );
   }
 
-  async populateWeatherData() {
-       // console.log('at async populateWeatherData...');
-    const token = await authService.getAccessToken();
-    const response = await fetch('weatherforecast', {
-      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await response.json();
-    if (data.message !== 'ok') {
-            this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
-     }
-    this.setState({ forecasts: data, loading: false });
-  }
+    async populateWeatherData() {
+        // console.log('at async populateWeatherData.. ');
+        const token = await authService.getAccessToken();
+        const response = await fetch('weatherforecast', {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (data.message !== 'ok') {
+                this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
+        }
+        this.setState({ forecasts: data, loading: false });
+      }
 }
