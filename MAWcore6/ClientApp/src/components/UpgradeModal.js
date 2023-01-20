@@ -174,8 +174,6 @@ export class UpgradeModal extends Component {
         //console.log('upgrade modal building: ' + JSON.stringify(activeBuilding));
 
         return (
-            
-
 
             <Modal
                 isOpen={this.props.showUpgradeModal}
