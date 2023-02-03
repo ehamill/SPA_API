@@ -10,6 +10,7 @@ import { TownHallModal } from './TownHallModal';
 import { InnModal } from './InnModal';
 import { FeastModal } from './FeastModal';
 //import testing form the beging...sdlf ads
+import { Link } from 'react-router-dom';
 
 export class City extends Component { 
 
@@ -385,6 +386,7 @@ export class City extends Component {
 
 
               <div>
+                  <Link to="/townhall">th</Link>
                   <Table bordered={true}>
                       <tbody>
                           <tr>
