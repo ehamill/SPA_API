@@ -19,8 +19,10 @@ namespace MAWcore6.Models
         public int IronRate { get; set; } = 100;
         public int Gold { get; set; } = 5000;
         public int GoldRate { get; set; } = 0;
-        public DateTime ResourcesLastUpdated { get; set; }
+        public DateTime ResourcesLastUpdated { get; set; } = DateTime.UtcNow;
         public List<Building> Buildings { get; set; }
+        public List<Hero> Heros { get; set; }
+
         //public virtual ICollection<Building> Buildings { get; set; }
         //public UserResearch UserResearch { get; set; }
         public DateTime Construction1Started { get; set; } = DateTime.UtcNow;
@@ -48,6 +50,7 @@ namespace MAWcore6.Models
         public int ArcherTowerQty { get; set; } = 0;
         public int RollingLogQty { get; set; } = 0;
         public int TrebuchetQty { get; set; } = 0;
+
 
         //[ForeignKey("UserId
         //[ForeignKey("UserResearchId")]
