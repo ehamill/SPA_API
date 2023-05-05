@@ -28,11 +28,8 @@ export class RecruitModal extends Component {
     }
 
     handleTroopQtyChange(e) {
-        //changed from troopTypeInt to typeInt
-        //console.log('at handleTroopQtyChange. recruit modal this.props.troopTypeInt22: ' + this.props.typeInt,' this.props.troops: ' , this.props.troops, )
-        const troop = (this.props.typeInt === 0) ? this.props.city.troops[0] : this.props.city.troops.find((x) => x.typeInt === this.props.typeInt);
+        const troop = (this.props.troopTypeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.troopTypeInt === this.props.troopTypeInt);
         const qty = parseFloat(e.target.value);
-        console.log('qty', qty);
         if (!Number.isNaN(qty)) {
             this.setState({
                 trainQty: qty,
@@ -54,11 +51,11 @@ export class RecruitModal extends Component {
     }
 
     getMaximumTroops() {
-        const troop = (this.props.typeInt === 0) ? this.props.city.troops[0] : this.props.city.troops.find((x) => x.typeInt === this.props.typeInt);
-        const food = this.props.city.food;
-        const stone = this.props.city.stone;
-        const wood = this.props.city.wood;
-        const iron = this.props.city.iron;
+        const troop = (this.props.troopTypeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.troopTypeInt === this.props.troopTypeInt);
+        const food = this.props.food;
+        const stone = this.props.stone;
+        const wood = this.props.wood;
+        const iron = this.props.iron;
         let max = Math.floor(food / troop.foodCost);
         max = max < Math.floor(stone / troop.stoneCost) ? max : Math.floor(stone / troop.stoneCost);
         max = max < Math.floor(wood / troop.woodCost) ? max : Math.floor(wood / troop.woodCost);
@@ -128,20 +125,12 @@ export class RecruitModal extends Component {
     }
     
     render() {
-       console.log('this.props.troopTypeInt: '+ this.props.typeInt)
-        const troop = (this.props.typeInt === 0) ? this.props.city.troops[0] : this.props.city.troops.find((x) => x.typeInt === this.props.typeInt);
-        console.log('at recruit ...troop is: ' + JSON.stringify(troop))
+        //console.log('this.props.troopTypeInt: '+ this.props.typeInt)
+        const troop = (this.props.typeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.typeInt);
+        //console.log('at recruit ...troop is: ' + JSON.stringify(troop))
         //const activeBuildingId = this.props.activeBuildingId;
         //const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
-        const food = this.props.city.food;
-        const stone = this.props.city.stone;
-        const wood = this.props.city.wood;
-        const iron = this.props.city.iron;
-        const foodDanger = this.state.foodNeeded > food && "text-danger";
-        const stoneDanger = this.state.stoneNeeded > stone && "text-danger";
-        const woodDanger = this.state.woodNeeded > wood && "text-danger";
-        const ironDanger = this.state.ironNeeded > iron && "text-danger";
-
+     
         return (
             <Modal
                 isOpen={this.props.showModal}
@@ -188,27 +177,27 @@ export class RecruitModal extends Component {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <th>Food </th>
+                                    <td>Food </td>
                                     <th>{this.state.foodNeeded}</th>
-                                    <th className={foodDanger}>{this.props.city.food} </th>
+                                    <th>{this.props.food} </th>
                                 </tr>
                                 {this.state.stoneNeeded > 0 &&
                                     <tr>
                                         <th>Stone </th>
                                         <th>{this.state.stoneNeeded}</th>
-                                    <th className={stoneDanger}>{this.props.city.stone} </th>
+                                        <th>{this.props.stone} </th>
                                     </tr>
                                 }
                                 
                                 <tr>
                                     <th>Wood </th>
                                     <th>{this.state.woodNeeded}</th>
-                                    <th className={woodDanger}>{this.props.city.wood} </th>
+                                    <th>{this.props.wood} </th>
                                 </tr>
                                 <tr>
                                     <th>Iron </th>
                                     <th>{this.state.ironNeeded}</th>
-                                    <th className={ironDanger}>{this.props.city.iron} </th>
+                                    <th>{this.props.iron} </th>
                                 </tr>
                                 <tr>
                                     <td colSpan="2">

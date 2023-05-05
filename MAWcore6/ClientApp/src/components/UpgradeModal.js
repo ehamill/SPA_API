@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 //import logo from './Images/Cottages.jpg' ; Testing for the java
-//import { WallDefenses } from './WallDefenses';
+import { WallDefenses } from './WallDefenses';
 import { Troops } from './Troops';
 
 
@@ -19,11 +19,13 @@ export class UpgradeModal extends Component {
 
         this.showTime = this.showTime.bind(this);
         //this.handleRecruitClick = this.handleRecruitClick.bind(this);
-       //test 
+       
         //this.upgradeBuildingClick = this.upgradeBuildingClick.bind(this);
+        
     }
 
-   
+    
+
 
     showTime(secs) {
         let d = Math.floor(secs / (60 * 60 * 24));
@@ -109,56 +111,7 @@ export class UpgradeModal extends Component {
         }
     }
 
-    GetBuildingDescription(id) {
-        switch (id) {
-            case 0:
-                return "Empty - build something here.";
-            case 1:
-                return "Academy - do your reasearch.";
-            case 2:
-                return "Barrack - Train new troops.";
-            case 3:
-                return "Beacon Tower - warns you when enemy approaching.";
-            case 4:
-                return "Cottage - increase your population.";
-            case 5:
-                return "Embassy - house ally troops.";
-            case 6:
-                return "Feasting Hall - Store your heros.";
-            case 7:
-                return "Forge - Create new weapons";
-            case 8:
-                return "Inn - Hire new heros.";
-            case 9:
-                return "Marketplace - trade with others.";
-            case 10:
-                return "Rally Spot - Send troops.";
-            case 11:
-                return "Relief Station - Increase sharing speed.";
-            case 12:
-                return "Stable - train horses and ballistae.";
-            case 13:
-                return "Town Hall - Manage your city.";
-            case 14:
-                return "Warehouse - keep resources safe.";
-            case 15:
-                return "Workshop - odod work";
-            case 16:
-                return "Farm - make food.";
-            case 17:
-                return "Iron Mine - make iron.";
-            case 18:
-                return "Sawmill - make wood.";
-            case 19:
-                return "Iron Mine - make iron.";
-            case 20:
-                return "Quarry - make stone";
-            case 21:
-                return "Walls - keep safe";
-            default:
-                return "Not Found";
-        }
-    }
+    
     render() {
         const city = this.props.city;
         const activeBuildingId = this.props.activeBuildingId;
@@ -167,38 +120,32 @@ export class UpgradeModal extends Component {
         const upgradeLevel = activeBuilding.level + 1;
         const demoLevel = activeBuilding.level - 1;
         const buildingTypeString = this.GetBuildingType(activeBuilding.buildingType);
-        let buildingDescription = this.GetBuildingDescription(activeBuilding.buildingType);
         const buildingTypeInt = activeBuilding.buildingType;
-        const buildingImage = "Images/" + buildingTypeString + "Lvl" + buildingLevel +".jpg";
+        const buildingImage = "Images/" + buildingTypeString + ".jpg";
         
         //console.log('upgrade modal building: ' + JSON.stringify(activeBuilding));
 
         return (
+            
 
-            <Modal
-                isOpen={this.props.showUpgradeModal}
+
+            <Modal isOpen={this.props.showUpgradeModal}
                 toggle={this.props.toggleUpdateModal}
                 size="lg"
             >
-                <ModalHeader toggle={this.props.toggleUpdateModal}>
-                    {buildingTypeString} Level {buildingLevel}
-                </ModalHeader>
+                <ModalHeader >{buildingTypeString} Level {buildingLevel }</ModalHeader>
                 <ModalBody>
                     
                     <div className="row">
                         <div className="col-md-2">
-                            
                             <img src={buildingImage}  width="55px"/>
                         </div>
                         <div className="col-md-8">
                             <p>
-                                {buildingImage}
-                            </p>
-                            <p>
-                                {buildingDescription}
+                                {activeBuilding.description}
                             </p>
                             <div>
-                                Upgrading {activeBuilding.image} at Location {activeBuilding.location} || builidingID {activeBuildingId} ||
+                                Upgrading {activeBuilding.image} at {activeBuilding.location} || builidingID {activeBuildingId} ||
                                 BuildingTypeString: {buildingTypeString} || buildingTypeInt: {buildingTypeInt} ||
                                 image: {activeBuilding.image} || Level: {buildingLevel}
                             </div>
@@ -214,8 +161,9 @@ export class UpgradeModal extends Component {
                         </div>
                     </div>
                     <div>
-                        {activeBuilding.buildingType === 21 && <Troops city={this.props.city} activeBuildingId={activeBuildingId} />}
-                        {activeBuilding.buildingType === 2 && <Troops  city={this.props.city} activeBuildingId={activeBuildingId} />}
+                        {/*{activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} />}*/}
+                        {activeBuilding.buildingType === 21 && <Troops trainTroops={this.props.trainTroops} troops={this.props.wallDefenses} troopQueues={this.props.troopQueues} city={this.props.city} activeBuildingId={activeBuildingId} />}
+                        {activeBuilding.buildingType === 2 && <Troops trainTroops={ this.props.trainTroops } troops={this.props.troops} troopQueues={this.props.troopQueues} city={this.props.city} activeBuildingId={activeBuildingId} />}
                         
                     </div>
                     <div className="row" hidden>

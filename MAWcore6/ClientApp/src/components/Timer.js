@@ -12,7 +12,7 @@ export class Timer extends Component {
             seconds: this.props.seconds,
             //isHidden: this.props.isHidden,
             width: "100%",
-            ////buildType: this.props.buildWhat,
+            //buildType: this.props.buildWhat,
             //location: this.props.location,
         };
         this.timer = 0;

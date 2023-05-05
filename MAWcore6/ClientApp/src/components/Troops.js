@@ -42,9 +42,9 @@ export class Troops extends Component {
 
 
     render() {
-        console.log('troops.js troops' + JSON.stringify(this.props.city.troops));
+        console.log('troops.js troops' + JSON.stringify(this.props.troops));
         const activeBuildingId = this.props.activeBuildingId;
-        const troopQueue = this.props.city.troopQueues.filter(function (el) {
+        const troopQueue = this.props.troopQueues.filter(function (el) {
             return el.buildingId == activeBuildingId;
         });
 
@@ -53,11 +53,16 @@ export class Troops extends Component {
             <Row>
                 <div>
                     <RecruitModal
-                        city={this.props.city}
+                        food={this.props.city.food}
+                        wood={this.props.city.wood}
+                        stone={this.props.city.stone}
+                        iron={this.props.city.iron}
                         showModal={this.state.showRecruitModal}
                         closeModal={this.hideRecruitModal}
                         toggleRecruitModal={this.toggleRecruitModal}
                         typeInt={this.state.recruitTroopType}
+                        troops={this.props.troops}
+                        trainTroops={this.props.trainTroops}
                     />
                 </div>
                 <Col md="4">
@@ -68,7 +73,7 @@ export class Troops extends Component {
                             </div>
 
                             <div >
-                                activeBuildingId: {this.props.activeBuildingId}
+                                this.props.activeBuildingId: {this.props.activeBuildingId}
                                troopQueueId {queue.troopQueueId}
                                 Training {queue.qty} {queue.typeString}
                                 Starts: {queue.starts}, Ends: {queue.ends} qty: {queue.qty}
@@ -79,7 +84,7 @@ export class Troops extends Component {
                 </Col>
                 <Col md="8">
                     <Row>
-                        { this.props.city.troops.map((troop) =>
+                        { this.props.troops.map((troop) =>
                             <Col md="4" key={troop.typeInt}>
                                 <Card>
                                     <CardBody>

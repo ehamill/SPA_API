@@ -9,8 +9,6 @@ import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
 import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants';
 import './custom.css'
-import { TownHallModal } from './components/TownHallModal';
-//import 'bootstrap/dist/css/bootstrap.css';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -21,8 +19,7 @@ export default class App extends Component {
         <Route exact path='/' component={Home} />
         <Route path='/counter' component={Counter} />
         <AuthorizeRoute path='/City' component={City} /> {/*City just url text..must also match  to="/City" in NavMenu..*/}
-            <AuthorizeRoute path='/fetch-data' component={FetchData} />
-            <AuthorizeRoute path='/townhall' component={TownHallModal} />
+        <AuthorizeRoute path='/fetch-data' component={FetchData} />
         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
       </Layout>
     );

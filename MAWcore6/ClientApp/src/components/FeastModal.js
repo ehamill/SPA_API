@@ -1,9 +1,9 @@
 ﻿import React, { Component } from 'react';
 import {Col, Row, Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from 'reactstrap';
 
-//use this for intelli sense
+// use this to upgrade to the next thing
 
-export class InnModal extends Component {
+export class FeastModal extends Component {
     
     constructor(props) {
         super(props);
@@ -20,8 +20,8 @@ export class InnModal extends Component {
     render() {
         //const className = "jlsaldfjl";
         //console.log('at in modal. heros:' + JSON.stringify(this.props.heros))
-        const herosForHire = this.props.heros.filter(function (attr) {
-            return attr.isHired === false;
+        const heros = this.props.heros.filter(function (attr) {
+            return attr.isHired === true;
         });
         return (
             <Modal
@@ -30,7 +30,7 @@ export class InnModal extends Component {
                 toggle={this.props.toggleModal}
             >
                 <ModalHeader className="text-center" style={{ 'display': 'block' }}>
-                    Inn
+                    Feasting Hall
                     <Button close  onClick={this.props.toggleModal}>X</Button>
                 </ModalHeader>
                 <ModalBody>
@@ -50,10 +50,11 @@ export class InnModal extends Component {
                                     <th>Attack</th>
                                     <th>Intelligence</th>
                                     <th>Loyalty</th>
-                                    <th>Fee</th>
-                                    <th>Action</th>
+                                    <th>Status</th>
+                                    <th>Recall</th>
+<th>Action</th>
                                 </tr>
-                                {herosForHire.map((hero, index) =>
+                                {heros.map((hero, index) =>
                                     <tr key={index}>
                                         <td>{hero.name}</td>
                                         <td>{hero.level}</td>
@@ -61,9 +62,15 @@ export class InnModal extends Component {
                                         <td>{hero.attack}</td>
                                         <td>{hero.intelligence}</td>
                                         <td>{hero.loyalty}</td>
-                                        <td>{hero.level * 1000}</td>
                                         <td>
-                                            <Button onClick={() => this.props.hireHero(hero.heroId )}>Hire {hero.heroId}</Button>
+{hero.isMayor ? 'Mayor' : 'Idle'}
+            
+                                        </td>
+                                        <td>
+                                            <Button>Recall</Button>
+                                        </td>
+                                        <td>
+                                            <Button>View</Button>
                                         </td>
                                     </tr>
                                 )}
@@ -71,8 +78,49 @@ export class InnModal extends Component {
                         </Table>
 
                     </Row>
-
-
+<Row>
+View Hero Modal
+</Row>
+<Row>
+ <Col md="4">
+    her.image
+    <Button>Dismiss</Button>
+</Col>
+<Col md="8">
+    Name: _____hero.name_______
+  Level: _______hero.level_____
+    Experience ____hero.experience/1000_____  + (click for more attributes)
+    <Button>Redistrubute</Button>  <Button>Reward</Button>
+    <Button>Rename</Button>   <Button>Upgrade</Button>
+</Col>
+</Row>
+<Row>
+ <Col md="6">
+    Politics: _____hero.name_______ +
+  Attack: _______hero.level_____ +
+    Intel ____hero.experience/1000_____  + 
+    Attribute: ____0_____
+  Energy: __100/100___ +
+  Salary: __1040___
+</Col>
+<Col md="6">
+    Layalty: _____hero.name_______ 
+  Leadership: _______hero.level_____ 
+    Speed ____0_____  
+   
+    <Button>Appoint Mayor</Button>  
+    <Button>Save</Button>   
+</Col>
+</Row>
+<Row>
+List of Heros
+Hero   Level Status
+</Row>
+<Row>
+Show Gear
+One Click change button
+But Items button
+</Row>
                 </ModalBody>
                 <ModalFooter>
          

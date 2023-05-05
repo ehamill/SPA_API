@@ -10,7 +10,7 @@ export class FetchData extends Component {
   }
 
   componentDidMount() {
-    //console.log('whether forcast mounted');
+    console.log('whether forcast mounted');
     this.populateWeatherData();
   }
 
@@ -53,19 +53,16 @@ export class FetchData extends Component {
     );
   }
 
-    async populateWeatherData() {
-        
-        const token = await authService.getAccessToken();
-        console.log('at populateWeatherData... token: ', token);
-        const response = await fetch('weatherforecast', {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        });
-        //if 401, token is here, but response never does anything
-        const data = await response.json();
-        //if 401, unauthorized, never get this far..code stops here.
-        if (data.message !== 'ok') {
-                this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
-        }
-        this.setState({ forecasts: data, loading: false });
-      }
+  async populateWeatherData() {
+       // console.log('at async populateWeatherData...');
+    const token = await authService.getAccessToken();
+    const response = await fetch('weatherforecast', {
+      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (data.message !== 'ok') {
+            this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
+     }
+    this.setState({ forecasts: data, loading: false });
+  }
 }

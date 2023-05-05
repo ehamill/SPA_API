@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace MAWcore6.Models
+﻿namespace MAWcore6.Models
 {
     public class UserItems
     {
@@ -15,7 +12,5 @@ namespace MAWcore6.Models
         public int RedGems { get; set; } = 0;
         public int BlueGems { get; set; } = 0;
         public int FarmBonuses { get; set; } = 0;
-
-
     }
 }
