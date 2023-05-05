@@ -1,7 +1,7 @@
 ﻿import React, { Component,Fragment } from 'react';
 import authService from './api-authorization/AuthorizeService';
 import { Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-//import { BottomNav } from './BottomNav'; will do this later....TEsting...
+//import { BottomNav } from './BottomNav'; w
 import { Building } from './Building';
 import { BuildingTimer } from './BuildingTimer';
 import { AddBuildingModal } from './AddBuildingModal';
@@ -10,6 +10,7 @@ import { TownHallModal } from './TownHallModal';
 import { InnModal } from './InnModal';
 import { FeastModal } from './FeastModal';
 //import testing form the beging...
+import { Link } from 'react-router-dom';
 
 export class City extends Component { 
 
@@ -18,12 +19,12 @@ export class City extends Component {
         this.state = {
             intelNeeded : 0,
             city: {},
-            troops: {},
-            heros: {},
-            wallDefenses: {},
+            //troops: {},
+            //heros: {},
+            //wallDefenses: {},
             userResearch: {},
-            troopQueues: {},
-            newBuildingsCost: {},
+            //troopQueues: {},
+            //newBuildingsCost: {},
             loading: true,
             showModal: false,
             activeSlot: -1,
@@ -33,6 +34,7 @@ export class City extends Component {
             showBuilding1Timer: false,
             build1Time: 0,
             buildLevel: 0,
+            hideCity: false,
             showTownHallModal: false,
             showInnModal: false,
             showFeastModal: false,
@@ -56,7 +58,9 @@ export class City extends Component {
         this.showTestModalClick = this.showTestModalClick.bind(this);
         this.trainTroops = this.trainTroops.bind(this);
         this.hireHero = this.hireHero.bind(this);
+        this.fireHero = this.fireHero.bind(this);
         this.next = this.next.bind(this);
+        this.showCity = this.showCity.bind(this);
     }
 
     componentDidMount() {
@@ -69,14 +73,17 @@ export class City extends Component {
 
     openModal(slot) {
         let b = this.state.city.buildings.find((x) => x.location === slot);
-        console.log('clicked on building: ' + JSON.stringify(b) +' slot:'+ slot);
+        //console.log('clicked on building: ' + JSON.stringify(b) +' slot:'+ slot);
         this.setState({
             activeSlot: slot,
             activeBuildingId: b.buildingId,
         });
         if (b.location === 3) {
             //console.log('  show thmodal..: ');
-            this.setState({ showTownHallModal: !this.state.showTownHallModal });
+            this.setState({
+                showTownHallModal: !this.state.showTownHallModal,
+                hideCity: !this.state.hideCity,
+            });
         } else if (b.location === 0) {
             this.setState({ showUpgradeModal: !this.state.showUpgradeModal });
         } else if (b.level === 0) {
@@ -93,7 +100,9 @@ export class City extends Component {
             this.setState({ showUpgradeModal: !this.state.showUpgradeModal});
         }
     }
-
+    showCity() {
+        this.setState({ hideCity: false, showTownHallModal: false });
+    }
     closeModal() {
         this.setState({ showModal: false });
     }
@@ -258,6 +267,15 @@ export class City extends Component {
         this.fetchHireHero(heroId);
     }
 
+    fireHero(heroId) {
+        console.log("cityjs at fireHero fn. heroid: " + heroId);
+
+        //this.setState({
+        //    //showBuilding1Timer: false,
+        //    //city: newCity,
+        //});
+        this.fetchFireHero(heroId);
+    }
 
     buildingDone( location, type, level) {
         console.log("building done at loc: " + location + " type:" + type + " lvL: " + level);
@@ -288,7 +306,7 @@ export class City extends Component {
     }
 
     next() {
-        console.log('city js at next...');
+        console.log('city js at next. .....');
     }
 
     renderCity() {
@@ -303,9 +321,10 @@ export class City extends Component {
         let building7 = this.state.city.buildings.find((x) => x.location === 7);
         let building24 = this.state.city.buildings.find((x) => x.location === 24);
         let building25 = this.state.city.buildings.find((x) => x.location === 25);
-        
+       // console.log('this.state.city.BuildingCosts', this.state.city.buildingCosts);
 
-      return (
+        return (
+          
           <Container>
               <Fade>
                   <Toast isOpen={this.state.showErrorMessage} className="error-toaster">
@@ -322,7 +341,6 @@ export class City extends Component {
               <FeastModal
                   activeBuildingId={this.state.activeBuildingId}
                   city={this.state.city}
-                  heros={this.state.heros}
                   showModal={this.state.showFeastModal}
                   closeModal={this.closeFeastModal}
                   toggleModal={this.toggleFeastModal}
@@ -331,22 +349,15 @@ export class City extends Component {
               <InnModal
                   activeBuildingId={this.state.activeBuildingId}
                   city={this.state.city}
-                  heros={this.state.heros}
                   showModal={this.state.showInnModal}
                   closeModal={this.closeInnModal}
                   toggleModal={this.toggleInnModal}
-                  hireHero={ this.hireHero}
+                    hireHero={this.hireHero}
+                    fireHero={this.fireHero}
               />
-
-              <TownHallModal
-                  activeBuildingId={this.state.activeBuildingId}
-                  city={this.state.city}
-                  showModal={this.state.showTownHallModal}
-                  closeModal={this.closeTownHallModal}
-                  toggleTownHallModal={this.toggleTownHallModal}
-              />
+              
               <AddBuildingModal
-                  newBuildings={this.state.newBuildingsCost}
+                  newBuildings={this.state.city.buildingCosts}
                   activeSlot={this.state.activeSlot}
                   activeBuildingId={this.state.activeBuildingId}
                   handleClickBuildWhat={this.handleClickBuildWhat}
@@ -367,10 +378,10 @@ export class City extends Component {
                   city={this.state.city}
                   activeBuildingId={this.state.activeBuildingId}
                   toggleUpdateModal={this.toggleUpdateModal}
-                  troops={this.state.troops}
-                  troopQueues={this.state.troopQueues}
-                  trainTroops={this.trainTroops}
-                  wallDefenses={this.state.wallDefenses}
+                  //troopCosts={this.state.city.TroopCosts}
+                  //troopQueues={this.state.troopQueues}
+                  ///trainTroops={this.trainTroops}
+                  //  wallDefenses={this.state.city.WallDefenseCosts}
               /> 
 
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
@@ -382,9 +393,18 @@ export class City extends Component {
                   Build What: {this.state.buildWhat}
               </div>
 
+                <TownHallModal
+                    activeBuildingId={this.state.activeBuildingId}
+                    city={this.state.city}
+                    showModal={this.state.showTownHallModal}
+                    closeModal={this.closeTownHallModal}
+                    toggleTownHallModal={this.toggleTownHallModal}
+                    showCity={this.showCity}
 
+                />
 
-              <div>
+                <div hidden={this.state.hideCity}>
+                  <Link to="/townhall">show town hall link t {this.state.showTownHallModal.toString() }</Link>
                   <Table bordered={true}>
                       <tbody>
                           <tr>
@@ -449,7 +469,15 @@ export class City extends Component {
 
                   <ListGroup className="fixed-bottom" >
                       <ListGroupItem>
-                          food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron}
+                          food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron} || gold {this.state.city.gold}
+
+                      </ListGroupItem>
+                      <ListGroupItem>
+                          {this.state.city.troops.map((troop, index) =>
+                              <span className="ml-2" key={index}>
+                                  {troop.typeString} {troop.qty} ||
+                              </span>
+                          )}
                       </ListGroupItem>
                       <ListGroupItem>
                           builder1Busy: {this.state.city.builder1Busy.toString()} || BuldingID: {this.state.city.construction1BuildingId}
@@ -500,7 +528,66 @@ export class City extends Component {
         } else {
             this.setState({ city: data.city, newBuildingsCost: data.newBuildingsCost, });
         }
+    }
 
+    async fetchFireHero(heroId) {
+        var fireHeroModel = { CityId: this.state.city.cityId, HeroId: parseInt(heroId) };
+        const token = await authService.getAccessToken();
+
+        fetch('city/HireHero', {
+            method: 'POST',
+            headers: !token ? { 'Content-Type': 'application/json' } : { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(fireHeroModel),
+        })
+            .then(async response => {
+                const data = await response.json();
+
+                if (data.message !== 'ok') {
+                    //this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
+                    console.log('data.message: ' + data.message)
+                    this.setState({ errorMessage: data.message, showErrorMessage: true, });
+                    setTimeout(
+                        () => this.setState(prevState => ({
+                            showErrorMessage: !prevState.showErrorMessage
+                        })),
+                        6000000
+                    );
+                } else {
+                    this.setState({ city: data.city });
+                }
+            })
+            .catch(error => {
+                this.setState({ errorMessage: error.toString() });
+                console.error('There was an error!', error);
+            });
+
+        //try {
+        //    const response = await fetch('city/FireHero', {
+        //        method: 'POST',
+        //        headers: !token ? { 'Content-Type': 'application/json' } : { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        //        body: JSON.stringify(fireHeroModel),
+        //    });
+        //    const data = await response.json();
+        //    console.log('at fire hero..returned data: ' + JSON.stringify(data));
+        //    if (data.message !== 'ok') {
+        //        //this.setState({ errorMessage: JSON.stringify(data.errors) + JSON.stringify(data), showErrorMessage: true, });
+        //        console.log('data.message: ' + data.message)
+        //        this.setState({ errorMessage: data.message, showErrorMessage: true, });
+        //        setTimeout(
+        //            () => this.setState(prevState => ({
+        //                showErrorMessage: !prevState.showErrorMessage
+        //            })),
+        //            6000000
+        //        );
+        //    } else {
+        //        this.setState({ city: data.city, newBuildingsCost: data.newBuildingsCost, });
+        //    }
+
+        //} catch (error) {
+        //        console.error('at fire hero. catch...returned data: ' + JSON.stringify(error));
+        //        //this.setError(e.message);
+        //}
+        
     }
 
 

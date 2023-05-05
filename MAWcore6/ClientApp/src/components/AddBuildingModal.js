@@ -52,7 +52,7 @@ export class AddBuildingModal extends Component {
     }
 
     componentDidMount() {
-        console.log('mounted add build modal');
+        //console.log('mounted add build modal');
         this.setState({
             items: [
                 {
@@ -147,7 +147,7 @@ export class AddBuildingModal extends Component {
     componentWillUnmount() { }
 
     render() {
-        
+        //console.log('this.props.newBuildings ' + this.props.newBuildings)
         let buildings = this.props.newBuildings.filter(function (el) {
             return el.farm == false;
         });

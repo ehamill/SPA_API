@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations.Schema;
+using static MAWcore6.Models.TroopModels;
 
 namespace MAWcore6.Models
 {
@@ -19,10 +20,17 @@ namespace MAWcore6.Models
         public int IronRate { get; set; } = 100;
         public int Gold { get; set; } = 5000;
         public int GoldRate { get; set; } = 0;
-        public DateTime ResourcesLastUpdated { get; set; }
+        public DateTime ResourcesLastUpdated { get; set; } = DateTime.UtcNow;
         public List<Building> Buildings { get; set; }
-        //public virtual ICollection<Building> Buildings { get; set; }
-        //public UserResearch UserResearch { get; set; }
+        public List<Hero> Heros { get; set; }
+        [NotMapped]
+        public List<Troop> Troops { get; set; }
+        [NotMapped]
+        public List<Troop> WallDefenses { get; set; }
+        [NotMapped]
+        public List<TroopQueue> TroopQueues { get; set; }
+        [NotMapped]
+        public List<BuildingCost> BuildingCosts { get; set; }
         public DateTime Construction1Started { get; set; } = DateTime.UtcNow;
         public DateTime Construction1Ends { get; set; } = DateTime.UtcNow;
         public int Construction1BuildingId { get; set; } = 0;
@@ -49,10 +57,14 @@ namespace MAWcore6.Models
         public int RollingLogQty { get; set; } = 0;
         public int TrebuchetQty { get; set; } = 0;
 
+
         //[ForeignKey("UserId
         //[ForeignKey("UserResearchId")]
         //public virtual UserResearch UserResearch { get; set; }
         //[ForeignKey("TroopQueueId")]
         //public List<TroopQueue> TroopQueues { get; set; }
+
+        //public virtual ICollection<Building> Buildings { get; set; }
+        //public UserResearch UserResearch { get; set; }
     }
 }
