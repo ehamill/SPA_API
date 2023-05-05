@@ -9,7 +9,8 @@ import { UpgradeModal } from './UpgradeModal';
 import { TownHallModal } from './TownHallModal';
 import { InnModal } from './InnModal';
 import { FeastModal } from './FeastModal';
-//import testing form the beging...
+//import testing form the beging...sdlf ads
+import { Link } from 'react-router-dom';
 
 export class City extends Component { 
 
@@ -33,6 +34,7 @@ export class City extends Component {
             showBuilding1Timer: false,
             build1Time: 0,
             buildLevel: 0,
+            hideCity: false,
             showTownHallModal: false,
             showInnModal: false,
             showFeastModal: false,
@@ -57,6 +59,7 @@ export class City extends Component {
         this.trainTroops = this.trainTroops.bind(this);
         this.hireHero = this.hireHero.bind(this);
         this.next = this.next.bind(this);
+        this.showCity = this.showCity.bind(this);
     }
 
     componentDidMount() {
@@ -76,7 +79,10 @@ export class City extends Component {
         });
         if (b.location === 3) {
             //console.log('  show thmodal..: ');
-            this.setState({ showTownHallModal: !this.state.showTownHallModal });
+            this.setState({
+                showTownHallModal: !this.state.showTownHallModal,
+                hideCity: !this.state.hideCity,
+            });
         } else if (b.location === 0) {
             this.setState({ showUpgradeModal: !this.state.showUpgradeModal });
         } else if (b.level === 0) {
@@ -93,7 +99,9 @@ export class City extends Component {
             this.setState({ showUpgradeModal: !this.state.showUpgradeModal});
         }
     }
-
+    showCity() {
+        this.setState({ hideCity: false, showTownHallModal: false });
+    }
     closeModal() {
         this.setState({ showModal: false });
     }
@@ -305,7 +313,8 @@ export class City extends Component {
         let building25 = this.state.city.buildings.find((x) => x.location === 25);
         
 
-      return (
+        return (
+          
           <Container>
               <Fade>
                   <Toast isOpen={this.state.showErrorMessage} className="error-toaster">
@@ -337,14 +346,8 @@ export class City extends Component {
                   toggleModal={this.toggleInnModal}
                   hireHero={ this.hireHero}
               />
-
-              <TownHallModal
-                  activeBuildingId={this.state.activeBuildingId}
-                  city={this.state.city}
-                  showModal={this.state.showTownHallModal}
-                  closeModal={this.closeTownHallModal}
-                  toggleTownHallModal={this.toggleTownHallModal}
-              />
+                
+              
               <AddBuildingModal
                   newBuildings={this.state.newBuildingsCost}
                   activeSlot={this.state.activeSlot}
@@ -382,9 +385,18 @@ export class City extends Component {
                   Build What: {this.state.buildWhat}
               </div>
 
+                <TownHallModal
+                    activeBuildingId={this.state.activeBuildingId}
+                    city={this.state.city}
+                    showModal={this.state.showTownHallModal}
+                    closeModal={this.closeTownHallModal}
+                    toggleTownHallModal={this.toggleTownHallModal}
+                    showCity={this.showCity}
 
+                />
 
-              <div>
+                <div hidden={this.state.hideCity}>
+                  <Link to="/townhall">show town hall link t {this.state.showTownHallModal.toString() }</Link>
                   <Table bordered={true}>
                       <tbody>
                           <tr>
@@ -449,7 +461,15 @@ export class City extends Component {
 
                   <ListGroup className="fixed-bottom" >
                       <ListGroupItem>
-                          food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron}
+                          food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron} || gold {this.state.city.gold}
+
+                      </ListGroupItem>
+                      <ListGroupItem>
+                          {this.state.troops.map((troop, index) =>
+                              <span className="ml-2" key={index}>
+                                  {troop.typeString} {troop.qty} ||
+                              </span>
+                          )}
                       </ListGroupItem>
                       <ListGroupItem>
                           builder1Busy: {this.state.city.builder1Busy.toString()} || BuldingID: {this.state.city.construction1BuildingId}

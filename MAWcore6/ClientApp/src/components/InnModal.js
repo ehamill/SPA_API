@@ -18,8 +18,15 @@ export class InnModal extends Component {
     
 
     render() {
-        //const className = "jlsaldfjl";
+        const className = "jlsaldfjl";
+        //console.log('at in Inn modal. props:' + JSON.stringify(this.props))
         //console.log('at in modal. heros:' + JSON.stringify(this.props.heros))
+        //const innBuildingID = this.props.activeBuildingId;
+        //let level = this.props.city.buildings[innBuildingID].image;
+        //console.log('at INN modal.s level:' + level + " innBuildingID " + innBuildingID);
+        let activeBuildingId = this.props.activeBuildingId;
+        let city = this.props.city;
+        const innData = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
         const herosForHire = this.props.heros.filter(function (attr) {
             return attr.isHired === false;
         });
@@ -30,14 +37,14 @@ export class InnModal extends Component {
                 toggle={this.props.toggleModal}
             >
                 <ModalHeader className="text-center" style={{ 'display': 'block' }}>
-                    Inn
-                    <Button close  onClick={this.props.toggleModal}>X</Button>
+                    Inn level { innData.level}
+                    <Button close className="float-right" onClick={this.props.toggleModal}></Button>
                 </ModalHeader>
                 <ModalBody>
                     <div>
-                        Img
+                        Img = { innData.image}
                         <Button className="float-right">Upgrade</Button> 
-                        <Button className="float-right">Demo</Button>
+                        <Button className="float-right mr-2">Demo</Button>
                     </div>
                     <hr/>
                     <Row>
@@ -67,6 +74,11 @@ export class InnModal extends Component {
                                         </td>
                                     </tr>
                                 )}
+                                <tr>
+                                    <td colSpan="8">
+                                        <span>Gold : { city.gold}</span>
+                                    </td>
+                                </tr>
                             </tbody>
                         </Table>
 

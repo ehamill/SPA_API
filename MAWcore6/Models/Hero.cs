@@ -13,5 +13,6 @@
         public bool IsMayor { get; set; } = false;
         public bool IsFighting { get; set; } = false;
         public string Name { get; set; } = "test";
+        public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 }
