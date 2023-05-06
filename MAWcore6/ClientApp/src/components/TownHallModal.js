@@ -9,7 +9,6 @@ export class TownHallModal extends Component {
 
         this.state = {
             activeTab: 1,
-            testing: 2,
         };
         this.showTime = this.showTime.bind(this);
         this.setActiveTab = this.setActiveTab.bind(this);
