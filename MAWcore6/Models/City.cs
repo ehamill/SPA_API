@@ -52,10 +52,8 @@ namespace MAWcore6.Models
         public int TrebuchetQty { get; set; } = 0;
 
 
-        //[ForeignKey("UserId
-        //[ForeignKey("UserResearchId")]
-        //public virtual UserResearch UserResearch { get; set; }
-        //[ForeignKey("TroopQueueId")]
+        
+        //[NotMapped]
         //public List<TroopQueue> TroopQueues { get; set; }
     }
 }
