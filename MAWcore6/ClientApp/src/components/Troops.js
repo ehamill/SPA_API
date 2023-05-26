@@ -42,7 +42,7 @@ export class Troops extends Component {
 
 
     render() {
-        console.log('troops.js troops' + JSON.stringify(this.props.troops));
+        //console.log('troops.js troops' + JSON.stringify(this.props.troops));
         const activeBuildingId = this.props.activeBuildingId;
         const troopQueue = this.props.troopQueues.filter(function (el) {
             return el.buildingId == activeBuildingId;
@@ -66,6 +66,9 @@ export class Troops extends Component {
                     />
                 </div>
                 <Col md="4">
+                    <div>
+                        Troop Queues
+                    </div>
                     {troopQueue.map((queue, index) =>
                         <div key={index}>
                             <div>
@@ -92,12 +95,14 @@ export class Troops extends Component {
                                             {troop.typeString}
                                         </CardTitle>
                                         <CardText>
-                                            image <br/> Qty: {troop.qty}
+                                            image <br />
+                                            Qty: {troop.qty}<br />
+                                            TypeInt: {troop.typeInt}
                                         </CardText>
                                     </CardBody>
                                     <div className="text-center">
                                         <Button className="width-80" onClick={() => this.showRecruitModalClick(troop.typeInt)} className="float-bottom-right" >
-                                            Recruit troop.typeInt{troop.typeInt}
+                                            Recruit 
                                         </Button>
                                     </div>
                                 </Card>

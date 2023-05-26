@@ -379,10 +379,11 @@ export class City extends Component {
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
               {this.state.city.builder1Busy ? <BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick} buildTypeInt={ this.state.buildTypeInt} buildWhat={this.state.buildWhat} location={this.state.activeSlot } level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> : ''}
               
-              <div style={{ marginTop: "20px" }} className="mb-6" onClick={this.toggleErrorMessage}>
+              <div hidden style={{ marginTop: "20px" }} className="mb-6" onClick={this.toggleErrorMessage}>
                   show error message
                   Build Where: {this.state.activeSlot}
-                  Build What: {this.state.buildWhat}
+                    Build What: {this.state.buildWhat}
+                    <Link to="/townhall">show town hall link t {this.state.showTownHallModal.toString()}</Link>
               </div>
 
                 <TownHallModal
@@ -392,11 +393,9 @@ export class City extends Component {
                     closeModal={this.closeTownHallModal}
                     toggleTownHallModal={this.toggleTownHallModal}
                     showCity={this.showCity}
-
                 />
 
                 <div hidden={this.state.hideCity}>
-                  <Link to="/townhall">show town hall link t {this.state.showTownHallModal.toString() }</Link>
                   <Table bordered={true}>
                       <tbody>
                           <tr>
