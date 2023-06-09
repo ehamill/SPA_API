@@ -18,7 +18,7 @@ export class FeastModal extends Component {
     render() {
         //const className = "jlsaldfjl";
         //console.log('at in modal. heros:' + JSON.stringify(this.props.heros))
-        const heros = this.props.heros.filter(function (attr) {
+        const heros = this.props.city.heros.filter(function (attr) {
             return attr.isHired === true;
         });
         return (
@@ -61,8 +61,7 @@ export class FeastModal extends Component {
                                         <td>{hero.intelligence}</td>
                                         <td>{hero.loyalty}</td>
                                         <td>
-{hero.isMayor ? 'Mayor' : 'Idle'}
-            
+                                            {hero.isMayor ? 'Mayor' : 'Idle'}
                                         </td>
                                         <td>
                                             <Button>Recall</Button>
@@ -121,7 +120,6 @@ But Items button
 </Row>
                 </ModalBody>
                 <ModalFooter>
-         
                     <Button color="secondary" onClick={this.props.closeModal}>
                     Cancel
                     </Button>

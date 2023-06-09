@@ -15,7 +15,8 @@ import { TownHallModal } from './components/TownHallModal';
 export default class App extends Component {
   static displayName = App.name;
 
-  render () {
+    render() {
+        
     return (
       <Layout>
         <Route exact path='/' component={Home} />

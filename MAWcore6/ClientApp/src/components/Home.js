@@ -9,7 +9,6 @@ export class Home extends Component {
       <div>
         Select Server... <button>S1</button>
             have User, Server, Cities.
-            <Button className="float-right">Demo</Button>
       </div>
     );
   }

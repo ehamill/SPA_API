@@ -19,12 +19,12 @@ export class City extends Component {
         this.state = {
             intelNeeded : 0,
             city: {},
-            troops: {},
-            heros: {},
-            wallDefenses: {},
+            //troops: {},
+            //heros: {},
+            //wallDefenses: {},
             userResearch: {},
-            troopQueues: {},
-            newBuildingsCost: {},
+            //troopQueues: {},
+            //newBuildingsCost: {},
             loading: true,
             showModal: false,
             activeSlot: -1,
@@ -328,10 +328,10 @@ export class City extends Component {
               </Toast>
               </Fade>
 
-              <FeastModal
+                <FeastModal
                   activeBuildingId={this.state.activeBuildingId}
                   city={this.state.city}
-                  heros={this.state.heros}
+                  //heros={this.state.heros}
                   showModal={this.state.showFeastModal}
                   closeModal={this.closeFeastModal}
                   toggleModal={this.toggleFeastModal}
@@ -340,23 +340,23 @@ export class City extends Component {
               <InnModal
                   activeBuildingId={this.state.activeBuildingId}
                   city={this.state.city}
-                  heros={this.state.heros}
+                  //heros={this.state.heros}
                   showModal={this.state.showInnModal}
                   closeModal={this.closeInnModal}
                   toggleModal={this.toggleInnModal}
-                  hireHero={ this.hireHero}
+                    hireHero={this.hireHero}
               />
                 
-              
-              <AddBuildingModal
-                  newBuildings={this.state.newBuildingsCost}
+                <AddBuildingModal
+                    city={this.state.city}
+                  //newBuildings={this.state.city.newBuildingsCost}
                   activeSlot={this.state.activeSlot}
                   activeBuildingId={this.state.activeBuildingId}
                   handleClickBuildWhat={this.handleClickBuildWhat}
-                  food={this.state.city.food}
-                  wood={this.state.city.wood}
-                  stone={this.state.city.stone}
-                  iron={this.state.city.iron}
+                  //food={this.state.city.food}
+                  //wood={this.state.city.wood}
+                  //stone={this.state.city.stone}
+                  //iron={this.state.city.iron}
                   showModal={this.state.showModal} closeModal={this.closeModal}
                   toggleAddBuildingModal={this.toggleAddBuildingModal}
               />
@@ -370,19 +370,20 @@ export class City extends Component {
                   city={this.state.city}
                   activeBuildingId={this.state.activeBuildingId}
                   toggleUpdateModal={this.toggleUpdateModal}
-                  troops={this.state.troops}
-                  troopQueues={this.state.troopQueues}
+                  //troops={this.state.troops}
+                  //troopQueues={this.state.troopQueues}
                   trainTroops={this.trainTroops}
-                  wallDefenses={this.state.wallDefenses}
+                  //wallDefenses={this.state.wallDefenses}
               /> 
 
               {/*<BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick}  buildWhat={this.state.buildWhat} location={this.state.activeSlot} level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> */}
               {this.state.city.builder1Busy ? <BuildingTimer buildingDone={this.buildingDone} speedUpClick={this.speedUpClick} buildTypeInt={ this.state.buildTypeInt} buildWhat={this.state.buildWhat} location={this.state.activeSlot } level={this.state.buildLevel} time={this.state.city.builder1Time} builder1Busy={this.state.city.builder1Busy} /> : ''}
               
-              <div style={{ marginTop: "20px" }} className="mb-6" onClick={this.toggleErrorMessage}>
+              <div hidden style={{ marginTop: "20px" }} className="mb-6" onClick={this.toggleErrorMessage}>
                   show error message
                   Build Where: {this.state.activeSlot}
-                  Build What: {this.state.buildWhat}
+                    Build What: {this.state.buildWhat}
+                    <Link to="/townhall">show town hall link t {this.state.showTownHallModal.toString()}</Link>
               </div>
 
                 <TownHallModal
@@ -392,11 +393,9 @@ export class City extends Component {
                     closeModal={this.closeTownHallModal}
                     toggleTownHallModal={this.toggleTownHallModal}
                     showCity={this.showCity}
-
                 />
 
                 <div hidden={this.state.hideCity}>
-                  <Link to="/townhall">show town hall link t {this.state.showTownHallModal.toString() }</Link>
                   <Table bordered={true}>
                       <tbody>
                           <tr>
@@ -465,7 +464,7 @@ export class City extends Component {
 
                       </ListGroupItem>
                       <ListGroupItem>
-                          {this.state.troops.map((troop, index) =>
+                          {this.state.city.troops.map((troop, index) =>
                               <span className="ml-2" key={index}>
                                   {troop.typeString} {troop.qty} ||
                               </span>

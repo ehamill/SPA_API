@@ -215,8 +215,8 @@ export class UpgradeModal extends Component {
                     </div>
                     <div>
                         {/*{activeBuilding.buildingType === 21 && <WallDefenses city={this.props.city} />}*/}
-                        {activeBuilding.buildingType === 21 && <Troops trainTroops={this.props.trainTroops} troops={this.props.wallDefenses} troopQueues={this.props.troopQueues} city={this.props.city} activeBuildingId={activeBuildingId} />}
-                        {activeBuilding.buildingType === 2 && <Troops trainTroops={ this.props.trainTroops } troops={this.props.troops} troopQueues={this.props.troopQueues} city={this.props.city} activeBuildingId={activeBuildingId} />}
+                        {activeBuilding.buildingType === 21 && <Troops trainTroops={this.props.trainTroops} city={this.props.city} activeBuildingId={activeBuildingId} />}
+                        {activeBuilding.buildingType === 2 && <Troops trainTroops={ this.props.trainTroops }  city={this.props.city} activeBuildingId={activeBuildingId} />}
                         
                     </div>
                     <div className="row" hidden>

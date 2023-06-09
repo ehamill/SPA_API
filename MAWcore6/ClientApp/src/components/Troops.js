@@ -42,9 +42,9 @@ export class Troops extends Component {
 
 
     render() {
-        console.log('troops.js troops' + JSON.stringify(this.props.troops));
+        //console.log('troops.js troops' + JSON.stringify(this.props.troops));
         const activeBuildingId = this.props.activeBuildingId;
-        const troopQueue = this.props.troopQueues.filter(function (el) {
+        const troopQueue = this.props.city.troopQueues.filter(function (el) {
             return el.buildingId == activeBuildingId;
         });
 
@@ -61,11 +61,14 @@ export class Troops extends Component {
                         closeModal={this.hideRecruitModal}
                         toggleRecruitModal={this.toggleRecruitModal}
                         typeInt={this.state.recruitTroopType}
-                        troops={this.props.troops}
+                        troops={this.props.city.troops}
                         trainTroops={this.props.trainTroops}
                     />
                 </div>
                 <Col md="4">
+                    <div>
+                        Troop Queues
+                    </div>
                     {troopQueue.map((queue, index) =>
                         <div key={index}>
                             <div>
@@ -84,7 +87,7 @@ export class Troops extends Component {
                 </Col>
                 <Col md="8">
                     <Row>
-                        { this.props.troops.map((troop) =>
+                        { this.props.city.troops.map((troop) =>
                             <Col md="4" key={troop.typeInt}>
                                 <Card>
                                     <CardBody>
@@ -92,12 +95,14 @@ export class Troops extends Component {
                                             {troop.typeString}
                                         </CardTitle>
                                         <CardText>
-                                            image <br/> Qty: {troop.qty}
+                                            image <br />
+                                            Qty: {troop.qty}<br />
+                                            TypeInt: {troop.typeInt}
                                         </CardText>
                                     </CardBody>
                                     <div className="text-center">
                                         <Button className="width-80" onClick={() => this.showRecruitModalClick(troop.typeInt)} className="float-bottom-right" >
-                                            Recruit troop.typeInt{troop.typeInt}
+                                            Recruit 
                                         </Button>
                                     </div>
                                 </Card>
