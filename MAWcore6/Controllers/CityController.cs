@@ -33,27 +33,26 @@ namespace MAWcore6.Controllers
             City UserCity = new City();
             UserItems UserItems = new UserItems();
             UserResearch userResearch = new UserResearch();
-            List<TroopQueue> TroopQueues = new List<TroopQueue>();
+            //List<TroopQueue> TroopQueues = new List<TroopQueue>();
 
             try
             {
                 UserCity = await db.Cities.Include(c => c.Buildings).Include(c => c.Heros).Where(c => c.UserId == UserId).AsSplitQuery().FirstOrDefaultAsync() ?? await CreateCity(UserId);
                 UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
                 userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-                TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId && c.Complete == false).ToListAsync();
+                UserCity.TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId && c.Complete == false).ToListAsync();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Error at CityController, [GET]: " + ex.Message);
                 Console.WriteLine(ex.Message);
             }
-
-            List<Hero> Heros = await GetHeros(UserCity);
+            UserCity.Heros = await GetHeros(UserCity);//Replensh Free heros
             //await UpdateResources(UserCity);
-            List<BuildingCost> ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
-            List<Troop> Troops = GetTroops(UserCity, userResearch);
-            List<Troop> WallDefenses = GetWallDefenses(UserCity, userResearch);
-            await CheckTroopQueues(TroopQueues, UserCity);
+            UserCity.ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
+            UserCity.Troops = GetTroops(UserCity, userResearch);
+            UserCity.WallDefenses = GetWallDefenses(UserCity, userResearch);
+            await CheckTroopQueues(UserCity.TroopQueues, UserCity);
             //If done, add troops to city... delete queue?? Status..training-complete-cancelled
             //if not...
             if (UserCity.Builder1Busy)
@@ -65,7 +64,7 @@ namespace MAWcore6.Controllers
             //System.Diagnostics.Debug.WriteLine("Testing ... ");
             //Attack(UserCity.CityId);
 
-            return new JsonResult(new { city = UserCity, heros = Heros, troops = Troops, troopQueues = TroopQueues, wallDefenses = WallDefenses, userItems = UserItems, userResearch = userResearch, newBuildingsCost = ListOfBuildingsCost });
+            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch });
         }
 
         [HttpPost("BuildingDone")]

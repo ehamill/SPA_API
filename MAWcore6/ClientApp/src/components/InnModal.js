@@ -27,7 +27,7 @@ export class InnModal extends Component {
         let activeBuildingId = this.props.activeBuildingId;
         let city = this.props.city;
         const innData = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
-        const herosForHire = this.props.heros.filter(function (attr) {
+        const herosForHire = this.props.city.heros.filter(function (attr) {
             return attr.isHired === false;
         });
         return (

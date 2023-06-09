@@ -82,17 +82,17 @@ export class AddBuildingModal extends Component {
     componentWillUnmount() { }
 
     render() {
-        let buildings = this.props.newBuildings.filter(function (el) {
+        let buildings = this.props.city.listOfBuildingsCost.filter(function (el) {
             return el.farm == false;
         });
         //console.log('this.props.activeSlot ' + this.props.activeSlot)
         if (this.props.activeSlot > 23) {
-           buildings = this.props.newBuildings.filter(function (el) {
+            buildings = this.props.city.listOfBuildingsCost.filter(function (el) {
                 return el.farm == true;
             });
             
         }
-        const activeBuilding = (this.props.typeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.typeInt);
+        const activeBuilding = (this.props.typeInt === 0) ? this.props.city.troops[0] : this.props.city.troops.find((x) => x.typeInt === this.props.typeInt);
 
         return (
            
@@ -210,27 +210,27 @@ export class AddBuildingModal extends Component {
                                     <tr>
                                         <td>Food </td>
                                         <td>{b.food}</td>
-                                        <td className={(this.props.food < b.food) ? "text-danger" : "text-success"} >
-                                            {this.props.food} </td>
+                                        <td className={(this.props.city.food < b.food) ? "text-danger" : "text-success"} >
+                                                    {this.props.city.food} </td>
                                     </tr>
                                     <tr>
                                         <th>Stone </th>
                                         <th>{b.stone}</th>
-                                        <th className={(this.props.stone < b.stone) ? "text-danger" : "text-success"} >
-                                            {this.props.stone} </th>
+                                                <th className={(this.props.city.stone < b.stone) ? "text-danger" : "text-success"} >
+                                                    {this.props.city.stone} </th>
                                     </tr>
                                     <tr>
                                         <th>Wood </th>
                                         <th>{b.wood}</th>
-                                        <th className={(this.props.wood < b.wood) ? "text-danger" : "text-success"} >
-                                            {this.props.wood} 
+                                                <th className={(this.props.city.wood < b.wood) ? "text-danger" : "text-success"} >
+                                                    {this.props.city.wood}
                                         </th>
                                     </tr>
                                     <tr>
                                         <th>Iron </th>
                                         <th>{b.iron}</th>
-                                        <th className={(this.props.iron < b.iron) ? "text-danger" : "text-success"} >
-                                            {this.props.iron} 
+                                                <th className={(this.props.city.iron < b.iron) ? "text-danger" : "text-success"} >
+                                                    {this.props.city.iron}
                                         </th>
                                     </tr>
                                 </tbody>

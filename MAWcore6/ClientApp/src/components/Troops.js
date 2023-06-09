@@ -44,7 +44,7 @@ export class Troops extends Component {
     render() {
         //console.log('troops.js troops' + JSON.stringify(this.props.troops));
         const activeBuildingId = this.props.activeBuildingId;
-        const troopQueue = this.props.troopQueues.filter(function (el) {
+        const troopQueue = this.props.city.troopQueues.filter(function (el) {
             return el.buildingId == activeBuildingId;
         });
 
@@ -61,7 +61,7 @@ export class Troops extends Component {
                         closeModal={this.hideRecruitModal}
                         toggleRecruitModal={this.toggleRecruitModal}
                         typeInt={this.state.recruitTroopType}
-                        troops={this.props.troops}
+                        troops={this.props.city.troops}
                         trainTroops={this.props.trainTroops}
                     />
                 </div>
@@ -87,7 +87,7 @@ export class Troops extends Component {
                 </Col>
                 <Col md="8">
                     <Row>
-                        { this.props.troops.map((troop) =>
+                        { this.props.city.troops.map((troop) =>
                             <Col md="4" key={troop.typeInt}>
                                 <Card>
                                     <CardBody>
