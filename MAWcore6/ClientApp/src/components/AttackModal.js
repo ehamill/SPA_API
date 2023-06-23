@@ -2,7 +2,7 @@
 import {Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 
-export class RecruitModal extends Component {
+export class AttackModal extends Component {
     
     constructor(props) {
         super(props);
