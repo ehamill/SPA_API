@@ -23,6 +23,7 @@ export class City extends Component {
             //heros: {},
             //wallDefenses: {},
             userResearch: {},
+            userItems: {},
             //troopQueues: {},
             //newBuildingsCost: {},
             loading: true,
@@ -629,6 +630,7 @@ export class City extends Component {
             troops: data.troops,
             wallDefenses: data.wallDefenses,
             userResearch: data.userResearch,
+            userItems: data.userItems,
             newBuildingsCost: data.newBuildingsCost,
             loading: false
         });

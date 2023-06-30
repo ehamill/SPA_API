@@ -1,3 +1,130 @@
+CREATE TABLE [dbo].[Npc]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [Type] INT NOT NULL DEFAULT 0,
+	[Warriors]            INT      DEFAULT ((0)) NOT NULL,
+    [Scouts]              INT      DEFAULT ((0)) NOT NULL,
+    [Pikemen]             INT      DEFAULT ((0)) NOT NULL,
+    [Swordsman]           INT      DEFAULT ((0)) NOT NULL,
+    [Archer]              INT      DEFAULT ((0)) NOT NULL,
+    [Cavalry]             INT      DEFAULT ((0)) NOT NULL,
+    [Cataphract]          INT      DEFAULT ((0)) NOT NULL,
+    [Ballist]             INT      DEFAULT ((0)) NOT NULL,
+    [BatteringRam]        INT      DEFAULT ((0)) NOT NULL,
+    [Catapult]            INT      DEFAULT ((0)) NOT NULL,
+    [Traps]               INT      DEFAULT ((0)) NOT NULL,
+    [Abatis]              INT      DEFAULT ((0)) NOT NULL,
+    [Archers_Tower]       INT      DEFAULT ((0)) NOT NULL,
+    [Rolling_Log]         INT      DEFAULT ((0)) NOT NULL,
+    [Defensive_Trebuchet] INT      DEFAULT ((0)) NOT NULL,
+    [Food]                INT      DEFAULT ((0)) NOT NULL,
+    [Stone]               INT      DEFAULT ((0)) NOT NULL,
+    [Wood]                INT      DEFAULT ((0)) NOT NULL,
+    [Iron]                INT      DEFAULT ((0)) NOT NULL,
+    [Gold]                INT      DEFAULT ((0)) NOT NULL,
+)
+
+CREATE TABLE [dbo].[Elements]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [CoordX] INT NOT NULL DEFAULT 0, 
+    [CoordY] INT NOT NULL DEFAULT 0,
+	[Loyalty] INT NOT NULL DEFAULT 100, 
+    [Owned] BIT NOT NULL DEFAULT 0, 
+	[CityID] INT NOT NULL DEFAULT 0,
+	[TerrainType] INT NOT NULL DEFAULT 0, 
+    [LastHit] DATETIME NULL,
+[Workers] INT NOT NULL DEFAULT 0,
+[Warriors] INT NOT NULL DEFAULT 0,
+[Scouts] INT NOT NULL DEFAULT 0,
+[Pikemen] INT NOT NULL DEFAULT 0,
+[Swordsman] INT NOT NULL DEFAULT 0,
+[Archer] INT NOT NULL DEFAULT 0,
+[Cavalry] INT NOT NULL DEFAULT 0,
+[Cataphract] INT NOT NULL DEFAULT 0,
+[Ballist] INT NOT NULL DEFAULT 0,
+[BatteringRam] INT NOT NULL DEFAULT 0,
+[Catapult] INT NOT NULL DEFAULT 0,
+[Traps] INT NOT NULL DEFAULT 0,
+[Abatis] INT NOT NULL DEFAULT 0,
+[Archers_Tower] INT NOT NULL DEFAULT 0,
+[Rolling_Log] INT NOT NULL DEFAULT 0,
+[Defensive_Trebuchet] INT NOT NULL DEFAULT 0,
+[Food] INT NOT NULL DEFAULT 0,
+[Stone] INT NOT NULL DEFAULT 0,
+[Wood] INT NOT NULL DEFAULT 0,
+[Iron] INT NOT NULL DEFAULT 0,
+[Gold] INT NOT NULL DEFAULT 0,
+ [HeroId] INT NOT NULL DEFAULT 0,
+)
+
+
+
+npc
+Type	lvl	warrs	pike	sw	arch	trap	AT  Stone Lumber Iron Food Gold
+Field	1 	50	10
+Field	2 	100	20
+Field	3	150	50
+Field	4   	250 	100	20	15
+lvl 	5 	200	160	65	40
+lvl 	6	400	400	100	100
+lvl 	7	750	1000	350	250
+lvl 	8	1000	1200	400	300
+lvl 	9	2000	2000	500	400
+lvl 	10 	4000	750	550	500
+s
+Level	Unit Type
+	Warrior	Pikeman	SwordsmanArcher	Cavalry	Trap	Abatis	Archer's Tower	Rollinglog	Defensive Trebuchet
+1	50	40	35	15	8	1000	0	0	0	0
+2	50	45	40	30	25	1850	550	0	0	0
+3	200	160	65	40	60	2000	1000	650	0	0
+4	400	400	100	100	150	4500	1875	550	0	0
+5	750	1000	350	250	200	3750	1875	1250	750	0
+6	4000	750	550	500	450	4250	1500	1500	950	400
+7	12000	3000	750	800	750	5600	2800	1850	1100	700
+8	15000	6750	4000	3000	2000	7200	3600	2400	1440	900
+9	60000	18000	2000	6750	2500	9000	4500	3000	1800	1150
+10	400000	0	0	0	0	11000	5500	3666	2200	1375
+
+Terrain	Flat	Grass  Swamp	Lake	Hill	Desert	Forest
+Resource	None	Food	Food	Food	Iron	Stone	Lumber
+Level 1	0	3%	5%	8%	5%	5%	5%
+Level 2		4%	7%	11%	7%	7%	7%
+Level 3		5%	9%	14%	9%	9%	9%
+Level 4		6%	11%	17%	11%	11%	11%
+Level 5		7%	13%	20%	13%	13%	13%
+Level 6		8%	15%	23%	15%	15%	15%
+Level 7		9%	17%	26%	17%	17%	17%
+Level 8		10%	19%	29%	19%	19%	19%
+Level 9		11%	21%	32%	21%	21%	21%
+Level 10	12	23%	35%	23%	23%	23%	23%
+
+lvl12
+1,120,000 Warriors                                                             6,000 Rolling Logs
+162,666 Swordsmen/Pikemen                                        6,666 Archer Towers
+42,807 Archers                                                                     5,000 Def Trebuchet
+108,404 Cataphracts/Cavalry                                        22,000 Traps
+14,640 Ballistae/Catapults/Battering Rams              11,000 Abatis
+lvl 14
+2.8 Million Warriors                                                      6,000 Rolling Logs
+406,666 Swordsmen/Pikemen                                6,666 Archer Towers
+171,288 Archers                                                            5,000 Def Trebuchet
+271,111 Cavalry/Cataphracts                                  22,000 Traps
+36,600 Ballistae/Battering Rams/Catapults      11,000 Abatis
+lvl 16
+7 million Warriors                                                       6,000 Rolling Logs
+1,016,665 Swordsmen/Pikemen                           6,666 Archer Towers
+428,070 Archers                                                         5,000 Def Trebuchet
+677,777 Cataphracts/Cavalry                              22,000 Traps
+91,500 Ballistae/Battering Ram/Catapult         11,000 Abatis
+
+lvl 18
+14 million Warriors                                                       6,000 Rolling Logs
+2,033,330 Swordsmen/Pikemen                            6,666 Archer Towers
+856,140 Archers                                                            5,000 Def Trebuchet
+1,355,555 Cataphracts/Cavalry                              22,000 Traps
+183,000 Ballistae/Battering Ram/Catapult       11,000 Abatis
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>

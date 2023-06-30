@@ -3,11 +3,6 @@
     public class Constants
     {
         #region Walls
-        //public const int WallsFoodReq = 3000;
-        //public const int WallsWoodReq = 1500;
-        //public const int WallsStoneReq = 10000;
-        //public const int WallsIronReq = 500;
-        //public const int WallsTimeReq = 30*60;
 
         public const int TrapFoodReq = 50;
         public const int TrapWoodReq = 500;
@@ -40,6 +35,7 @@
         public const int TrebTimeReq = 10 * 60;
 
         #endregion
+
         #region Farms
         public const string FarmPrereq  = " ";
         public const int FarmFoodReq = 50;// FoodReq = FarmFoodReq * 2^(nextLevel -1) 

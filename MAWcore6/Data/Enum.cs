@@ -83,6 +83,27 @@
         Rolling_Log = 16,
         Defensive_Trebuchet = 17
     }
+    public enum TerrainType
+    {
+        None = 0,
+        Lvl1_NPC = 1,
+        Lvl2_NPC = 2,
+        Lvl3_NPC = 3,
+        Lvl4_NPC = 4,
+        Lvl5_NPC = 5,
+        Lvl6_NPC = 6,
+        Lvl7_NPC = 7,
+        Lvl8_NPC = 8,
+        Lvl9_NPC = 9,
+        Lvl10_NPC = 10,
+        Flat = 11,
+        Grassland = 12,
+        Swamp = 13,
+        Lake = 14,
+        Hill = 15,
+        Desert = 16,
+        UserCity = 17,
 
+    }
 
 }

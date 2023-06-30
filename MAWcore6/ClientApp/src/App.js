@@ -11,7 +11,8 @@ import { ApplicationPaths } from './components/api-authorization/ApiAuthorizatio
 import './custom.css'
 import { WorldMap } from './components/WorldMap';
 //import { TownHallModal } from './components/TownHallModal';
-//import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/css/bootstrap.min.css';
+import 'bootstrap/js/bootstrap.min.js';
 
 export default class App extends Component {
   static displayName = App.name;

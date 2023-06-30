@@ -101,10 +101,10 @@ export class AddBuildingModal extends Component {
                     toggle={this.props.toggleAddBuildingModal}
                 >
                 <ModalBody>
-                    <Row>
+                    <Row hidden>
 
                         <div style={{
-                           // display: 'block', width: 320, 
+                           // display: 'block', width: "320",
                         }}>
                             <Carousel 
                                 activeIndex={this.state.activeIndex}
@@ -180,8 +180,10 @@ export class AddBuildingModal extends Component {
                                             {b.reqMet ? "" : "Requires: " + b.preReq}
                                         </Row>
                                         <Row>
-                                            typeInt : {b.buildingTypeInt}
-                                            slot: {this.props.activeSlot} id: buildingID: {this.props.activeBuildingId}
+                                            BuildingTypeInt : {b.buildingTypeInt}
+                                        </Row>
+                                        <Row>
+                                            slot: {this.props.activeSlot}  buildingID: {this.props.activeBuildingId}
                                         </Row>
                                     </Col>
                                     <Col md="4">

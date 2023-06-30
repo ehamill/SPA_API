@@ -22,7 +22,7 @@ export class AttackModal extends Component {
         this.getMaximumTroops = this.getMaximumTroops.bind(this);
         this.handleTroopQtyChange = this.handleTroopQtyChange.bind(this);
         this.showTime = this.showTime.bind(this);
-        this.toggleRecruitModal = this.toggleRecruitModal.bind(this);
+        this.toggleAttackModal = this.toggleAttackModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
     }
 
@@ -83,7 +83,6 @@ export class AttackModal extends Component {
         }
     }
 
-    
     resetAndCallTrainTroops(troopTypeInt) {
         //console.log('recruit modal mounted ...wood:' + this.props.wood);
         this.setState({
@@ -102,7 +101,7 @@ export class AttackModal extends Component {
        // console.log('recruit modal..componentWillUnmount...');
     }
 
-    toggleRecruitModal() {
+    toggleAttackModal() {
         this.setState({
             trainQty: "",
             foodNeeded: 0,
@@ -110,7 +109,7 @@ export class AttackModal extends Component {
             ironNeeded: 0,
             timeNeeded: 0,
         });
-        this.props.toggleRecruitModal();
+        this.props.toggleModal();
     }
     closeModal() {
         this.setState({
@@ -125,7 +124,7 @@ export class AttackModal extends Component {
     
     render() {
         //console.log('this.props.troopTypeInt: '+ this.props.typeInt)
-        const troop = (this.props.typeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.typeInt);
+        //const troop = (this.props.typeInt === 0) ? this.props.troops[0] : this.props.troops.find((x) => x.typeInt === this.props.typeInt);
         //console.log('at recruit ...troop is: ' + JSON.stringify(troop))
         //const activeBuildingId = this.props.activeBuildingId;
         //const activeBuilding = (activeBuildingId <= 0) ? city.buildings[0] : city.buildings.find((x) => x.buildingId === activeBuildingId);
@@ -133,100 +132,104 @@ export class AttackModal extends Component {
         return (
             <Modal
                 isOpen={this.props.showModal}
-                toggle={this.toggleRecruitModal}
+                toggle={this.toggleAttackModal}
             >
-                <ModalHeader className="text-right">
-                    Recruit {troop.typeString} 
+                <ModalHeader className="text-right " toggle={this.toggleAttackModal}>
+                    Attack Modal
+                    {/*<Button close className="ms-5" onClick={this.props.toggleModal}></Button>*/}
                 </ModalHeader>
                 <ModalBody>
                     <div>
-                        Image...
-                        {troop.description}
+                        Send these troops.. Attack ({this.props.coordX},{this.props.coordY})
                     </div>
-                    <div>
-                        {troop.preReq}
-                    </div>
-                    <div>
-                        <Table size="sm">
-                            <tbody>
-                                <tr>
-                                    <th>Attack {troop.attack} </th>
-                                    <th>Defense {troop.defense} </th>
-                                    <th>Range {troop.range} </th>
-                                </tr>
-                                <tr>
-                                    <th>Speed {troop.speed} </th>
-                                    <th>Load {troop.load}</th>
-                                    <th>Life {troop.life}</th>
-                                </tr>
-                                <tr>
-                                    <th>Food 5</th>
-                                    <th>Population 6</th>
-                                    <th> </th>
-                                </tr>
-                            </tbody>
-                        </Table>
-                        <Table size="sm">
-                            <thead>
-                                <tr>
-                                    <th> Required</th>
-                                    <th> Needed</th>
-                                    <th> You Own </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Food </td>
-                                    <th>{this.state.foodNeeded}</th>
-                                    <th>{this.props.food} </th>
-                                </tr>
-                                {this.state.stoneNeeded > 0 &&
-                                    <tr>
-                                        <th>Stone </th>
-                                        <th>{this.state.stoneNeeded}</th>
-                                        <th>{this.props.stone} </th>
-                                    </tr>
-                                }
+                    {/*<div>*/}
+                    {/*    Image...*/}
+                    {/*    {troop.description}*/}
+                    {/*</div>*/}
+                    {/*<div>*/}
+                    {/*    {troop.preReq}*/}
+                    {/*</div>*/}
+                    {/*<div>*/}
+                    {/*    <Table size="sm">*/}
+                    {/*        <tbody>*/}
+                    {/*            <tr>*/}
+                    {/*                <th>Attack {troop.attack} </th>*/}
+                    {/*                <th>Defense {troop.defense} </th>*/}
+                    {/*                <th>Range {troop.range} </th>*/}
+                    {/*            </tr>*/}
+                    {/*            <tr>*/}
+                    {/*                <th>Speed {troop.speed} </th>*/}
+                    {/*                <th>Load {troop.load}</th>*/}
+                    {/*                <th>Life {troop.life}</th>*/}
+                    {/*            </tr>*/}
+                    {/*            <tr>*/}
+                    {/*                <th>Food 5</th>*/}
+                    {/*                <th>Population 6</th>*/}
+                    {/*                <th> </th>*/}
+                    {/*            </tr>*/}
+                    {/*        </tbody>*/}
+                    {/*    </Table>*/}
+                    {/*    <Table size="sm">*/}
+                    {/*        <thead>*/}
+                    {/*            <tr>*/}
+                    {/*                <th> Required</th>*/}
+                    {/*                <th> Needed</th>*/}
+                    {/*                <th> You Own </th>*/}
+                    {/*            </tr>*/}
+                    {/*        </thead>*/}
+                    {/*        <tbody>*/}
+                    {/*            <tr>*/}
+                    {/*                <td>Food </td>*/}
+                    {/*                <th>{this.state.foodNeeded}</th>*/}
+                    {/*                <th>{this.props.food} </th>*/}
+                    {/*            </tr>*/}
+                    {/*            {this.state.stoneNeeded > 0 &&*/}
+                    {/*                <tr>*/}
+                    {/*                    <th>Stone </th>*/}
+                    {/*                    <th>{this.state.stoneNeeded}</th>*/}
+                    {/*                    <th>{this.props.stone} </th>*/}
+                    {/*                </tr>*/}
+                    {/*            }*/}
                                 
-                                <tr>
-                                    <th>Wood </th>
-                                    <th>{this.state.woodNeeded}</th>
-                                    <th>{this.props.wood} </th>
-                                </tr>
-                                <tr>
-                                    <th>Iron </th>
-                                    <th>{this.state.ironNeeded}</th>
-                                    <th>{this.props.iron} </th>
-                                </tr>
-                                <tr>
-                                    <td colSpan="2">
-                                        You have {troop.qty} {troop.typeString}s.
-                                    </td>
-                                    <td colSpan="1" className="text-right">
-                                        Train:
-                                        <input type="text" id="troopQty" className="width-50 text-right"  value={this.state.trainQty} onChange={this.handleTroopQtyChange} />
-                                        <button onClick={this.getMaximumTroops} >max </button>
-                                        <button hidden >min </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan="3" className="text-right">
-                                        <div>Duration {this.state.timeNeeded}</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan="3" className="text-right">
-                                        <Button  onClick={this.closeModal} color="secondary" >
-                                            Cancel
-                                        </Button>
-                                        <Button onClick={() => this.resetAndCallTrainTroops(this.props.typeInt) } color="primary" >
-                                            Train
-                                        </Button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </Table>
-                    </div>
+                    {/*            <tr>*/}
+                    {/*                <th>Wood </th>*/}
+                    {/*                <th>{this.state.woodNeeded}</th>*/}
+                    {/*                <th>{this.props.wood} </th>*/}
+                    {/*            </tr>*/}
+                    {/*            <tr>*/}
+                    {/*                <th>Iron </th>*/}
+                    {/*                <th>{this.state.ironNeeded}</th>*/}
+                    {/*                <th>{this.props.iron} </th>*/}
+                    {/*            </tr>*/}
+                    {/*            <tr>*/}
+                    {/*                <td colSpan="2">*/}
+                    {/*                    You have {troop.qty} {troop.typeString}s.*/}
+                    {/*                </td>*/}
+                    {/*                <td colSpan="1" className="text-right">*/}
+                    {/*                    Train:*/}
+                    {/*                    <input type="text" id="troopQty" className="width-50 text-right"  value={this.state.trainQty} onChange={this.handleTroopQtyChange} />*/}
+                    {/*                    <button onClick={this.getMaximumTroops} >max </button>*/}
+                    {/*                    <button hidden >min </button>*/}
+                    {/*                </td>*/}
+                    {/*            </tr>*/}
+                    {/*            <tr>*/}
+                    {/*                <td colSpan="3" className="text-right">*/}
+                    {/*                    <div>Duration {this.state.timeNeeded}</div>*/}
+                    {/*                </td>*/}
+                    {/*            </tr>*/}
+                    {/*            <tr>*/}
+                    {/*                <td colSpan="3" className="text-right">*/}
+                    {/*                    <Button  onClick={this.closeModal} color="secondary" >*/}
+                    {/*                        Cancel*/}
+                    {/*                    </Button>*/}
+                    {/*                    <Button onClick={() => this.resetAndCallTrainTroops(this.props.typeInt) } color="primary" >*/}
+                    {/*                        Train*/}
+                    {/*                    </Button>*/}
+                    {/*                </td>*/}
+                    {/*            </tr>*/}
+                    {/*        </tbody>*/}
+                    {/*    </Table>*/}
+                    {/*</div>*/}
 
                 </ModalBody>
             </Modal>
