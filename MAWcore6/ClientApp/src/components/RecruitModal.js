@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
 import {Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-//use this for intellisense sdfjlja s dfl jlsajfdl
 
 export class RecruitModal extends Component {
     

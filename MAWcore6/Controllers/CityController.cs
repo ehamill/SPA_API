@@ -19,11 +19,52 @@ namespace MAWcore6.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        
         public CityController(ApplicationDbContext _db, UserManager<ApplicationUser> userManager)
         {
             db = _db;
             _userManager = userManager;
+        }
+
+        [HttpGet("World")]
+        public async Task<JsonResult> World()
+        {
+            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            City UserCity = new City();
+            UserItems UserItems = new UserItems();
+            UserResearch userResearch = new UserResearch();
+            //List<TroopQueue> TroopQueues = new List<TroopQueue>();
+
+            try
+            {
+                UserCity = await db.Cities.Include(c => c.Buildings).Include(c => c.Heros).Where(c => c.UserId == UserId).AsSplitQuery().FirstOrDefaultAsync() ?? await CreateCity(UserId);
+                UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+                userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
+                UserCity.TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId && c.Complete == false).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error at CityController, [GET]: " + ex.Message);
+                Console.WriteLine(ex.Message);
+            }
+            UserCity.Heros = await GetHeros(UserCity);//Replensh Free heros
+            //await UpdateResources(UserCity);
+            UserCity.ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
+            UserCity.Troops = GetTroops(UserCity, userResearch);
+            UserCity.WallDefenses = GetWallDefenses(UserCity, userResearch);
+            await CheckTroopQueues(UserCity.TroopQueues, UserCity);
+            //If done, add troops to city... delete queue?? Status..training-complete-cancelled
+            //if not...
+            if (UserCity.Builder1Busy)
+            {
+                await CheckBuilder1(UserCity);
+            }
+            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
+            //Sleep doesn't work..
+            //System.Diagnostics.Debug.WriteLine("Testing ... ");
+            //Attack(UserCity.CityId);
+
+            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch });
         }
 
         [HttpGet]

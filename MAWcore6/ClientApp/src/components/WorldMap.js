@@ -1,19 +1,41 @@
 ﻿import React, { Component } from 'react';
-import { Nav,NavItem,NavLink,TabContent,TabPane, Col, Container,Row, Button, Table } from 'reactstrap';
-//import { Link } from 'react-router-dom';
+import { Col, Container, Row, Button, Table } from 'reactstrap';
+import { AttackModal } from './AttackModal';
+import authService from './api-authorization/AuthorizeService';
 
-export class TownHallModal extends Component {
+export class WorldMap extends Component {
     
     constructor(props) {
         super(props);
 
         this.state = {
-            //activeTab: 1,
+            hidden: false,
+            showAttackModal: false,
+            coordX: 5,
+            coordY: 5,
         };
         //this.showTime = this.showTime.bind(this);
         //this.setActiveTab = this.setActiveTab.bind(this);
+        this.openAttackModal = this.openAttackModal.bind(this);
     }
 
+    
+    openAttackModal(x, y) {
+        //console.log('clicked on map at (', x, ',', y, ")"); 
+        this.setState({
+            coordX: x, 
+            coordY: y,
+            showAttackModal: !this.state.showAttackModal,
+        });
+    }
+    closeAttackModal() {
+        this.setState({ showAttackModal: false });
+    }
+    toggleAttackModal = () => {
+        this.setState(prevState => ({
+            showAttackModal: !prevState.showAttackModal
+        }));
+    };
     showTime(secs) {
         let d = Math.floor(secs / (60 * 60 * 24));
         let h = Math.floor((secs % (60 * 60 * 24)) / (60 * 60));
@@ -28,46 +50,90 @@ export class TownHallModal extends Component {
         }
     }
 
-    
-
     componentDidMount() {
-        //console.log('this.props.showModal', this.props.showModal);
+        //scrolll to center of map.
+        let c = document.getElementById("cell2017");//select upperleft corner cell to scroll to
+        let x = c.offsetLeft;
+        let y = c.offsetTop;
+        //console.log('x' + x + ' y ' + y);
+        const element = document.getElementById("world-map");
+        element.scrollLeft = x+5;
+        element.scrollTop = y;
     }
 
-    componentWillUnmount() { }
-
-    //setActiveTab(id) {
-    //     this.setState({ activeTab: id });  
-    //}
+    componentWillUnmount() {
+        this.getWorldData();
+    }
 
     render() {
         //let townHall = this.props.city.buildings.find((x) => x.buildingType === 13);
-
+        var rows = [];
+        let rowWidth = 49;
+        for (let y = rowWidth; y >= 0; y--) {
+            rows.push({ row: rowWidth - y, coords: [] });
+            for (let x = 0; x <= rowWidth; x++) {
+                rows[rowWidth - y].coords.push({ x: x, y: y });
+            }
+        }
+        
+        //console.log('rows: ', JSON.stringify(rows));
+        //(1,0),(1,1)
+        //(0,0),(1,0)
+        
         return (
-            <Container hidden={!this.props.showModal}>
+            <Container hidden={this.state.hidden} id="world-map" style={{ height: "85vh", width:"100%", overflow:"scroll" }}>
                 <Row>
                     <Col className="" xs="12">
-                        <div>
-                            <Table size="sm">
-                                <tbody>
-                                    
-                                    <tr>
-                                        <td>Food</td>
-                                        
+                        <Table size="sm2" className="table-bordered " id="world-map-table">
+                            <tbody>
+                                {rows.map((row, index) =>
+                                    <tr key={index}>
+                                        {row.coords.map((coord, index2) =>
+                                            <td key={index2} id={"cell" + index + index2 }
+                                                onClick={() => this.openAttackModal(coord.x, coord.y)}
+                                            >
+                                                ({coord.x},{coord.y})
+                                            </td>
+                                        )}
                                     </tr>
-                                    <tr>
-                                        <td>Stone</td>
-                                        
-                                    </tr>
-                                   
-                                </tbody>
-                            </Table>
-                        </div>
+                                )}
+
+                            </tbody>
+                        </Table>
                     </Col>
                 </Row>
-
+                <AttackModal
+                    coordX={this.state.coordX}
+                    coordY={this.state.coordY}
+                    city={this.state.city}
+                    showModal={this.state.showAttackModal}
+                    closeModal={this.closeAttackModal}
+                    toggleModal={this.toggleAttackModal}
+                />
             </Container>
             );
         
     }
+
+
+
+    async getWorldData() {
+        const token = await authService.getAccessToken();
+        const response = await fetch('city/World', {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        this.setState({
+            city: data.city,
+            heros: data.heros,
+            troopQueues: data.troopQueues,
+            troops: data.troops,
+            wallDefenses: data.wallDefenses,
+            userResearch: data.userResearch,
+            userItems: data.userItems,
+            newBuildingsCost: data.newBuildingsCost,
+            loading: false
+        });
+    }
+
 }

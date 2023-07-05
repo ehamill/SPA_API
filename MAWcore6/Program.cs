@@ -76,7 +76,8 @@ builder.Services.AddSwaggerGen(option =>
         In = ParameterLocation.Header,
         Description = "Please enter a valid token",
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey, //.Http,
+        Type = SecuritySchemeType.Http, //.ApiKey, 
+        //Scheme = "basic",
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
@@ -88,7 +89,7 @@ builder.Services.AddSwaggerGen(option =>
                 Reference = new OpenApiReference
                 {
                     Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                     Id= "Bearer",//"basic"//
                 }
             },
             new string[]{}
@@ -98,17 +99,18 @@ builder.Services.AddSwaggerGen(option =>
 
 var app = builder.Build();
 
+//Note: Swagger uses WeatherForcast, net uses weatherforcast..need both in setupProxy.js
 app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    });
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-
-    
 }
 else
 {
@@ -116,13 +118,11 @@ else
     app.UseHsts();
 }
 
-app.UseAuthentication();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-//app.UseAuthentication();
+app.UseAuthentication();
 app.UseIdentityServer();
 app.UseAuthorization();
 
