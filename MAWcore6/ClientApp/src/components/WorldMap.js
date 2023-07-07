@@ -52,17 +52,19 @@ export class WorldMap extends Component {
 
     componentDidMount() {
         //scrolll to center of map.
-        let c = document.getElementById("cell2017");//select upperleft corner cell to scroll to
-        let x = c.offsetLeft;
-        let y = c.offsetTop;
-        //console.log('x' + x + ' y ' + y);
-        const element = document.getElementById("world-map");
-        element.scrollLeft = x+5;
-        element.scrollTop = y;
+        //let c = document.getElementById("cell2017");//select upperleft corner cell to scroll to
+        //let x = c.offsetLeft;
+        //let y = c.offsetTop;
+        ////console.log('x' + x + ' y ' + y);
+        //const element = document.getElementById("portal");
+        //element.scrollLeft = x+5;
+        //element.scrollTop = y;
+        //this.getWorldData();
+        //let x = document.getElementById("cell2017").offsetTop;
+        //console.log('cell2017 offsetTop', x);
     }
 
     componentWillUnmount() {
-        this.getWorldData();
     }
 
     render() {
@@ -81,27 +83,25 @@ export class WorldMap extends Component {
         //(0,0),(1,0)
         
         return (
-            <Container hidden={this.state.hidden} id="world-map" style={{ height: "85vh", width:"100%", overflow:"scroll" }}>
-                <Row>
-                    <Col className="" xs="12">
-                        <Table size="sm2" className="table-bordered " id="world-map-table">
-                            <tbody>
-                                {rows.map((row, index) =>
-                                    <tr key={index}>
-                                        {row.coords.map((coord, index2) =>
-                                            <td key={index2} id={"cell" + index + index2 }
-                                                onClick={() => this.openAttackModal(coord.x, coord.y)}
-                                            >
-                                                ({coord.x},{coord.y})
-                                            </td>
-                                        )}
-                                    </tr>
-                                )}
+            <Container hidden={!this.props.showModal} id="world-map"style={{ }}>
+                <div>
+                    <Table size="sm2" className="table-bordered " id="world-map-table">
+                        <tbody>
+                            {rows.map((row, index) =>
+                                <tr key={index}>
+                                    {row.coords.map((coord, index2) =>
+                                        <td key={index2} id={"cell" + index + index2}
+                                            onClick={() => this.openAttackModal(coord.x, coord.y)}
+                                        >
+                                            ({coord.x},{coord.y})
+                                        </td>
+                                    )}
+                                </tr>
+                            )}
 
-                            </tbody>
-                        </Table>
-                    </Col>
-                </Row>
+                        </tbody>
+                    </Table>
+                </div>
                 <AttackModal
                     coordX={this.state.coordX}
                     coordY={this.state.coordY}

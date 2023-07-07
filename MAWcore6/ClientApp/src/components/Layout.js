@@ -42,7 +42,7 @@ export class Layout extends Component {
     return (
       <div>
         <NavMenu />
-        <Container id="testing">
+        <Container id="layout-container">
           {this.props.children}
         </Container>
       </div>

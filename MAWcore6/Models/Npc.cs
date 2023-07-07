@@ -5,10 +5,11 @@ namespace MAWcore6.Models
     public class Npc
     {
         public int Id { get; set; }
-        public TerrainType TerrainType { get; set; } = TerrainType.Flat;
+        public int Level { get; set; } = 0;
+        public Terrain Terrain { get; set; } = Terrain.Field;
         public int Warriors { get; set; } = 0;
         public int Pikemen { get; set; } = 0;   
-        public int Swordsman { get; set; } = 0;
+        public int Swordsmen { get; set; } = 0;
         public int Archer { get; set; } = 0;
         public int Cavalry { get; set; } = 0;
         public int Cataphract { get; set; } = 0;

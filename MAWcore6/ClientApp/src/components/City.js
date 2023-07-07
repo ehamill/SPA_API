@@ -1,7 +1,7 @@
 ﻿import React, { Component,Fragment } from 'react';
 import authService from './api-authorization/AuthorizeService';
-import { Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-//import { BottomNav } from './BottomNav'; will do this later....TEsting...
+import {Row,Col, Fade, Container, Button, Table, ListGroup, ListGroupItem,Toast,ToastHeader,ToastBody, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import { BottomNav } from './BottomNav'; // will do this later....TEsting...
 import { Building } from './Building';
 import { BuildingTimer } from './BuildingTimer';
 import { AddBuildingModal } from './AddBuildingModal';
@@ -11,6 +11,7 @@ import { InnModal } from './InnModal';
 import { FeastModal } from './FeastModal';
 //import testing form the beging...sdlf ads
 import { Link } from 'react-router-dom';
+import { WorldMap } from './WorldMap';
 
 export class City extends Component { 
 
@@ -41,6 +42,7 @@ export class City extends Component {
             showFeastModal: false,
             showTestModal: false,
             showErrorMessage: false,
+            showWorldMap: false,
             errorMessage: "",
         };
 
@@ -61,10 +63,17 @@ export class City extends Component {
         this.hireHero = this.hireHero.bind(this);
         this.next = this.next.bind(this);
         this.showCity = this.showCity.bind(this);
+        this.showWorldMap = this.showWorldMap.bind(this);
+        this.closeWorldMap = this.closeWorldMap.bind(this);
     }
 
     componentDidMount() {
         this.getCityData();
+
+        //const element = document.getElementById("portal");
+        //element.scrollLeft = 100; // x + 5;
+        //element.scrollTop = 100; // y;
+
     }
 
     testClick() {
@@ -101,7 +110,7 @@ export class City extends Component {
         }
     }
     showCity() {
-        this.setState({ hideCity: false, showTownHallModal: false });
+        this.setState({ hideCity: false, showWorldMap: false, showTownHallModal: false });
     }
     closeModal() {
         this.setState({ showModal: false });
@@ -144,6 +153,48 @@ export class City extends Component {
             showTownHallModal: !prevState.showTownHallModal
         }));
     };
+    showWorldMap() {
+        this.setState({
+            showWorldMap: !this.state.showWorldMap,
+            hideCity: !this.state.hideCity,
+        });
+        document.getElementById("portal").scrollTop = 0;
+
+        setTimeout(() => {
+            //console.log('timeout: at show world map this.state.showWorldMap' + this.state.showWorldMap);
+            if(this.state.showWorldMap === true){
+                const element = document.getElementById("portal");
+                //document.getElementById("portal").scrollLeft = 1150;
+                let c = document.getElementById("cell2017");//select upperleft corner cell to scroll to
+                let x = c.offsetLeft;
+                let y = c.offsetTop;
+                element.scrollLeft = 1150; //x;
+                element.scrollTop = 1050;
+                //console.log('at show world map this.state.showWorldMap' + this.state.showWorldMap + ' y ' + y);
+            }
+            
+        }, "500");
+
+        console.log('at show world map this.state.showWorldMap' + this.state.showWorldMap);
+        if (this.state.showWorldMap === false) {
+            //scroll to middle of page
+            //setTimeout(() => {
+            //    console.log('timeout: at show world map this.state.showWorldMap' + this.state.showWorldMap);
+            //    const element = document.getElementById("portal");
+            //    //document.getElementById("portal").scrollLeft = 1150;
+            //    let c = document.getElementById("cell2017");//select upperleft corner cell to scroll to
+            //    let x = c.offsetLeft;
+            //    let y = c.offsetTop;
+            //    element.scrollLeft =  1150; //x;
+            //    element.scrollTop = 1050; 
+            //    //console.log('at show world map this.state.showWorldMap' + this.state.showWorldMap + ' y ' + y);
+            //}, "500");
+        }
+        
+    }
+    closeWorldMap() {
+        this.setState({ showWorldMap: false });
+    }
     toggleErrorMessage = () => {
         this.setState(prevState => ({
             showErrorMessage: !prevState.showErrorMessage
@@ -185,11 +236,7 @@ export class City extends Component {
         console.log('at City. train troops. typeInt: ' + troopTypeInt + ' qty: ' + qty );
        this.postTrainTroops(troopTypeInt, qty);
     }
-    //toggleModal = () => {
-    //    this.setState(prevState => ({
-    //        showTestModal: !prevState.showTestModal
-    //    }));
-    //};
+    
         
     GetBuildingType(id) {
         switch (id) {
@@ -256,7 +303,6 @@ export class City extends Component {
 
     }
 
-
     hireHero(heroId) {
         console.log("cityjs at hireHero fn. heroid: " + heroId );
        
@@ -266,7 +312,6 @@ export class City extends Component {
         });
         this.fetchHireHero(heroId);
     }
-
 
     buildingDone( location, type, level) {
         console.log("building done at loc: " + location + " type:" + type + " lvL: " + level);
@@ -318,7 +363,7 @@ export class City extends Component {
 
         return (
           
-          <Container>
+            <Container id="city-container">
               <Fade>
                   <Toast isOpen={this.state.showErrorMessage} className="error-toaster">
                       <ToastHeader toggle={this.toggleErrorMessage}>
@@ -356,10 +401,6 @@ export class City extends Component {
                   activeSlot={this.state.activeSlot}
                   activeBuildingId={this.state.activeBuildingId}
                   handleClickBuildWhat={this.handleClickBuildWhat}
-                  //food={this.state.city.food}
-                  //wood={this.state.city.wood}
-                  //stone={this.state.city.stone}
-                  //iron={this.state.city.iron}
                   showModal={this.state.showModal} closeModal={this.closeModal}
                   toggleAddBuildingModal={this.toggleAddBuildingModal}
               />
@@ -373,8 +414,6 @@ export class City extends Component {
                   city={this.state.city}
                   activeBuildingId={this.state.activeBuildingId}
                   toggleUpdateModal={this.toggleUpdateModal}
-                  //troops={this.state.troops}
-                  //troopQueues={this.state.troopQueues}
                   trainTroops={this.trainTroops}
                   //wallDefenses={this.state.wallDefenses}
               /> 
@@ -397,88 +436,171 @@ export class City extends Component {
                     toggleTownHallModal={this.toggleTownHallModal}
                     showCity={this.showCity}
                 />
+                
+                <Row>
+                    <Col className="city-col" xs="9" id="portal">
+                        <WorldMap
+                            city={this.state.city}
+                            showModal={this.state.showWorldMap}
+                            closeModal={this.closeWorldMap}
+                            showCity={this.showCity}
+                        />
+                        <div hidden>
+                            Add city Component
+                        </div>
+                        <div hidden={this.state.hideCity}>
+                            <Table bordered={true}>
+                                <tbody>
+                                    <tr>
+                                        <td colSpan="6">
+                                            <Building onBuildingClick={() => this.openModal(building0.location)} b={building0}>Walls </Building>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building1.location)} b={building1}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building2.location)} b={building2}>empty </Building>
+                                        </td>
+                                        <td colSpan="2" rowSpan="2">
+                                            <Building onBuildingClick={() => this.openModal(building3.location)} b={building3} />
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building4.location)} b={building4}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building5.location)} b={building5}>empty </Building>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building6.location)} b={building6}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building7.location)} b={building7}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building8.location)} b={building8}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building9.location)} b={building9}>empty </Building>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="6">
+                                            Farms
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </div>
+                    </Col>
+                    <Col id="right-nav" className="bg-light" xs="3">
+                        <div>Right Nav22</div>
+                        <ListGroup className="fixed-bottom22" >
+                            <ListGroupItem>
+                                food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron} || gold {this.state.city.gold}
 
-                <div hidden={this.state.hideCity}>
-                    <Table bordered={true}>
-                        <tbody>
-                            <tr>
-                                <td colSpan="6">
-                                    <Building onBuildingClick={() => this.openModal(building0.location)} b={building0}>Walls </Building>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building1.location)} b={building1}>empty </Building>
-                                </td>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building2.location)} b={building2}>empty </Building>
-                                </td>
-                                <td colSpan="2" rowSpan="2">
-                                    <Building onBuildingClick={() => this.openModal(building3.location)} b={building3} />
-                                </td>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building4.location)} b={building4}>empty </Building>
-                                </td>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building5.location)} b={building5}>empty </Building>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building6.location)} b={building6}>empty </Building>
-                                </td>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building7.location)} b={building7}>empty </Building>
-                                </td>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building8.location)} b={building8}>empty </Building>
-                                </td>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building9.location)} b={building9}>empty </Building>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan="6">
-                                    Farms
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building24.location)} b={building24}>empty </Building>
-                                </td>
-                                <td>
-                                    <Building onBuildingClick={() => this.openModal(building25.location)} b={building25}>empty </Building>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                      </tbody>
-                  </Table>
-
-                  <ListGroup className="fixed-bottom" >
-                      <ListGroupItem>
-                          food {this.state.city.food} || wood {this.state.city.wood} || stone {this.state.city.stone} || iron {this.state.city.iron} || gold {this.state.city.gold}
-
-                      </ListGroupItem>
-                      <ListGroupItem>
-                          {this.state.city.troops.map((troop, index) =>
-                              <span className="ml-2" key={index}>
-                                  {troop.typeString} {troop.qty} ||
-                              </span>
-                          )}
-                      </ListGroupItem>
-                      <ListGroupItem>
-                          builder1Busy: {this.state.city.builder1Busy.toString()} || BuldingID: {this.state.city.construction1BuildingId}
-                          activeSlot: {this.state.activeSlot} || activeBuildingId {this.state.activeBuildingId} || Type: {this.state.city.buildingWhat}
-                          || builder1Time: {this.state.city.builder1Time}
-                      </ListGroupItem>
-                  </ListGroup>
-
-                  
-              </div>
-              {/*<BottomNav />*/}
+                            </ListGroupItem>
+                            <ListGroupItem>
+                                {this.state.city.troops.map((troop, index) =>
+                                    <span className="ml-2" key={index}>
+                                        {troop.typeString} {troop.qty} ||
+                                    </span>
+                                )}
+                            </ListGroupItem>
+                            <ListGroupItem>
+                                builder1Busy: {this.state.city.builder1Busy.toString()} || BuldingID: {this.state.city.construction1BuildingId}
+                                activeSlot: {this.state.activeSlot} || activeBuildingId {this.state.activeBuildingId} || Type: {this.state.city.buildingWhat}
+                                || builder1Time: {this.state.city.builder1Time}
+                            </ListGroupItem>
+                        </ListGroup>
+                        <div>Troop info</div>
+                        <div>Res info</div>
+                        <div>
+                            <Button onClick={this.showWorldMap}>World Map</Button>
+                            {this.state.showWorldMap.toString()}
+                        </div>
+                        <div>Other Cities</div>
+                    </Col>
+                </Row>
+                <Row>
+                    <BottomNav />
+                </Row>
+              
           </Container>
 
             

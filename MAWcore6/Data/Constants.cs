@@ -1,4 +1,5 @@
-﻿namespace MAWcore6.Data
+﻿
+namespace MAWcore6.Data
 {
     public class Constants
     {

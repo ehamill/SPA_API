@@ -1,6 +1,10 @@
 ﻿namespace MAWcore6.Data
 {
-
+    public enum Terrain { 
+        None = 0,
+        Npc = 1,
+        Field = 2,//flat, desert..etc??
+    }
     public enum BuildingType
     {
         Empty = 0,
@@ -83,27 +87,18 @@
         Rolling_Log = 16,
         Defensive_Trebuchet = 17
     }
-    public enum TerrainType
+    public enum CreateTerrain
     {
         None = 0,
-        Lvl1_NPC = 1,
-        Lvl2_NPC = 2,
-        Lvl3_NPC = 3,
-        Lvl4_NPC = 4,
-        Lvl5_NPC = 5,
-        Lvl6_NPC = 6,
-        Lvl7_NPC = 7,
-        Lvl8_NPC = 8,
-        Lvl9_NPC = 9,
-        Lvl10_NPC = 10,
-        Flat = 11,
-        Grassland = 12,
-        Swamp = 13,
-        Lake = 14,
-        Hill = 15,
-        Desert = 16,
-        UserCity = 17,
-
+        Npc = 1,
+        Flat = 2,
+        Grassland = 3,
+        Swamp = 4,
+        Lake = 5,
+        Hill = 6,
+        Desert = 7,
+        //Flat = 8,
+        //Flat = 9,
     }
 
 }

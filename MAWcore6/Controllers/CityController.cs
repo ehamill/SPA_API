@@ -19,52 +19,11 @@ namespace MAWcore6.Controllers
     {
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> _userManager;
-        
+
         public CityController(ApplicationDbContext _db, UserManager<ApplicationUser> userManager)
         {
             db = _db;
             _userManager = userManager;
-        }
-
-        [HttpGet("World")]
-        public async Task<JsonResult> World()
-        {
-            string UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            City UserCity = new City();
-            UserItems UserItems = new UserItems();
-            UserResearch userResearch = new UserResearch();
-            //List<TroopQueue> TroopQueues = new List<TroopQueue>();
-
-            try
-            {
-                UserCity = await db.Cities.Include(c => c.Buildings).Include(c => c.Heros).Where(c => c.UserId == UserId).AsSplitQuery().FirstOrDefaultAsync() ?? await CreateCity(UserId);
-                UserItems = await db.UserItems.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-                userResearch = await db.UserResearch.Where(c => c.UserId == UserId).FirstOrDefaultAsync();
-                UserCity.TroopQueues = await db.TroopQueues.Where(c => c.CityId == UserCity.CityId && c.Complete == false).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Error at CityController, [GET]: " + ex.Message);
-                Console.WriteLine(ex.Message);
-            }
-            UserCity.Heros = await GetHeros(UserCity);//Replensh Free heros
-            //await UpdateResources(UserCity);
-            UserCity.ListOfBuildingsCost = GetNewBuildingsCost(UserCity, userResearch);
-            UserCity.Troops = GetTroops(UserCity, userResearch);
-            UserCity.WallDefenses = GetWallDefenses(UserCity, userResearch);
-            await CheckTroopQueues(UserCity.TroopQueues, UserCity);
-            //If done, add troops to city... delete queue?? Status..training-complete-cancelled
-            //if not...
-            if (UserCity.Builder1Busy)
-            {
-                await CheckBuilder1(UserCity);
-            }
-            //GetUpgradeBuildings..only need one for each, can calculate costs off of it
-            //Sleep doesn't work..
-            //System.Diagnostics.Debug.WriteLine("Testing ... ");
-            //Attack(UserCity.CityId);
-
-            return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch });
         }
 
         [HttpGet]
@@ -106,6 +65,21 @@ namespace MAWcore6.Controllers
             //Attack(UserCity.CityId);
 
             return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch });
+        }
+
+
+        //[HttpGet("World")]
+        //public async Task<JsonResult> World() {
+
+        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch });
+        //}
+
+
+        private List<Npc> GetDefaultNpcs()
+        {
+            var Npcs = new List<Npc>();
+
+            return Npcs;
         }
 
         [HttpPost("BuildingDone")]
@@ -1957,7 +1931,7 @@ namespace MAWcore6.Controllers
                 var m = e.InnerException.Message;
                 System.Diagnostics.Debug.WriteLine("error ", m);
             }
-            
+
             //var Inn = userCity.Buildings.Where(c => c.BuildingType == BuildingType.Inn).FirstOrDefault();
             //int MaxHeroCount = (Inn == null) ? 0 : Inn.Level;
 
@@ -1978,6 +1952,466 @@ namespace MAWcore6.Controllers
 
         }
 
+        private async void CreateMap() {
+            //var rows = [];
+            int rowWidth = 49;//0,0 to 49,49
+            for (int y = rowWidth; y >= 0; y--)
+            {
+                //rows.push({ row: rowWidth - y, coords: [] });
+                for (int x = 0; x <= rowWidth; x++)
+                {
+                    var rnd = new Random();
+                    int randTerrain = rnd.Next(1, 10); //rand between 1-9
+                    if (randTerrain > 7)
+                        randTerrain = 2; //Flats 3x more likely
+                    CreateTerrain ter = (CreateTerrain)randTerrain;
+                    int randLevel = rnd.Next(1, 11);  // rand between 1-10
+
+                    var element = new Element() {
+                        CoordX = x,
+                        CoordY = y,
+                        Terrain = ter,
+                    };
+                    try
+                    {
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        var m = e.InnerException.Message;
+                        System.Diagnostics.Debug.WriteLine("error ", m);
+                    }
+                }
+            }
+
+        }
+
+        private List<Npc> GetAllNpcsDefaultTroopsAndResources()
+        {
+
+            var npcs = new List<Npc>();
+
+            var FieldLvl1 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 1,
+                Warriors = 50,
+                Pikemen = 10,
+            };
+            npcs.Add(FieldLvl1);
+            var FieldLvl2 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 2,
+                Warriors = 100,
+                Pikemen = 20,
+            };
+            npcs.Add(FieldLvl2);
+            var FieldLvl3 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 3,
+                Warriors = 150,
+                Pikemen = 50,
+            };
+            npcs.Add(FieldLvl3);
+            var FieldLvl4 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 4,
+                Warriors = 250,
+                Pikemen = 100,
+                Swordsmen = 50,
+                Archer = 25,
+
+            };
+            npcs.Add(FieldLvl4);
+            var FieldLvl5 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 5,
+                Warriors = 300,
+                Pikemen = 160,
+                Swordsmen = 60,
+                Archer = 40,
+                Cavalry = 50,
+            };
+            npcs.Add(FieldLvl5);
+            var FieldLvl6 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 6,
+                Warriors = 400,
+                Pikemen = 400,
+                Swordsmen = 100,
+                Archer = 100,
+                Cavalry = 100,
+            };
+            npcs.Add(FieldLvl6);
+            var FieldLvl7 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 7,
+                Warriors = 750,
+                Pikemen = 1000,
+                Swordsmen = 350,
+                Archer = 250,
+                Cavalry = 200,
+            };
+            npcs.Add(FieldLvl7);
+            var FieldLvl8 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 8,
+                Warriors = 1000,
+                Pikemen = 1200,
+                Swordsmen = 400,
+                Archer = 1333,
+                Cavalry = 300,
+            };
+            npcs.Add(FieldLvl8);
+            var FieldLvl9 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 9,
+                Warriors = 2000,
+                Pikemen = 2000,
+                Swordsmen = 500,
+                Archer = 1555,
+                Cavalry = 400,
+            };
+            npcs.Add(FieldLvl9);
+            var FieldLvl10 = new Npc
+            {
+                Terrain = Terrain.Field,
+                Level = 10,
+                Warriors = 4000,
+                Pikemen = 1666,
+                Swordsmen = 1555,
+                Archer = 1666,
+                Cavalry = 500,
+
+            };
+            npcs.Add(FieldLvl10);
+
+            var npc1 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 1,
+                Warriors = 50,
+                Pikemen = 40,
+                Swordsmen = 35,
+                Archer = 15,
+                Cavalry = 8,
+                Trap = 1000,
+                Food = 100000,
+                Lumber = 20000,
+                Stone = 20000,
+                Iron = 20000,
+                Gold = 55000,
+            };
+            npcs.Add(npc1);
+            var npc2 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 2,
+                Warriors = 50,
+                Pikemen = 45,
+                Swordsmen = 40,
+                Archer = 30,
+                Cavalry = 25,
+                Trap = 1850,
+                Abatis = 550,
+                Food = 200000,
+                Lumber = 30000,
+                Stone = 30000,
+                Iron = 30000,
+                Gold = 65000,
+            };
+            npcs.Add(npc2);
+            var npc3 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 3,
+                Warriors = 200,
+                Pikemen = 160,
+                Swordsmen = 65,
+                Archer = 40,
+                Cavalry = 60,
+                Trap = 2000,
+                Abatis = 1000,
+                Archers_Tower = 650,
+                Food = 900000,
+                Lumber = 75000,
+                Stone = 75000,
+                Iron = 75000,
+                Gold = 75000,
+            };
+            npcs.Add(npc3);
+            var npc4 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 4,
+                Warriors = 400,
+                Pikemen = 400,
+                Swordsmen = 100,
+                Archer = 100,
+                Cavalry = 150,
+                Trap = 4500,
+                Abatis = 1875,
+                Archers_Tower = 550,
+                Rolling_Log = 750,
+                Food = 1600000,
+                Lumber = 120000,
+                Stone = 120000,
+                Iron = 120000,
+                Gold = 300000,
+            };
+            npcs.Add(npc4);
+            var npc5 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 5,
+                Warriors = 750,
+                Pikemen = 1000,
+                Swordsmen = 350,
+                Archer = 250,
+                Cavalry = 200,
+                Trap = 3750,
+                Abatis = 1875,
+                Archers_Tower = 1250,
+                Rolling_Log = 750,
+                Food = 3000000,
+                Lumber = 180000,
+                Stone = 180000,
+                Iron = 180000,
+                Gold = 450000,
+            };
+            npcs.Add(npc5);
+            var npc6 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 6,
+                Warriors = 4000,
+                Pikemen = 750,
+                Swordsmen = 550,
+                Archer = 500,
+                Cavalry = 450,
+                Trap = 4250,
+                Abatis = 1500,
+                Archers_Tower = 1500,
+                Rolling_Log = 950,
+                Defensive_Trebuchet = 400,
+                Food = 4000000,
+                Lumber = 200000,
+                Stone = 200000,
+                Iron = 200000,
+                Gold = 600000,
+            };
+            npcs.Add(npc6);
+            var npc7 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 7,
+                Warriors = 12000,
+                Pikemen = 3000,
+                Swordsmen = 750,
+                Archer = 800,
+                Cavalry = 750,
+                Trap = 5600,
+                Abatis = 2800,
+                Archers_Tower = 1850,
+                Rolling_Log = 1100,
+                Defensive_Trebuchet = 700,
+                Food = 4500000,
+                Lumber = 500000,
+                Stone = 500000,
+                Iron = 500000,
+                Gold = 800000,
+            };
+            npcs.Add(npc7);
+            var npc8 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 8,
+                Warriors = 15000,
+                Pikemen = 6750,
+                Swordsmen = 4000,
+                Archer = 3000,
+                Cavalry = 2000,
+                Trap = 7200,
+                Abatis = 3600,
+                Archers_Tower = 2400,
+                Rolling_Log = 1440,
+                Defensive_Trebuchet = 900,
+                Food = 8000000,
+                Lumber = 800000,
+                Stone = 800000,
+                Iron = 800000,
+                Gold = 1000000,
+            };
+            npcs.Add(npc8);
+            var Npc9 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 9,
+                Warriors = 60000,
+                Pikemen = 18000,
+                Swordsmen = 2000,
+                Archer = 6750,
+                Cavalry = 2500,
+                Trap = 9000,
+                Abatis = 4500,
+                Archers_Tower = 3000,
+                Rolling_Log = 1800,
+                Defensive_Trebuchet = 1150,
+                Food = 14000000,
+                Lumber = 550000,
+                Stone = 550000,
+                Iron = 550000,
+                Gold = 1200000,
+            };
+            npcs.Add(Npc9);
+            var Npc10 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 10,
+                Warriors = 400000,
+                Trap = 11000,
+                Abatis = 5500,
+                Archers_Tower = 3666,
+                Rolling_Log = 2200,
+                Defensive_Trebuchet = 1375,
+                Food = 19000000,
+                Lumber = 600000,
+                Stone = 600000,
+                Iron = 600000,
+                Gold = 1500000,
+            };
+            npcs.Add(Npc10);
+            //Pike and sword switch, cata/cav switch, balls/cata,batts switch..do random on each element
+            var Npc12 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 12,
+                Warriors = 1120000,
+                Pikemen = 162666,
+                Swordsmen = 0,
+                Archer = 42807,
+                Cavalry = 108404,
+                Battering_Ram = 14640,
+                Trap = 22000,
+                Abatis = 11000,
+                Archers_Tower = 6666,
+                Rolling_Log = 6000,
+                Defensive_Trebuchet = 5000,
+                Food = 25000000,
+                Lumber = 1000000,
+                Stone = 1000000,
+                Iron = 1000000,
+                Gold = 2000000,
+            };
+            npcs.Add(Npc12);
+            var Npc14 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 14,
+                Warriors = 2800000,
+                Pikemen = 406666,
+                Swordsmen = 0,
+                Archer = 171288,
+                Cavalry = 271111,
+                Battering_Ram = 36600,
+                Trap = 22000,
+                Abatis = 11000,
+                Archers_Tower = 6666,
+                Rolling_Log = 6000,
+                Defensive_Trebuchet = 5000,
+                Food = 30000000,
+                Lumber = 1500000,
+                Stone = 1500000,
+                Iron = 1500000,
+                Gold = 2500000,
+            };
+            npcs.Add(Npc14);
+            var Npc16 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 16,
+                Warriors = 7000000,
+                Pikemen = 1016665,
+                Swordsmen = 0,
+                Archer = 428070,
+                Cavalry = 677777,
+                Battering_Ram = 91500,
+                Trap = 22000,
+                Abatis = 11000,
+                Archers_Tower = 6666,
+                Rolling_Log = 6000,
+                Defensive_Trebuchet = 5000,
+                Food = 35000000,
+                Lumber = 2000000,
+                Stone = 2000000,
+                Iron = 2000000,
+                Gold = 3000000,
+            };
+            npcs.Add(Npc16);
+            var Npc18 = new Npc
+            {
+                Terrain = Terrain.Npc,
+                Level = 18,
+                Warriors = 14000000,
+                Pikemen = 2033330,
+                Swordsmen = 0,
+                Archer = 856140,
+                Cavalry = 1355555,
+                Battering_Ram = 183000,
+                Trap = 22000,
+                Abatis = 11000,
+                Archers_Tower = 6666,
+                Rolling_Log = 6000,
+                Defensive_Trebuchet = 5000,
+                Food = 45000000,
+                Lumber = 4000000,
+                Stone = 4000000,
+                Iron = 4000000,
+                Gold = 6000000,
+            };
+            npcs.Add(Npc18);
+
+
+
+            var randomNums = new List<int>();
+            var random1 = new List<int>();
+            var random4 = new List<int>();
+            var random10 = new List<int>();
+            var rnd = new Random();//Random based on clock, so use it outside of for loop
+            for (int i = 0; i < 10000; i++)
+            {
+                int randnum = rnd.Next(1, 11);//random between 1 and 10
+                randomNums.Add(randnum);
+                if (randnum == 1)
+                    random1.Add(randnum);
+                if (randnum == 4)
+                    random4.Add(randnum);
+                if (randnum == 10)
+                    random10.Add(randnum);
+            }
+
+            var randomFalse = new List<int>();
+            var randomTrue = new List<int>();
+            for (int i = 0; i < 10000; i++)
+            {
+                int randnum = rnd.Next(0, 2);//random between 0 and 1
+                randomNums.Add(randnum);
+                if (randnum == 0)
+                    randomFalse.Add(randnum);
+                if (randnum == 1)
+                    randomTrue.Add(randnum);
+            }
+
+            return npcs;
+        }
 
     }
 
