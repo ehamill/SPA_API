@@ -21,9 +21,8 @@ export class BottomNav extends Component {
             );
         } else {
             return (
-                <nav className="navbar fixed-bottom navbar-light bg-light">
-
-                    <Container style={{ display: "block", maxWidth: "100%" }} className="ml-1 mr-1">
+                <nav className="navbar  navbar-light bg-light">
+                    <Container style={{ display: "block", height:"auto", maxWidth: "100%" }} className="ml-1 mr-1">
                         <Row className="">
                             <Col md="3" >
                                 <Row >

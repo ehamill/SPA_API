@@ -9,7 +9,8 @@ namespace MAWcore6.Models
         public int CoordY { get; set; } = 0;    
         public bool Occupied { get; set; }  = false;
         public int CityId { get; set; } = 0;
-        public TerrainType TerrainType { get; set; } = TerrainType.Flat;
+        public CreateTerrain Terrain { get; set; } = CreateTerrain.Flat;
+        public int Level { get; set; } = 0;
         public DateTime? LastHit { get; set; }
         public int Workers { get; set; } = 0;
         public int Warriors { get; set; } = 0;

@@ -18,6 +18,7 @@ namespace MAWcore6.Data
         public DbSet<UserResearch> UserResearch { get; set; }
         public DbSet<TroopQueue> TroopQueues { get; set; }
         public DbSet<Hero> Heros { get; set; }
+        public DbSet<Npc> Npcs { get; set; }
 
         //Overide if you don't wan't table name to be "Cities"
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
