@@ -1878,9 +1878,9 @@ namespace MAWcore6.Controllers
                 "Zion", "Davis", "April", "Fritz", "Aarav", "Gates", "Valentino", "Shannon", "Kaya", "Cook", "Jadiel", "Humphrey", "Bria", "Brennan", "Maya", "Leblanc", "Corbin", "Hood", "Yaretzi", "Townsend", "Keira", "Warner", "Broderick", "Landry", "Malakai", "Grant", "Ryan", "Small", "Hayden", "Cole", "Katrina", "Conner", "Caitlyn", "Wells", "Edith", "Barker", "Ivy", "Marquez", "Alexander", "Harvey", "Brynn", "Mcdaniel", "Jarrett", "Olson", "Alayna", "Colon", "Regan", "Fox", "Julio", "Walker", "Sierra", "Elliott", "Janet", "Shelton", "Tess", "Willis"
             };
 
+            Random random = new Random();
             for (int i = 0; i < Qty; i++)
             {
-                Random random = new Random();
                 double rand = random.NextDouble();
                 int PolPoints = (rand < 0.3) ? random.Next(3, 70) : random.Next(3, 50);
                 int IntelPoints = (rand < 0.2) ? random.Next(3, 70) : random.Next(3, 50);
