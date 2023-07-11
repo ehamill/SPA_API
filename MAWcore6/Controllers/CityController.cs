@@ -66,21 +66,6 @@ namespace MAWcore6.Controllers
             return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch });
         }
 
-
-        //[HttpGet("World")]
-        //public async Task<JsonResult> World() {
-
-        //    return new JsonResult(new { city = UserCity, userItems = UserItems, userResearch = userResearch });
-        //}
-
-
-        private List<Npc> GetDefaultNpcs()
-        {
-            var Npcs = new List<Npc>();
-
-            return Npcs;
-        }
-
         [HttpPost("BuildingDone")]
         public async Task<JsonResult> BuildingDone([FromBody] UpdateCityModel update)
         {
