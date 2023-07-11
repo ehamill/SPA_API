@@ -33,7 +33,6 @@ namespace MAWcore6.Controllers
             City UserCity = new City();
             UserItems UserItems = new UserItems();
             UserResearch userResearch = new UserResearch();
-            //List<TroopQueue> TroopQueues = new List<TroopQueue>();
 
             try
             {
