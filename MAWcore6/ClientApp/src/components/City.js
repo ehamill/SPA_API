@@ -357,6 +357,12 @@ export class City extends Component {
         let building7 = this.state.city.buildings.find((x) => x.location === 7);
         let building8 = this.state.city.buildings.find((x) => x.location === 8);
         let building9 = this.state.city.buildings.find((x) => x.location === 9);
+        let building10 = this.state.city.buildings.find((x) => x.location === 10);
+        let building11 = this.state.city.buildings.find((x) => x.location === 11);
+        let building12 = this.state.city.buildings.find((x) => x.location === 12);
+        let building13 = this.state.city.buildings.find((x) => x.location === 13);
+        let building14 = this.state.city.buildings.find((x) => x.location === 14);
+        let building15 = this.state.city.buildings.find((x) => x.location === 15);
         let building24 = this.state.city.buildings.find((x) => x.location === 24);
         let building25 = this.state.city.buildings.find((x) => x.location === 25);
         
@@ -452,7 +458,7 @@ export class City extends Component {
                             <Table bordered={true}>
                                 <tbody>
                                     <tr>
-                                        <td colSpan="6">
+                                        <td colSpan="7">
                                             <Building onBuildingClick={() => this.openModal(building0.location)} b={building0}>Walls </Building>
                                         </td>
                                     </tr>
@@ -463,7 +469,7 @@ export class City extends Component {
                                         <td>
                                             <Building onBuildingClick={() => this.openModal(building2.location)} b={building2}>empty </Building>
                                         </td>
-                                        <td colSpan="2" rowSpan="2">
+                                        <td colSpan="3" rowSpan="2">
                                             <Building onBuildingClick={() => this.openModal(building3.location)} b={building3} />
                                         </td>
                                         <td>
@@ -488,8 +494,64 @@ export class City extends Component {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colSpan="6">
-                                            Farms
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building10.location)} b={building10}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building11.location)} b={building11}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building12.location)} b={building12}>empty </Building>
+                                        </td>
+                                        <td>
+                                            Road
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building13.location)} b={building13}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building14.location)} b={building14}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building15.location)} b={building15}>empty </Building>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="7">
+                                            Road 3x3 deep buildings..
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building16.location)} b={building16}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building17.location)} b={building17}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building18.location)} b={building18}>empty </Building>
+                                        </td>
+                                        <td>
+                                            Road
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building19.location)} b={building19}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building20.location)} b={building20}>empty </Building>
+                                        </td>
+                                        <td>
+                                            <Building onBuildingClick={() => this.openModal(building21.location)} b={building21}>empty </Building>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="7">
+                                            more buildings....
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="7">
+                                            Farms.. 8 wide..do new table..
                                         </td>
                                     </tr>
                                     <tr>
